@@ -1,0 +1,279 @@
+/* Care Chart, "macOS Tahoe" look: Liquid Glass. Translucent, deeply rounded windows that
+   blur the wallpaper behind them, with the red, yellow and green window buttons and a
+   centered title; sections as frosted glass panels; capsule-shaped buttons; tabs as a
+   floating glass segmented control; notifications as glass banners at the top right; and
+   on wide screens the status bar as a Dock-like glass shelf. The wallpaper, a lake among
+   mountains, is drawn for Care Chart (public/images/tahoe-wallpaper.svg). Schemes are
+   macOS accent colors; Night is dark glass.
+
+   Chosen per device in Settings → This device → Look; app.js sets data-skin="tahoe" and
+   data-scheme on <html>. Everything sits inside one :root[data-skin="tahoe"] block (CSS
+   nesting), so this file changes nothing in the other looks. */
+
+:root[data-skin="tahoe"] {
+  /* ---- Accent: Blue (the default) */
+  --accent: #007aff;
+  --accent-soft: rgba(0, 122, 255, 0.25);
+  &[data-scheme="purple"] { --accent: #953d96; --accent-soft: rgba(149, 61, 150, 0.25); }
+  &[data-scheme="pink"] { --accent: #e0457b; --accent-soft: rgba(224, 69, 123, 0.25); }
+  &[data-scheme="orange"] { --accent: #e5700e; --accent-soft: rgba(229, 112, 14, 0.25); }
+  &[data-scheme="green"] { --accent: #3e9b2f; --accent-soft: rgba(62, 155, 47, 0.25); }
+  &[data-scheme="graphite"] { --accent: #6e6e73; --accent-soft: rgba(110, 110, 115, 0.3); }
+
+  --glass: rgba(255, 255, 255, 0.58);
+  --glass-strong: rgba(255, 255, 255, 0.78);
+  --glass-edge: rgba(255, 255, 255, 0.75);
+  --glass-line: rgba(0, 0, 0, 0.08);
+  --glass-blur: blur(28px) saturate(1.8);
+  --glass-shine: inset 0 1px 0 rgba(255, 255, 255, 0.85), inset 0 -1px 0 rgba(255, 255, 255, 0.25);
+  --window-shadow: 0 24px 60px -20px rgba(10, 30, 70, 0.45), 0 2px 8px rgba(10, 30, 70, 0.12);
+  --wallpaper-dim: transparent;
+
+  /* ---- The classic tokens, re-pointed */
+  --desk: #5a7fbd;
+  --surface: var(--glass-strong);
+  --surface-light: rgba(0, 0, 0, 0.05);
+  --highlight: transparent;
+  --shadow: var(--glass-line);
+  --dark-shadow: rgba(0, 0, 0, 0.18);
+  --field: rgba(255, 255, 255, 0.85);
+  --field-alternate: rgba(0, 0, 0, 0.025);
+  --text: #1d1d1f;
+  --text-muted: #6e6e73;
+  --selection: var(--accent);
+  --selection-text: #ffffff;
+  --link: var(--accent);
+  --raised: none;
+  --sunken: inset 0 0 0 1px var(--glass-line);
+  --etched: none;
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  --mono: var(--font);
+  --base-size: 14px;
+  --progress: var(--accent);
+  color-scheme: light;
+
+  /* ---- Night: dark glass over a dimmed wallpaper */
+  &[data-theme="night"] {
+    --glass: rgba(30, 30, 34, 0.55); --glass-strong: rgba(36, 36, 40, 0.78); --glass-edge: rgba(255, 255, 255, 0.16);
+    --glass-line: rgba(255, 255, 255, 0.1);
+    --glass-shine: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    --window-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.8);
+    --wallpaper-dim: rgba(5, 10, 25, 0.62);
+    --surface-light: rgba(255, 255, 255, 0.07); --field: rgba(0, 0, 0, 0.3); --field-alternate: rgba(255, 255, 255, 0.03);
+    --text: #f5f5f7; --text-muted: #a1a1a6; --link: color-mix(in srgb, var(--accent) 70%, #ffffff);
+    --overdue: #ff8f8f; --overdue-fill: rgba(255, 69, 58, 0.22); --due: #ffd36b; --due-fill: rgba(255, 159, 10, 0.2);
+    --given: #8fe39a; --given-fill: rgba(48, 209, 88, 0.18); --held: #d4b8ff; --held-fill: rgba(191, 90, 242, 0.2);
+    --upcoming: #c7c7cc; --upcoming-fill: rgba(255, 255, 255, 0.08); --allergy: #ff8f8f; --notable: #ff8f8f;
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    &[data-theme="auto"] {
+      --glass: rgba(30, 30, 34, 0.55); --glass-strong: rgba(36, 36, 40, 0.78); --glass-edge: rgba(255, 255, 255, 0.16);
+      --glass-line: rgba(255, 255, 255, 0.1);
+      --glass-shine: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+      --window-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.8);
+      --wallpaper-dim: rgba(5, 10, 25, 0.62);
+      --surface-light: rgba(255, 255, 255, 0.07); --field: rgba(0, 0, 0, 0.3); --field-alternate: rgba(255, 255, 255, 0.03);
+      --text: #f5f5f7; --text-muted: #a1a1a6; --link: color-mix(in srgb, var(--accent) 70%, #ffffff);
+      --overdue: #ff8f8f; --overdue-fill: rgba(255, 69, 58, 0.22); --due: #ffd36b; --due-fill: rgba(255, 159, 10, 0.2);
+      --given: #8fe39a; --given-fill: rgba(48, 209, 88, 0.18); --held: #d4b8ff; --held-fill: rgba(191, 90, 242, 0.2);
+      --upcoming: #c7c7cc; --upcoming-fill: rgba(255, 255, 255, 0.08); --allergy: #ff8f8f; --notable: #ff8f8f;
+      color-scheme: dark;
+    }
+  }
+
+  & body {
+    background: linear-gradient(var(--wallpaper-dim), var(--wallpaper-dim)), url("/images/tahoe-wallpaper.svg") center / cover, var(--desk);
+    background-attachment: fixed; -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- Controls: glass capsules; the main action filled with the accent */
+
+  button, .button {
+    border: 1px solid var(--glass-line); border-radius: 999px; background: var(--glass-strong); color: var(--text);
+    box-shadow: var(--glass-shine), 0 1px 2px rgba(0, 0, 0, 0.08); padding: 5px 15px; font-weight: 500;
+  }
+  button:hover:not(:disabled), .button:hover { background: color-mix(in srgb, var(--glass-strong) 80%, var(--text) 6%); }
+  button:active:not(:disabled), button.pressed { transform: scale(0.97); padding: 5px 15px; box-shadow: var(--glass-shine); }
+  button.default { outline: none; background: var(--accent); color: #ffffff; border-color: transparent; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 4px 12px -4px var(--accent); }
+  button.default:hover:not(:disabled) { background: var(--accent); filter: brightness(1.08); }
+  button[aria-pressed="true"], button[aria-pressed="true"]:active:not(:disabled) {
+    background: var(--accent); color: #ffffff; border-color: transparent; padding: 5px 15px; transform: none;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  }
+  button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible {
+    outline: none; box-shadow: 0 0 0 3.5px var(--accent-soft), 0 0 0 1px var(--accent);
+  }
+  button:disabled { opacity: 0.45; text-shadow: none; }
+  button.compact, button.compact:active:not(:disabled) { padding: 2px 11px; }
+  .choices button, .choices button:active:not(:disabled), .choices button[aria-pressed="true"] { padding: 4px 13px; }
+  button.danger { color: #ff3b30; }
+  button.link-button, button.link-button:hover { border: none; background: none; box-shadow: none; color: var(--link); }
+
+  input, select, textarea { border: 1px solid var(--glass-line); border-radius: 8px; background: var(--field); box-shadow: none; color: var(--text); }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3.5px var(--accent-soft); }
+  input[type="checkbox"], input[type="radio"] { border: none; accent-color: var(--accent); }
+  fieldset { box-shadow: none; border: 1px solid var(--glass-line); border-radius: 14px; background: var(--field-alternate); }
+  legend { font-weight: 600; }
+
+  /* ---- Windows: liquid glass with the three window buttons and a centered title */
+
+  .window.app-window, .dialog, .window.login {
+    background: var(--glass); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-edge); border-radius: 26px; padding: 0; overflow: clip;
+    box-shadow: var(--glass-shine), var(--window-shadow);
+    & > .title-bar {
+      position: relative; background: transparent; color: var(--text); text-shadow: none;
+      font: 600 13px/1.2 var(--font); justify-content: center; min-height: 44px; padding: 6px 84px;
+      & .title { flex: 0 1 auto; text-align: center; }
+      & .title-icon { display: none; }
+      /* The three window buttons; close is the real button laid over the red one. */
+      &::before {
+        content: ""; position: absolute; left: 18px; top: 50%; transform: translateY(-50%); width: 52px; height: 12px;
+        background:
+          radial-gradient(circle at 6px 6px, #ff5f57 0 5.6px, transparent 6px),
+          radial-gradient(circle at 26px 6px, #febc2e 0 5.6px, transparent 6px),
+          radial-gradient(circle at 46px 6px, #28c840 0 5.6px, transparent 6px);
+      }
+    }
+  }
+  .window.app-window > .window-body { padding: 4px 14px 14px !important; background: transparent; }
+
+  .title-button, .title-button:active:not(:disabled) {
+    position: absolute; top: 50%; transform: translateY(-50%); right: 12px;
+    width: 26px; height: 26px; min-height: 0; min-width: 0; padding: 0; border-radius: 50%;
+    font: 600 12px/1 var(--font);
+  }
+  .title-button[aria-label="Close"], .title-button[aria-label="Close"]:active:not(:disabled) {
+    left: 18px; right: auto; width: 12px; height: 12px; border: none; background: #ff5f57; box-shadow: none; color: transparent;
+  }
+  .title-button[aria-label="Close"]:hover:not(:disabled) { color: rgba(80, 0, 0, 0.8); font-size: 9px; }
+
+  /* ---- Tabs: a floating glass segmented control */
+
+  .tabs {
+    align-self: center; width: fit-content; max-width: 100%; margin: 0 auto 14px; padding: 4px; gap: 2px;
+    background: var(--glass); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-edge); border-radius: 999px; box-shadow: var(--glass-shine), 0 6px 18px -10px rgba(10, 30, 70, 0.4);
+  }
+  .tab, .tab:active:not(:disabled) {
+    background: transparent; border: none; border-radius: 999px; box-shadow: none; top: 0; margin: 0; transform: none;
+    padding: 6px 15px; color: var(--text); font-weight: 500;
+  }
+  .tab:hover:not(:disabled) { background: var(--surface-light); }
+  .tab[aria-selected="true"], .tab[aria-selected="true"]:hover:not(:disabled) {
+    background: var(--glass-strong); color: var(--text); padding: 6px 15px; font-weight: 600;
+    box-shadow: var(--glass-shine), 0 2px 8px -2px rgba(0, 0, 0, 0.25);
+  }
+  .tab .badge { margin-left: 6px; border-radius: 999px; background: #ff3b30; color: #ffffff; box-shadow: none; }
+  .tab-panel { background: transparent; border: none; box-shadow: none; margin: 0; padding: 0; min-height: 0; }
+
+  /* ---- Sections: frosted glass panels */
+
+  .window:not(.app-window):not(.dialog):not(.login) {
+    background: var(--glass-strong); border: 1px solid var(--glass-edge); border-radius: 18px; padding: 0; overflow: clip;
+    box-shadow: var(--glass-shine), 0 8px 24px -16px rgba(10, 30, 70, 0.35);
+    & > .title-bar {
+      background: transparent; color: var(--text); text-shadow: none;
+      font: 700 14px/1.3 var(--font); padding: 11px 14px 6px; min-height: 0;
+      & .title-icon { display: none; }
+      & .title { white-space: normal; }
+      & .title-extra { font-weight: 600; font-size: 0.85em; color: var(--text-muted); background: var(--surface-light); border-radius: 999px; padding: 2px 8px; opacity: 1; }
+    }
+    & > .window-body { padding: 6px 14px 14px; }
+    & > .window-body.flush { padding: 0 0 6px; }
+  }
+
+  .patient-banner { background: var(--glass-strong); border: 1px solid var(--glass-edge); border-radius: 18px; box-shadow: var(--glass-shine); }
+  .patient-banner .patient-name { font-weight: 700; }
+  .patient-banner .clock { font-family: var(--font); font-variant-numeric: tabular-nums; color: var(--text-muted); }
+
+  .tile {
+    background: var(--glass-strong); border: 1px solid var(--glass-edge); border-radius: 18px; box-shadow: var(--glass-shine);
+    & .tile-label { text-transform: none; letter-spacing: 0; font-weight: 600; color: var(--text-muted); }
+    & .tile-value { font: 700 1.55em/1.1 var(--font); font-variant-numeric: tabular-nums; }
+  }
+  .tile.alert { background: var(--overdue-fill); }
+  .tile.warn { background: var(--due-fill); }
+
+  .progress { height: 6px; padding: 0; border: none; border-radius: 999px; box-shadow: none; background: var(--surface-light); overflow: hidden; }
+  .progress > div, .progress.over > div { background: var(--accent); border-radius: 999px; }
+
+  .dose-row .dose-time, .timeline-item .when, .status-chip, .visit-when { font-family: var(--font); font-variant-numeric: tabular-nums; }
+  .well { box-shadow: none; }
+  .dose-row { border-radius: 12px; box-shadow: none; border: 1px solid var(--glass-line); border-left-width: 4px; background: var(--field); }
+  .prn-card, .visit-row { border-radius: 12px; box-shadow: none; border: 1px solid var(--glass-line); background: var(--field); }
+  .quick-grid button { border-radius: 16px; }
+  .type-badge { border-radius: 6px; box-shadow: none; }
+  .warning-box { border-radius: 12px; box-shadow: none; }
+
+  .status-chip { border: none; border-radius: 999px; padding: 1px 9px; font-weight: 600; }
+  button.status-chip, button.status-chip:active:not(:disabled) {
+    border: none; border-radius: 999px; padding: 1px 9px; box-shadow: none; transform: none;
+    background: var(--upcoming-fill); color: var(--upcoming);
+  }
+  button.status-chip.given { background: var(--given-fill); color: var(--given); }
+  button.status-chip.due { background: var(--due-fill); color: var(--due); }
+  button.status-chip.overdue, button.status-chip.missed { background: var(--overdue-fill); color: var(--overdue); }
+  button.status-chip.refused, button.status-chip.held { background: var(--held-fill); color: var(--held); }
+
+  table.grid th { background: transparent; box-shadow: inset 0 -1px var(--glass-line); font-weight: 600; color: var(--text-muted); }
+  table.grid td { border-bottom: 1px solid var(--glass-line); }
+  table.grid tr:nth-child(even) td { background: var(--field-alternate); }
+  .day-heading { background: var(--surface-light); box-shadow: none; font-weight: 700; }
+
+  .calendar { background: transparent; box-shadow: none; gap: 4px; padding: 6px; }
+  .calendar-weekday { background: transparent; color: var(--text-muted); font-weight: 600; }
+  .calendar-day { border-radius: 10px; background: var(--field); box-shadow: inset 0 0 0 1px var(--glass-line); }
+  .calendar-day.today .calendar-date { border-radius: 999px; background: #ff3b30; color: #ffffff; }
+  .calendar-day.selected { box-shadow: inset 0 0 0 2px var(--accent); }
+  button.status-chip.calendar-visit, button.status-chip.calendar-visit:active:not(:disabled) { border-radius: 6px; padding: 1px 5px; }
+
+  /* ---- Dialogs, notification banners and suggestions */
+
+  .dialog-layer { background: rgba(0, 0, 0, 0.18); }
+  .dialog > .window-body, .dialog > .dialog-buttons { background: transparent; }
+  .dialog-buttons { border-top: 1px solid var(--glass-line); padding: 12px 16px; }
+  .toasts { top: 14px; right: 14px; bottom: auto; }
+  .toast {
+    background: var(--glass-strong); color: var(--text); border: 1px solid var(--glass-edge); border-radius: 20px;
+    backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: var(--glass-shine), 0 12px 30px -12px rgba(0, 0, 0, 0.4); padding: 10px 10px 10px 16px;
+  }
+  .toast.error { border-left: 4px solid #ff3b30; }
+  .suggestions {
+    border-radius: 12px; border: 1px solid var(--glass-edge); padding: 4px; background: var(--glass-strong);
+    backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); box-shadow: 0 12px 30px -12px rgba(0, 0, 0, 0.35);
+  }
+  .suggestions li { border-radius: 7px; border-bottom: none; }
+  .suggestions li[aria-selected="true"] { background: var(--accent); color: #ffffff; }
+  .suggestions li[aria-selected="true"] .muted { color: rgba(255, 255, 255, 0.85); }
+  .who-badge, .otc-badge { border-radius: 999px; box-shadow: none; }
+  .report { border-radius: 18px; box-shadow: 0 0 0 1px var(--glass-line); background: var(--field); }
+  .login-wrap { background: url("/images/tahoe-wallpaper.svg") center / cover, var(--desk); }
+
+  /* ---- Wide screens: the status bar as a Dock-like glass shelf */
+
+  @media (min-width: 901px) {
+    .app { padding-bottom: 76px; }
+    .status-bar {
+      position: fixed; left: 50%; transform: translateX(-50%); bottom: 10px; z-index: 30;
+      width: max-content; max-width: calc(100vw - 40px); min-height: 44px; padding: 6px 18px; gap: 18px; align-items: center;
+      background: var(--glass); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-edge); border-radius: 22px; box-shadow: var(--glass-shine), 0 10px 30px -12px rgba(0, 0, 0, 0.4);
+      color: var(--text); font-size: 12px;
+    }
+    .status-bar > * { box-shadow: none; padding: 0; }
+    .status-bar .grow { flex: 0 1 auto; }
+  }
+
+  /* ---- Phones */
+
+  @media (max-width: 600px) {
+    .window.app-window { border-radius: 0; border-left: none; border-right: none; }
+    .window.app-window > .window-body { padding: 4px 6px 8px !important; }
+    .tabs { flex-wrap: wrap; justify-content: center; border-radius: 20px; width: auto; }
+    .tab, .tab[aria-selected="true"] { flex: 1 0 30%; padding: 6px 6px; }
+    .toasts { left: 10px; right: 10px; }
+  }
+}

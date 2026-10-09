@@ -53,8 +53,8 @@ are far above what one household uses.
   each phone's, so both phones agree on which dose is which even if one is traveling.
 - Phone-friendly, installable to the home screen, a Night theme and a Large text option
   (per device), and keyboard shortcuts on computers (press `?`).
-- **Sixteen looks**, chosen per device in Settings → This device → Look (or with `?look=<key>`
-  in the address: `classic`, `win98`, `xp`, `vista`, `win7`, `win10`, `mac`, `aqua`, `ubuntu`,
+- **Seventeen looks**, chosen per device in Settings → This device → Look (or with `?look=<key>`
+  in the address: `classic`, `win98`, `xp`, `vista`, `win7`, `win10`, `mac`, `aqua`, `tahoe`, `ubuntu`,
   `yaru`, `kde`, `neon`, `studio`, `honey`, `lavender`, `gram`). The menu lists them in two
   groups, **OS-Like** (Classic through KDE Plasma) and **Other** (the rest):
   - **Classic** (Windows 95), the default;
@@ -75,6 +75,10 @@ are far above what one household uses.
   - **Mac OS X (Aqua)** (pinstripes, the red/yellow/green window buttons, gel buttons with a
     pulsing blue default, a segmented tab control, striped progress, forms that drop down
     as sheets, Growl-style notices) in Blue, Graphite or Brushed Metal;
+  - **macOS Tahoe** (Liquid Glass: translucent, deeply rounded windows over a lake-and-
+    mountains wallpaper, the red/yellow/green window buttons, capsule buttons, tabs as a
+    floating glass segmented control, glass notification banners, the status bar as a
+    Dock-like shelf on wide screens) in six macOS accent colors, with dark glass at night;
   - **Ubuntu (GNOME 2, before Unity)** in Human (brown-orange, 6.06–9.10), Ambiance or
     Radiance (10.04/10.10, window buttons on the left): bold indented GNOME-style sections,
     Clearlooks-style buttons, dark notification bubbles top right, and on wide screens the
@@ -267,8 +271,9 @@ Copy `.dev.vars.example` to `.dev.vars` for local development. The demo password
 | `public/js/time.js` | Household-time-zone dates and clock times; shared with the reminder job |
 | `public/js/push.js` | Turning reminders on and off on a device |
 | `public/js/looks.js` | The looks, their groups and their color schemes |
-| `public/css/win98.css`, `xp.css`, `vista.css`, `win7.css`, `win10.css`, `mac.css`, `ubuntu.css`, `yaru.css`, `kde.css`, `aqua.css`, `neon.css`, `studio.css`, `honey.css`, `lavender.css`, `gram.css` | The other fifteen looks |
-| `public/images/win10-wallpaper.svg` | The Windows 10 look's wallpaper (drawn for Care Chart) |
+| `public/css/win98.css`, `xp.css`, `vista.css`, `win7.css`, `win10.css`, `mac.css`, `ubuntu.css`, `yaru.css`, `kde.css`, `aqua.css`, `tahoe.css`, `neon.css`, `studio.css`, `honey.css`, `lavender.css`, `gram.css` | The other sixteen looks |
+| `public/images/win10-wallpaper.svg`, `tahoe-wallpaper.svg` | Wallpapers for the Windows 10 and macOS Tahoe looks (drawn for Care Chart) |
+| `design/logo-concepts/` | The logo concepts not used (kept for later), not served |
 | `public/images/logo.png`, `public/icon-192.png`, `public/icon-512.png` | The logo (a gradient cross with a heart, generated with GPT-5.4 Image 2) and the app icons made from it |
 | `public/fonts/` | Fonts for Studio, Honey and Lavender, with their licenses |
 | `public/js/medication-search.js` | Medication name suggestions from `public/data/medications.json` |

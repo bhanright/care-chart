@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+  <!-- A lake among mountains at first light, in the spirit of macOS Tahoe's wallpaper
+       (drawn for Care Chart, not the original image). -->
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2f6fd6"/>
+      <stop offset="0.45" stop-color="#8fbdf2"/>
+      <stop offset="0.62" stop-color="#f3d9c8"/>
+    </linearGradient>
+    <linearGradient id="far" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7c9fd6"/>
+      <stop offset="1" stop-color="#a9c1e6"/>
+    </linearGradient>
+    <linearGradient id="near" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3d5f9e"/>
+      <stop offset="1" stop-color="#5a7fbd"/>
+    </linearGradient>
+    <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8fb8ee"/>
+      <stop offset="1" stop-color="#1f4fa3"/>
+    </linearGradient>
+    <filter id="haze"><feGaussianBlur stdDeviation="3"/></filter>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#sky)"/>
+  <path d="M0 560 L180 430 L300 500 L470 360 L640 480 L820 390 L1010 470 L1180 350 L1360 450 L1600 380 L1600 640 L0 640 Z" fill="url(#far)" filter="url(#haze)"/>
+  <path d="M0 640 L140 540 L260 600 L420 500 L560 590 L700 530 L860 610 L1040 520 L1210 600 L1380 540 L1600 600 L1600 660 L0 660 Z" fill="url(#near)"/>
+  <rect y="650" width="1600" height="350" fill="url(#lake)"/>
+  <g fill="#ffffff" opacity="0.25">
+    <rect x="300" y="700" width="420" height="3" rx="1.5"/>
+    <rect x="900" y="740" width="360" height="3" rx="1.5"/>
+    <rect x="160" y="800" width="300" height="3" rx="1.5"/>
+    <rect x="1050" y="850" width="420" height="3" rx="1.5"/>
+  </g>
+</svg>

@@ -58,6 +58,16 @@ export const LOOKS = [
     schemes: [{ value: "blue", label: "Blue" }, { value: "graphite", label: "Graphite" }, { value: "brushed-metal", label: "Brushed Metal" }],
   },
   {
+    key: "tahoe",
+    label: "macOS Tahoe",
+    group: "os",
+    // macOS accent colors.
+    schemes: [
+      { value: "blue", label: "Blue" }, { value: "purple", label: "Purple" }, { value: "pink", label: "Pink" },
+      { value: "orange", label: "Orange" }, { value: "green", label: "Green" }, { value: "graphite", label: "Graphite" },
+    ],
+  },
+  {
     key: "ubuntu",
     label: "Ubuntu (GNOME 2, before Unity)",
     group: "os",
