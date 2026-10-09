@@ -379,7 +379,8 @@ button.status-chip:active:not(:disabled) { box-shadow: none; padding: 1px 6px; }
 .status-chip.overdue, .status-chip.missed { color: var(--overdue); background: var(--overdue-fill); }
 .status-chip.refused, .status-chip.held { color: var(--held); background: var(--held-fill); }
 
-.mar-table td.slots { display: flex; flex-wrap: wrap; gap: 4px; }
+/* The chips wrap inside a div: a flex td stops being a table cell and loses the row's height. */
+.mar-table .slot-chips { display: flex; flex-wrap: wrap; gap: 4px; }
 .mar-grid th.day { text-align: center; }
 .mar-grid td.cell { text-align: center; font-family: var(--mono); font-size: 0.85em; }
 .mar-grid td.cell.complete { color: var(--given); }

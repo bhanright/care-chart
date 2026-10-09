@@ -183,7 +183,7 @@ function renderTodaysDoses(context, now, today) {
         h("tbody", {}, rows.map((row) => h("tr", {},
           h("td", {}, h("b", {}, row.medication.name), " ", row.medication.strength,
             h("div", { class: "small muted" }, [row.medication.dose, row.medication.purpose].filter(Boolean).join(" · "))),
-          h("td", { class: "slots" }, row.slots.map((slot) => slotChip(context, slot))),
+          h("td", { class: "slots" }, h("div", { class: "slot-chips" }, row.slots.map((slot) => slotChip(context, slot)))),
         ))),
       )),
     extras.length ? h("p", { class: "small", style: { padding: "0 8px" } }, "Extra doses today: ",
