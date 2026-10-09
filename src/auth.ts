@@ -17,6 +17,12 @@ export interface Caregiver {
   id: number;
   name: string;
   initials: string;
+  removed_at?: string | null;
+}
+
+/** Tells every open screen to reload, the way chart writes do (see chart.ts). */
+async function bumpRevision(env: Env): Promise<void> {
+  await env.DB.prepare("UPDATE revision SET value = value + 1 WHERE id = 1").run();
 }
 
 // ---- Hashing
@@ -66,10 +72,19 @@ function checkPassword(password: string): void {
   }
 }
 
+/** Refuses a name another caregiver already has (names are how people sign in). */
+async function requireUnusedName(env: Env, name: string, exceptId = 0): Promise<void> {
+  const existing = await env.DB.prepare("SELECT id, removed_at FROM caregivers WHERE name = ? AND id != ?")
+    .bind(name, exceptId).first<{ id: number; removed_at: string | null }>();
+  if (!existing) return;
+  throw new HttpError(409, existing.removed_at
+    ? `A removed caregiver is named ${name}. Restore them, or choose a different name.`
+    : `There is already a caregiver named ${name}.`);
+}
+
 export async function createCaregiver(env: Env, name: string, password: string, initials = ""): Promise<Caregiver> {
   checkPassword(password);
-  const existing = await env.DB.prepare("SELECT id FROM caregivers WHERE name = ?").bind(name).first();
-  if (existing) throw new HttpError(409, `There is already a caregiver named ${name}.`);
+  await requireUnusedName(env, name);
   const salt = crypto.getRandomValues(new Uint8Array(16));
   const hash = await hashPassword(password, salt);
   const finalInitials = (initials || initialsOf(name)).slice(0, 4).toUpperCase();
@@ -113,7 +128,7 @@ export async function currentCaregiver(request: Request, env: Env): Promise<Care
   return await env.DB.prepare(
     `SELECT caregivers.id, caregivers.name, caregivers.initials
        FROM sessions JOIN caregivers ON caregivers.id = sessions.caregiver_id
-      WHERE sessions.token_hash = ? AND sessions.expires_at > ?`,
+      WHERE sessions.token_hash = ? AND sessions.expires_at > ? AND caregivers.removed_at IS NULL`,
   ).bind(await sha256(token), nowIso()).first<Caregiver>();
 }
 
@@ -197,7 +212,7 @@ export async function handlePublicAuthRoute(request: Request, url: URL, env: Env
     const name = text(body, "name", 60, true);
     const password = text(body, "password", 200, true);
     const account = await env.DB.prepare(
-      "SELECT id, name, initials, password_hash, password_salt FROM caregivers WHERE name = ?",
+      "SELECT id, name, initials, password_hash, password_salt FROM caregivers WHERE name = ? AND removed_at IS NULL",
     ).bind(name).first<Caregiver & { password_hash: string; password_salt: string }>();
 
     // Hash even when the name is unknown, so timing does not reveal which names exist.
@@ -227,7 +242,7 @@ export async function handleCaregiverRoute(request: Request, url: URL, env: Env,
   const method = request.method;
 
   if (path === "/api/caregivers" && method === "GET") {
-    const { results } = await env.DB.prepare("SELECT id, name, initials FROM caregivers ORDER BY name").all<Caregiver>();
+    const { results } = await env.DB.prepare("SELECT id, name, initials, removed_at FROM caregivers ORDER BY name").all<Caregiver>();
     return json({ caregivers: results });
   }
 
@@ -250,6 +265,49 @@ export async function handleCaregiverRoute(request: Request, url: URL, env: Env,
     return json({ ok: true });
   }
 
+  // Changes your own name and initials. The name is what you sign in with; past records
+  // are linked to the account, so they show the new name.
+  if (path === "/api/me/name" && method === "PUT") {
+    const body = await readJson(request);
+    const name = text(body, "name", 60, true);
+    await requireUnusedName(env, name, me.id);
+    const initials = (text(body, "initials", 4) || initialsOf(name)).toUpperCase();
+    const caregiver = await env.DB.prepare("UPDATE caregivers SET name = ?, initials = ? WHERE id = ? RETURNING id, name, initials")
+      .bind(name, initials, me.id).first<Caregiver>();
+    await bumpRevision(env);
+    return json({ caregiver });
+  }
+
+  // Removes another caregiver: signs them out everywhere, stops their reminders and blocks
+  // sign-in. Nothing is deleted, so their past records still name them. The caregiver
+  // doing it confirms with their own password.
+  const removeMatch = /^\/api\/caregivers\/(\d+)\/(remove|restore)$/.exec(path);
+  if (removeMatch && method === "POST") {
+    const otherId = Number(removeMatch[1]);
+    const action = removeMatch[2];
+    if (otherId === me.id) throw new HttpError(400, "You cannot remove yourself. Another caregiver can.");
+    const other = await env.DB.prepare("SELECT id, name, removed_at FROM caregivers WHERE id = ?")
+      .bind(otherId).first<{ id: number; name: string; removed_at: string | null }>();
+    if (!other) throw new HttpError(404, "No such caregiver.");
+    if (action === "remove") {
+      if (other.removed_at) throw new HttpError(409, `${other.name} was already removed.`);
+      const body = await readJson(request);
+      if (!(await passwordMatches(env, me.id, text(body, "yourPassword", 200, true)))) {
+        throw new HttpError(403, "Your password is not right.");
+      }
+      await env.DB.batch([
+        env.DB.prepare("UPDATE caregivers SET removed_at = ?, removed_by = ? WHERE id = ?").bind(nowIso(), me.id, otherId),
+        env.DB.prepare("DELETE FROM sessions WHERE caregiver_id = ?").bind(otherId),
+        env.DB.prepare("DELETE FROM push_subscriptions WHERE caregiver_id = ?").bind(otherId),
+      ]);
+    } else {
+      if (!other.removed_at) throw new HttpError(409, `${other.name} is not removed.`);
+      await env.DB.prepare("UPDATE caregivers SET removed_at = NULL, removed_by = NULL WHERE id = ?").bind(otherId).run();
+    }
+    await bumpRevision(env);
+    return json({ ok: true });
+  }
+
   if (path === "/api/me/sign-out-everywhere" && method === "POST") {
     await endSessions(env, me.id, request);
     return json({ ok: true });
@@ -265,7 +323,7 @@ export async function handleCaregiverRoute(request: Request, url: URL, env: Env,
     if (!(await passwordMatches(env, me.id, text(body, "yourPassword", 200, true)))) {
       throw new HttpError(403, "Your password is not right.");
     }
-    const other = await env.DB.prepare("SELECT id FROM caregivers WHERE id = ?").bind(otherId).first();
+    const other = await env.DB.prepare("SELECT id FROM caregivers WHERE id = ? AND removed_at IS NULL").bind(otherId).first();
     if (!other) throw new HttpError(404, "No such caregiver.");
     await setPassword(env, otherId, text(body, "newPassword", 200, true));
     await endSessions(env, otherId, null);

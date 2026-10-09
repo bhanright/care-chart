@@ -347,7 +347,7 @@ export async function handleChartRoute(request: Request, url: URL, env: Env, me:
       env.DB.prepare("SELECT * FROM entries WHERE occurred_at >= ? AND occurred_at < ? ORDER BY occurred_at")
         .bind(from, to).all(),
       env.DB.prepare("SELECT key, value, updated_at FROM settings").all<{ key: string; value: string; updated_at: string }>(),
-      env.DB.prepare("SELECT id, name, initials FROM caregivers ORDER BY name").all(),
+      env.DB.prepare("SELECT id, name, initials, removed_at FROM caregivers ORDER BY name").all(),
       currentRevision(env),
     ]);
     return json({

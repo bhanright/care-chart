@@ -109,6 +109,33 @@ export function renderSettings(context) {
       toast(problem.message, { error: true });
     }
   });
+  // Your name and initials: the name is what you sign in with.
+  const myName = h("input", { required: true, maxlength: "60", value: context.me.name, autocomplete: "off", name: "my-name" });
+  const myInitials = h("input", { maxlength: "4", value: context.me.initials, style: { width: "80px" }, name: "my-initials" });
+  const changeName = guardSave(async () => {
+    try {
+      const { caregiver } = await api("/api/me/name", { method: "PUT", body: { name: myName.value, initials: myInitials.value } });
+      // The sign-in screen offers the last name used; keep it in step with the new one.
+      try { localStorage.setItem("care-chart-name", caregiver.name); } catch { /* optional */ }
+      await context.reload();
+      toast(`You're now ${caregiver.name}. Sign in with that name from now on.`);
+    } catch (problem) {
+      toast(problem.message, { error: true });
+    }
+  });
+
+  const activeCaregivers = context.caregivers.filter((caregiver) => !caregiver.removed_at);
+  const removedCaregivers = context.caregivers.filter((caregiver) => caregiver.removed_at);
+  const restoreCaregiver = async (caregiver) => {
+    try {
+      await api(`/api/caregivers/${caregiver.id}/restore`, { method: "POST", body: {} });
+      await context.reload();
+      toast(`${caregiver.name} is a caregiver again. Their old password works; reset it if needed.`);
+    } catch (problem) {
+      toast(problem.message, { error: true });
+    }
+  };
+
   const signOutEverywhere = async () => {
     try {
       await api("/api/me/sign-out-everywhere", { method: "POST", body: {} });
@@ -164,11 +191,20 @@ export function renderSettings(context) {
       windowBox({ title: "Caregivers" },
         h("div", { class: "well" }, h("table", { class: "grid" },
           h("thead", {}, h("tr", {}, h("th", {}, "Name"), h("th", {}, "Initials"), h("th", {}, ""))),
-          h("tbody", {}, context.caregivers.map((caregiver) => h("tr", {},
+          h("tbody", {}, activeCaregivers.map((caregiver) => h("tr", {},
             h("td", {}, caregiver.name, caregiver.id === context.me.id ? " (you)" : ""),
             h("td", {}, caregiver.initials),
             h("td", {}, caregiver.id === context.me.id ? null
-              : h("button", { class: "compact", onclick: () => openResetPassword(caregiver) }, "Reset password…"))))))),
+              : h("div", { class: "row", style: { gap: "4px" } },
+                h("button", { class: "compact", onclick: () => openResetPassword(caregiver) }, "Reset password…"),
+                h("button", { class: "compact", onclick: () => openRemoveCaregiver(context, caregiver) }, "Remove…")))))))),
+        removedCaregivers.length ? h("details", { style: { marginTop: "8px" } },
+          h("summary", { style: { cursor: "pointer" } }, `Removed caregivers (${removedCaregivers.length})`),
+          h("div", { class: "well", style: { marginTop: "6px" } }, h("table", { class: "grid" }, h("tbody", {},
+            removedCaregivers.map((caregiver) => h("tr", {},
+              h("td", {}, caregiver.name),
+              h("td", { class: "small muted" }, "Can't sign in; still named on their past records"),
+              h("td", {}, h("button", { class: "compact", onclick: () => restoreCaregiver(caregiver) }, "Restore")))))))) : null,
         form(addCaregiver,
           h("p", { class: "small", style: { marginBottom: 0 } }, h("b", {}, "Add a caregiver"), " — anyone added can see and edit the whole chart."),
           h("div", { class: "field-grid" },
@@ -177,6 +213,12 @@ export function renderSettings(context) {
         ),
       ),
       windowBox({ title: `Your account: ${context.me.name}` },
+        form(changeName,
+          h("div", { class: "field-grid" }, field("Your name (you sign in with it)", myName), field("Initials", myInitials)),
+          h("div", { class: "row", style: { marginTop: "8px", marginBottom: "12px" } },
+            h("button", { type: "submit" }, "Change name"),
+            h("span", { class: "small muted" }, "Your past entries show the new name.")),
+        ),
         form(changePassword,
           h("div", { class: "field-grid" }, field("Current password", currentPassword), field("New password", nextPassword)),
           h("div", { class: "row", style: { marginTop: "8px" } },
@@ -189,6 +231,40 @@ export function renderSettings(context) {
       ),
     ),
   );
+}
+
+/**
+ * Removes a caregiver: they are signed out everywhere, their reminders stop and they can't
+ * sign in. Nothing is deleted, and they can be restored.
+ */
+function openRemoveCaregiver(context, caregiver) {
+  let yourPassword, error;
+  const save = guardSave(async (close) => {
+    error.textContent = "";
+    try {
+      await api(`/api/caregivers/${caregiver.id}/remove`, { method: "POST", body: { yourPassword: yourPassword.value } });
+      close(true);
+      await context.reload();
+      toast(`${caregiver.name} was removed.`);
+    } catch (problem) {
+      error.textContent = problem.message;
+    }
+  });
+  return openDialog({
+    title: `Remove caregiver: ${caregiver.name}`,
+    size: "narrow",
+    build: (close) => h("form", { onsubmit: (event) => { event.preventDefault(); save(close); } },
+      h("p", { style: { marginTop: 0 } }, `${caregiver.name} will be signed out on every device, stop getting reminders, and won't be able to sign in.`),
+      h("p", {}, "Nothing they recorded is changed: their entries stay on the chart with their name. You can restore them later from this screen."),
+      field("Your own password, to confirm", yourPassword = h("input", { type: "password", required: true, autocomplete: "current-password", name: "remove-your-password" })),
+      error = h("p", { class: "error-text small", role: "alert" }),
+      h("button", { type: "submit", hidden: true }),
+    ),
+    buttons: (close) => [
+      h("button", { class: "default danger", onclick: () => save(close) }, `Remove ${caregiver.name}`),
+      h("button", { onclick: () => close(false) }, "Cancel"),
+    ],
+  });
 }
 
 /** Lets one caregiver set a new password for another who forgot theirs. */

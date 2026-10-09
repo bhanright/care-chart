@@ -92,7 +92,12 @@ const context = {
   reload: () => loadChart(),
   rerender: (options) => render(options),
   medicationById: (id) => state.chart.medicationsNormalized.find((medication) => medication.id === id) ?? null,
-  caregiverName: (id) => state.chart.caregivers.find((caregiver) => caregiver.id === id)?.name ?? "—",
+  // A removed caregiver's name stays on their past records, marked as removed.
+  caregiverName: (id) => {
+    const caregiver = state.chart.caregivers.find((item) => item.id === id);
+    if (!caregiver) return "—";
+    return caregiver.removed_at ? `${caregiver.name} (removed)` : caregiver.name;
+  },
   caregiverInitials: (id) => state.chart.caregivers.find((caregiver) => caregiver.id === id)?.initials ?? "",
   setDevice: (changes) => {
     device = { ...device, ...changes };
@@ -286,7 +291,7 @@ function renderGettingStarted() {
   const steps = [
     { done: Boolean(context.patient.name), text: "Fill in the patient profile, especially allergies.", tab: "settings" },
     { done: context.medications.length > 0, text: "Add her medications, scheduled and as-needed.", tab: "medications" },
-    { done: context.caregivers.length > 1, text: "Add the other caregiver's account.", tab: "settings" },
+    { done: context.caregivers.filter((caregiver) => !caregiver.removed_at).length > 1, text: "Add the other caregiver's account.", tab: "settings" },
     { done: "Notification" in window && Notification.permission !== "default", text: "Turn on dose reminders on each phone or computer.", tab: "settings" },
   ];
   if (steps.every((step) => step.done)) return null;
