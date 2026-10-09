@@ -40,7 +40,7 @@ export function renderToday(context) {
         renderAsNeeded(context, now),
       ),
       h("div", { class: "column" },
-        renderQuickRecord(context),
+        context.can("record") ? renderQuickRecord(context) : null,
         renderNotable(context, now),
         windowBox({ title: "Today's chart", bodyClass: "flush", className: "phone-order-6" },
           h("div", { class: "well", style: { maxHeight: "520px" } },
@@ -121,13 +121,14 @@ function renderVisitsToday(context, now, today) {
     shown.length
       ? h("div", { class: "stack" }, shown.map((visit) => visitRow(context, visit, { showDay: !todays.includes(visit) })))
       : h("p", { class: "muted", style: { margin: 0 } }, "No visits today."),
-    h("div", { style: { marginTop: "8px" } },
-      h("button", { class: "compact", onclick: () => openVisitForm(context, null, { day: today }) }, "+ Add a visit")));
+    context.can("full") ? h("div", { style: { marginTop: "8px" } },
+      h("button", { class: "compact", onclick: () => openVisitForm(context, null, { day: today }) }, "+ Add a visit")) : null);
 }
 
 // ---- Scheduled doses
 
 function slotButtons(context, slot) {
+  if (!context.can("record")) return [];
   return [
     h("button", { class: "compact default", onclick: (event) => quickGive(context, slot, event.currentTarget), title: "Record as given now, with the usual dose" }, "✓ Given"),
     h("button", { class: "compact", onclick: () => openDoseForm(context, { medication: slot.medication, slot }) }, "More…"),
@@ -196,6 +197,9 @@ function slotChip(context, slot) {
   const label = record
     ? `${formatClockText(slot.clockTime)} ${STATUS_WORDS[slot.state]} ${formatClock(record.given_at)} ${context.caregiverInitials(record.recorded_by)}${slot.timing && slot.timing !== "on time" ? ` (${slot.timing})` : ""}`
     : `${formatClockText(slot.clockTime)} ${STATUS_WORDS[slot.state]}`;
+  if (!context.can("record")) {
+    return h("span", { class: `status-chip ${slot.state}` }, record?.status === "given" ? "✓ " : "", label);
+  }
   return h("button", {
     class: `status-chip ${slot.state}`,
     title: record ? "Open this dose record" : "Record this dose",
@@ -223,7 +227,7 @@ function renderAsNeeded(context, now) {
           h("div", { class: "spacer" },
             h("div", { class: "prn-name" }, medication.name, " ", h("span", { class: "small" }, medication.strength)),
             h("div", { class: "small muted" }, [medication.dose, medication.purpose ? `for ${medication.purpose}` : null].filter(Boolean).join(" · "))),
-          h("button", { class: status.canGiveNow ? "default" : "", onclick: () => openDoseForm(context, { medication }) }, "Give dose…"),
+          context.can("record") ? h("button", { class: status.canGiveNow ? "default" : "", onclick: () => openDoseForm(context, { medication }) }, "Give dose…") : null,
         ),
         h("div", { class: "prn-facts" },
           h("div", {}, "Last dose: ", last ? h("b", {}, `${formatClock(last.given_at)} (${relativeTime(last.given_at, now)})`) : h("b", {}, "none recorded")),
@@ -238,7 +242,7 @@ function renderAsNeeded(context, now) {
           progressBar(effectFraction, "Time left in effect")) : null,
         status.followUpDue ? h("div", { class: "follow-up" },
           h("span", { class: "spacer" }, h("b", {}, "Follow-up due: "), `did the ${formatClock(status.followUpDue.given_at)} dose help?`),
-          h("button", { class: "compact", onclick: () => openEffectForm(context, status.followUpDue, medication) }, "Record effect")) : null,
+          context.can("record") ? h("button", { class: "compact", onclick: () => openEffectForm(context, status.followUpDue, medication) }, "Record effect") : null) : null,
       );
     }));
 }

@@ -2,6 +2,7 @@
 // planned for a time, then marked with what happened (completed, care declined,
 // cancelled, no-show). Weekly visits can be created as a repeating series in one step.
 
+import { hasAccess } from "./access";
 import type { Caregiver } from "./auth";
 import { requireUnchanged, write } from "./chart";
 import { HttpError, json, nowIso, oneOf, optionalNumber, readJson, text, timestamp, type Env } from "./http";
@@ -85,6 +86,14 @@ export async function handleVisitRoute(request: Request, url: URL, env: Env, me:
     const body = await readJson(request);
     await requireUnchanged(env, body, existing);
     const fields = visitFields(body);
+    // Caregivers who record care (without full access) record what happened at a visit;
+    // the plan itself (who, when, how long) stays as it was.
+    if (!hasAccess(me, "full")) {
+      const row = await write(env, env.DB.prepare(
+        "UPDATE visits SET status = ?, outcome_note = ?, updated_by = ?, updated_at = ? WHERE id = ? RETURNING *",
+      ).bind(fields.status, fields.outcome_note, me.id, nowIso(), id));
+      return json({ visit: row });
+    }
     const row = await write(env, env.DB.prepare(
       `UPDATE visits SET scheduled_at = ?, duration_minutes = ?, role = ?, visitor_name = ?, agency = ?, status = ?,
          outcome_note = ?, note = ?, updated_by = ?, updated_at = ? WHERE id = ? RETURNING *`,

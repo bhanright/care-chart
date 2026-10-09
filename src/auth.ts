@@ -4,7 +4,8 @@
 // HttpOnly cookie; the database holds only its SHA-256, so a leaked database cannot be
 // used to sign in.
 
-import { HttpError, json, nowIso, readJson, text, type Env } from "./http";
+import { ACCESS_LEVELS, type Access } from "./access";
+import { HttpError, json, nowIso, oneOf, readJson, text, type Env } from "./http";
 
 const SESSION_COOKIE = "care_chart_session";
 const SESSION_DAYS = 60;
@@ -17,6 +18,7 @@ export interface Caregiver {
   id: number;
   name: string;
   initials: string;
+  access: Access;
   removed_at?: string | null;
 }
 
@@ -82,16 +84,16 @@ async function requireUnusedName(env: Env, name: string, exceptId = 0): Promise<
     : `There is already a caregiver named ${name}.`);
 }
 
-export async function createCaregiver(env: Env, name: string, password: string, initials = ""): Promise<Caregiver> {
+export async function createCaregiver(env: Env, name: string, password: string, initials = "", access: Access = "full"): Promise<Caregiver> {
   checkPassword(password);
   await requireUnusedName(env, name);
   const salt = crypto.getRandomValues(new Uint8Array(16));
   const hash = await hashPassword(password, salt);
   const finalInitials = (initials || initialsOf(name)).slice(0, 4).toUpperCase();
   const row = await env.DB.prepare(
-    `INSERT INTO caregivers (name, initials, password_hash, password_salt, created_at)
-     VALUES (?, ?, ?, ?, ?) RETURNING id, name, initials`,
-  ).bind(name, finalInitials, hash, toBase64(salt), nowIso()).first<Caregiver>();
+    `INSERT INTO caregivers (name, initials, password_hash, password_salt, created_at, access)
+     VALUES (?, ?, ?, ?, ?, ?) RETURNING id, name, initials, access`,
+  ).bind(name, finalInitials, hash, toBase64(salt), nowIso(), access).first<Caregiver>();
   return row!;
 }
 
@@ -126,7 +128,7 @@ export async function currentCaregiver(request: Request, env: Env): Promise<Care
   const token = cookieValue(request, SESSION_COOKIE);
   if (!token) return null;
   return await env.DB.prepare(
-    `SELECT caregivers.id, caregivers.name, caregivers.initials
+    `SELECT caregivers.id, caregivers.name, caregivers.initials, caregivers.access
        FROM sessions JOIN caregivers ON caregivers.id = sessions.caregiver_id
       WHERE sessions.token_hash = ? AND sessions.expires_at > ? AND caregivers.removed_at IS NULL`,
   ).bind(await sha256(token), nowIso()).first<Caregiver>();
@@ -212,7 +214,7 @@ export async function handlePublicAuthRoute(request: Request, url: URL, env: Env
     const name = text(body, "name", 60, true);
     const password = text(body, "password", 200, true);
     const account = await env.DB.prepare(
-      "SELECT id, name, initials, password_hash, password_salt FROM caregivers WHERE name = ? AND removed_at IS NULL",
+      "SELECT id, name, initials, access, password_hash, password_salt FROM caregivers WHERE name = ? AND removed_at IS NULL",
     ).bind(name).first<Caregiver & { password_hash: string; password_salt: string }>();
 
     // Hash even when the name is unknown, so timing does not reveal which names exist.
@@ -222,7 +224,7 @@ export async function handlePublicAuthRoute(request: Request, url: URL, env: Env
       throw new HttpError(401, "Wrong name or password.");
     }
     const token = await startSession(env, account.id);
-    const caregiver: Caregiver = { id: account.id, name: account.name, initials: account.initials };
+    const caregiver: Caregiver = { id: account.id, name: account.name, initials: account.initials, access: account.access };
     return json({ caregiver }, 200, { "Set-Cookie": sessionCookie(token, SESSION_DAYS * 86400) });
   }
 
@@ -242,7 +244,7 @@ export async function handleCaregiverRoute(request: Request, url: URL, env: Env,
   const method = request.method;
 
   if (path === "/api/caregivers" && method === "GET") {
-    const { results } = await env.DB.prepare("SELECT id, name, initials, removed_at FROM caregivers ORDER BY name").all<Caregiver>();
+    const { results } = await env.DB.prepare("SELECT id, name, initials, access, removed_at FROM caregivers ORDER BY name").all<Caregiver>();
     return json({ caregivers: results });
   }
 
@@ -250,6 +252,7 @@ export async function handleCaregiverRoute(request: Request, url: URL, env: Env,
     const body = await readJson(request);
     const caregiver = await createCaregiver(
       env, text(body, "name", 60, true), text(body, "password", 200, true), text(body, "initials", 4),
+      oneOf(body, "access", ACCESS_LEVELS, "full"),
     );
     return json({ caregiver });
   }
@@ -272,7 +275,7 @@ export async function handleCaregiverRoute(request: Request, url: URL, env: Env,
     const name = text(body, "name", 60, true);
     await requireUnusedName(env, name, me.id);
     const initials = (text(body, "initials", 4) || initialsOf(name)).toUpperCase();
-    const caregiver = await env.DB.prepare("UPDATE caregivers SET name = ?, initials = ? WHERE id = ? RETURNING id, name, initials")
+    const caregiver = await env.DB.prepare("UPDATE caregivers SET name = ?, initials = ? WHERE id = ? RETURNING id, name, initials, access")
       .bind(name, initials, me.id).first<Caregiver>();
     await bumpRevision(env);
     return json({ caregiver });
@@ -304,6 +307,21 @@ export async function handleCaregiverRoute(request: Request, url: URL, env: Env,
       if (!other.removed_at) throw new HttpError(409, `${other.name} is not removed.`);
       await env.DB.prepare("UPDATE caregivers SET removed_at = NULL, removed_by = NULL WHERE id = ?").bind(otherId).run();
     }
+    await bumpRevision(env);
+    return json({ ok: true });
+  }
+
+  // Changes how much another caregiver may change. Nobody changes their own access, so the
+  // caregiver doing it (who has full access) always remains, and the chart can never be
+  // left without someone who can manage it.
+  const accessMatch = /^\/api\/caregivers\/(\d+)\/access$/.exec(path);
+  if (accessMatch && method === "PUT") {
+    const otherId = Number(accessMatch[1]);
+    if (otherId === me.id) throw new HttpError(400, "You cannot change your own access. Another caregiver with full access can.");
+    const body = await readJson(request);
+    const other = await env.DB.prepare("UPDATE caregivers SET access = ? WHERE id = ? RETURNING id")
+      .bind(oneOf(body, "access", ACCESS_LEVELS), otherId).first();
+    if (!other) throw new HttpError(404, "No such caregiver.");
     await bumpRevision(env);
     return json({ ok: true });
   }

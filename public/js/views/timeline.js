@@ -76,7 +76,7 @@ function renderItem(item, context) {
         record.notable ? h("span", { class: "notable-flag" }, "  ● Notable") : null),
       record.note ? h("div", { class: "note" }, record.note) : null,
     ];
-    if (!voided) {
+    if (!voided && context.can("record")) {
       actions = [
         h("button", { class: "compact", onclick: () => openEntryForm(context, record.type, record) }, "Edit"),
         h("button", { class: "compact", title: "Mark entered in error", onclick: () => voidRecord(context, "entry", record.id) }, "Error"),
@@ -92,7 +92,7 @@ function renderItem(item, context) {
       record.safety_override ? h("div", { class: "small", style: { color: "var(--overdue)" } }, "Given outside limits — ", record.safety_override) : null,
       record.effect ? h("div", { class: "small" }, `Follow-up: ${EFFECT_WORDS[record.effect]}`, record.effect_note ? ` — ${record.effect_note}` : "") : null,
     ];
-    if (!voided && medication) {
+    if (!voided && medication && context.can("record")) {
       actions = [
         h("button", { class: "compact", onclick: () => openDoseForm(context, { medication, existing: record }) }, "Edit"),
         medication.kind === "as_needed" && record.status === "given"

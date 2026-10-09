@@ -1,5 +1,6 @@
 // Care Chart Worker: serves the web app from public/ and the chart API under /api/.
 
+import { accessNeeded, requireAccess } from "./access";
 import { currentCaregiver, handleCaregiverRoute, handlePublicAuthRoute } from "./auth";
 import { handleChartRoute } from "./chart";
 import { HttpError, json, type Env } from "./http";
@@ -23,6 +24,7 @@ export default {
 
       const me = await currentCaregiver(request, env);
       if (!me) return json({ error: "Please sign in." }, 401);
+      requireAccess(me, accessNeeded(request.method, url.pathname));
 
       const response = (await handleCaregiverRoute(request, url, env, me))
         ?? (await handleReminderRoute(request, url, env, me))

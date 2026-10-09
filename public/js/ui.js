@@ -80,7 +80,23 @@ let openDialogs = 0;
  * Opens a modal window. `build(close)` returns the body; `buttons(close)` returns the
  * button row. Returns a promise for the value passed to close(). Escape closes with null.
  */
-export function openDialog({ title, size = "", build, buttons, icon = chartIcon() }) {
+/**
+ * Disables every field and button inside a container (or hides the buttons), for
+ * caregivers who may look but not change it.
+ */
+export function lockControls(container, { hideButtons = false } = {}) {
+  for (const element of container.querySelectorAll("input, select, textarea, button")) {
+    if (hideButtons && element.tagName === "BUTTON") element.hidden = true;
+    else element.disabled = true;
+  }
+  return container;
+}
+
+/**
+ * A dialog. With readOnly, every field is locked and the only button is Close, for
+ * caregivers whose access lets them read the record but not change it.
+ */
+export function openDialog({ title, size = "", build, buttons, icon = chartIcon(), readOnly = false }) {
   return new Promise((resolve) => {
     const previouslyFocused = document.activeElement;
     let layer;
@@ -115,6 +131,13 @@ export function openDialog({ title, size = "", build, buttons, icon = chartIcon(
       }
     };
     const body = build(close);
+    if (readOnly) {
+      lockControls(body);
+      buttons = (closeDialog) => [
+        h("span", { class: "left small muted" }, "View only: your access does not allow changes here."),
+        h("button", { class: "default", onclick: () => closeDialog(null) }, "Close"),
+      ];
+    }
     const dialog = h("div", { class: `window dialog ${size}`, role: "dialog", "aria-modal": "true", "aria-label": title },
       h("div", { class: "title-bar" },
         icon,

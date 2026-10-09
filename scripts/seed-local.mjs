@@ -37,7 +37,9 @@ const pick = (list) => list[Math.floor(random() * list.length)];
 const status = await (await fetch(`${BASE_URL}/api/setup-status`)).json();
 if (status.needsSetup) {
   await call("/api/setup", { setupCode: SETUP_CODE, name: "Demo Caregiver", password: DEMO_PASSWORD });
-  await call("/api/caregivers", { name: "Second Caregiver", initials: "SC", password: DEMO_PASSWORD });
+  // One caregiver at each access level (see src/access.ts); all share the demo password.
+  await call("/api/caregivers", { name: "Second Caregiver", initials: "SC", password: DEMO_PASSWORD, access: "record" });
+  await call("/api/caregivers", { name: "View Only Demo", initials: "VO", password: DEMO_PASSWORD, access: "view" });
 } else {
   await call("/api/login", { name: "Demo Caregiver", password: DEMO_PASSWORD });
 }

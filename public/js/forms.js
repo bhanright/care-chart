@@ -532,8 +532,9 @@ export function openMedicationForm(context, existing = null) {
   };
 
   const dialog = openDialog({
-    title: existing ? `Edit medication: ${existing.name}` : "Add medication",
+    title: existing ? `${context.can("full") ? "Edit medication" : "Medication"}: ${existing.name}` : "Add medication",
     size: "wide",
+    readOnly: !context.can("full"),
     build: (close) => h("form", { onsubmit: (event) => { event.preventDefault(); save(close); } },
       h("div", { class: "field-grid" },
         nameField(),

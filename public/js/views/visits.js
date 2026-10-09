@@ -85,12 +85,12 @@ export function visitRow(context, visit, { showDay = false } = {}) {
     ),
     visit.voided_at ? null : h("div", { class: "visit-actions no-print" },
       // Outcome buttons appear from the visit's day on; before that, a future visit is only edited.
-      visit.status === "scheduled" && dateKey(new Date(visit.scheduled_at)) <= dateKey(now)
+      visit.status === "scheduled" && dateKey(new Date(visit.scheduled_at)) <= dateKey(now) && context.can("record")
         ? [
           h("button", { class: "compact default", onclick: () => openVisitForm(context, visit, { status: "completed" }) }, "✓ Completed"),
           h("button", { class: "compact", onclick: () => openVisitForm(context, visit, { focusOutcome: true }) }, "Other outcome…"),
         ]
-        : h("button", { class: "compact", onclick: () => openVisitForm(context, visit) }, "Edit")),
+        : h("button", { class: "compact", onclick: () => openVisitForm(context, visit) }, context.can("full") ? "Edit" : "Open")),
   );
 }
 
@@ -155,15 +155,15 @@ export function renderVisits(context) {
         h("button", { class: "compact", onclick: () => goToMonth(1), "aria-label": "Next month" }, "▶"),
         h("button", { class: "compact", onclick: () => { visitsState.month = today.slice(0, 7); visitsState.selectedDay = today; context.reload(); } }, "Today"),
         h("span", { class: "spacer" }),
-        h("button", { class: "default", onclick: () => openVisitForm(context, null, { day: visitsState.selectedDay < today ? today : visitsState.selectedDay }) }, "+ Add visit"),
+        context.can("full") ? h("button", { class: "default", onclick: () => openVisitForm(context, null, { day: visitsState.selectedDay < today ? today : visitsState.selectedDay }) }, "+ Add visit") : null,
       ),
       windowBox({ title: "Care team calendar", bodyClass: "flush" }, calendar),
       windowBox({ title: formatDay(visitsState.selectedDay), extra: `${selectedVisits.filter((visit) => !visit.voided_at).length} visits` },
         selectedVisits.length
           ? h("div", { class: "stack" }, selectedVisits.map((visit) => visitRow(context, visit)))
           : h("p", { class: "muted", style: { margin: 0 } }, "No visits on this day."),
-        h("div", { style: { marginTop: "10px" } },
-          h("button", { class: "compact", onclick: () => openVisitForm(context, null, { day: visitsState.selectedDay }) }, "+ Add a visit on this day"))),
+        context.can("full") ? h("div", { style: { marginTop: "10px" } },
+          h("button", { class: "compact", onclick: () => openVisitForm(context, null, { day: visitsState.selectedDay }) }, "+ Add a visit on this day")) : null),
     ),
     h("div", { class: "column" },
       waiting.length ? windowBox({ title: "What happened?", extra: `${waiting.length}` },
@@ -182,6 +182,9 @@ export function renderVisits(context) {
  * options.status presets the outcome; options.focusOutcome opens straight to it.
  */
 export function openVisitForm(context, existing = null, options = {}) {
+  // Full access plans visits; recording care records what happened; view only reads.
+  const canPlan = context.can("full");
+  const canRecordOutcome = context.can("record");
   const pastVisits = context.data.visits ?? [];
   const known = (key) => [...new Set(pastVisits.map((visit) => visit[key]).filter(Boolean))];
   let role = existing?.role ?? pastVisits.at(-1)?.role ?? "Hospice aide";
@@ -286,9 +289,10 @@ export function openVisitForm(context, existing = null, options = {}) {
   const dialog = openDialog({
     title: existing ? `Visit: ${existing.role}` : "Add a care team visit",
     size: "wide",
+    readOnly: !canRecordOutcome,
     build: (close) => h("form", { onsubmit: (event) => { event.preventDefault(); save(close); } },
       outcomeSection,
-      h("fieldset", {}, h("legend", {}, "Who"), choiceButtons({
+      h("fieldset", { disabled: !canPlan }, h("legend", {}, "Who"), choiceButtons({
         options: VISIT_ROLES.map((item) => ({ value: item.value, label: item.value })),
         value: role, label: "Who",
         onchange: (value) => { role = value ?? role; },
@@ -298,7 +302,7 @@ export function openVisitForm(context, existing = null, options = {}) {
         field("Agency", agencyInput = h("input", { value: existing?.agency ?? pastVisits.at(-1)?.agency ?? "", maxlength: "120", list: "visit-agencies", autocomplete: "off" })))),
       h("datalist", { id: "visitor-names" }, known("visitor_name").map((value) => h("option", { value }))),
       h("datalist", { id: "visit-agencies" }, known("agency").map((value) => h("option", { value }))),
-      h("fieldset", {}, h("legend", {}, "When"),
+      h("fieldset", { disabled: !canPlan }, h("legend", {}, "When"),
         h("div", { class: "field-grid" },
           field("Day", dayInput = h("input", { type: "date", value: startDay, required: true })),
           field("Time", timeInput = h("input", { type: "time", value: existing ? clockTimeOf(existing.scheduled_at) : "10:00", required: true })),
@@ -315,13 +319,13 @@ export function openVisitForm(context, existing = null, options = {}) {
           h("div", { class: "field-grid", style: { marginTop: "8px" } },
             field("Until (last day)", untilInput = h("input", { type: "date", value: addDays(startDay, DEFAULT_REPEAT_WEEKS * 7 - 1) })))),
         existing?.series_id ? h("p", { class: "small muted" }, "Part of a weekly series. Changes here affect only this visit.") : null),
-      h("div", { style: { marginTop: "10px" } }, field("Note (optional)", noteInput = h("textarea", { rows: 2, maxlength: "2000", placeholder: "e.g. bringing new bed pads; call before arriving" }, existing?.note ?? ""))),
+      h("div", { style: { marginTop: "10px" } }, field("Note (optional)", noteInput = h("textarea", { rows: 2, maxlength: "2000", disabled: !canPlan, placeholder: "e.g. bringing new bed pads; call before arriving" }, existing?.note ?? ""))),
       error = h("p", { class: "error-text small", role: "alert" }),
       h("button", { type: "submit", hidden: true }),
     ),
     buttons: (close) => [
-      existing ? h("button", { class: "left", onclick: () => markInError(close) }, "Mark in error…") : null,
-      existing?.series_id && existing.status === "scheduled" ? h("button", { onclick: () => stopSeries(close) }, "Stop repeating…") : null,
+      existing && canPlan ? h("button", { class: "left", onclick: () => markInError(close) }, "Mark in error…") : null,
+      existing?.series_id && existing.status === "scheduled" && canPlan ? h("button", { onclick: () => stopSeries(close) }, "Stop repeating…") : null,
       h("button", { class: "default", onclick: () => save(close) }, existing ? "Save" : "Add visit"),
       h("button", { onclick: () => close(false) }, "Cancel"),
     ],

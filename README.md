@@ -24,6 +24,19 @@ are far above what one household uses.
   are never deleted, only marked "entered in error" with a reason; every record shows
   who made and who last changed it; and a save made from an out-of-date screen is
   refused rather than overwriting the other caregiver's change.
+- **Three access levels** for caregivers, chosen when an account is added and changeable
+  later in Settings → Caregivers (the server enforces them, so a hidden button is never
+  the only guard):
+  - **Full access**: everything, including medications and schedules, the visit
+    calendar, the patient profile, household settings, caregivers and the backup.
+  - **Records care**: sees everything; records doses, observations, notes and what
+    happened at visits, and corrects those entries. Cannot change medications, schedules,
+    the visit calendar, the profile, settings or caregivers.
+  - **View only**: sees the whole chart (forms open read-only) and changes nothing.
+
+  Everyone manages their own name, password, sign-outs and reminders. Nobody can change
+  their own access, so there is always someone with full access. Accounts made before
+  access levels existed have full access.
 - **Schedule changes** count from the moment they are made, so adding a dose time in the
   afternoon never makes that morning, or any earlier day, look missed. Doses recorded
   under an old schedule stay in the record.
@@ -248,7 +261,8 @@ npm run build:medications
 npm run dev            # local server at http://localhost:8790 (uses .dev.vars); the
                        # reminder job runs on demand at http://localhost:8790/__scheduled
 npm run migrate:local  # create the local tables (once)
-npm run seed:local     # two weeks of made-up demo data; sign in as "Demo Caregiver"
+npm run seed:local     # two weeks of made-up demo data; sign in as "Demo Caregiver" (full
+                       # access), "Second Caregiver" (records care) or "View Only Demo"
 npm run check          # tests for the dose-timing rules and the medication search
 npm run typecheck      # type-checks the Worker
 ```
@@ -262,6 +276,7 @@ Copy `.dev.vars.example` to `.dev.vars` for local development. The demo password
 |---|---|
 | `src/worker.ts` | Entry point: static files, the CSRF header check, routing |
 | `src/auth.ts` | Caregiver accounts, passwords (PBKDF2), sessions, lockout |
+| `src/access.ts` | The three access levels and which requests need which (mirrored for the screens in `public/js/access.js`) |
 | `src/chart.ts` | Medications, doses (with the safety checks), observations, settings, export |
 | `src/reminders.ts` | The scheduled reminder job, and devices turning reminders on and off |
 | `src/push.ts` | Web Push sending (VAPID and encryption with WebCrypto, no dependencies) |

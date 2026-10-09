@@ -140,7 +140,7 @@ export function renderReport(context) {
       h("span", { class: "separator" }),
       h("button", { class: "default", onclick: () => window.print() }, "Print…"),
       h("button", { onclick: () => downloadCsv(context, entries, administrations, from, to) }, "Download CSV"),
-      h("a", { class: "button", href: "/api/export", download: "" }, "Full backup (JSON)"),
+      context.can("full") ? h("a", { class: "button", href: "/api/export", download: "" }, "Full backup (JSON)") : null,
     ),
     report,
   );

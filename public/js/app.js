@@ -1,6 +1,7 @@
 // Care Chart: starts the app, signs in, switches tabs, keeps both caregivers' screens
 // in sync and raises dose reminders.
 
+import { accessLabel, hasAccess } from "./access.js";
 import { api } from "./api.js";
 import { openEntryForm } from "./forms.js";
 import { DEFAULT_LOOK, LOOKS, lookByKey, schemeFor } from "./looks.js";
@@ -93,6 +94,8 @@ applyDevice();
 const context = {
   get data() { return state.chart; },
   get me() { return state.chart.me; },
+  /** Whether the signed-in caregiver may do this: "record" care, or "full" (everything). */
+  can: (needed) => hasAccess(state.chart.me, needed),
   get caregivers() { return state.chart.caregivers; },
   get medications() { return state.chart.medicationsNormalized; },
   get patient() { return { ...DEFAULT_PATIENT, ...(state.chart.settings.patient ?? {}) }; },
@@ -293,11 +296,12 @@ function renderStatus() {
       ? h("span", { title: `This device is set to ${deviceTimeZone()}` }, `Times shown in ${getHouseholdTimeZone().replace(/_/g, " ")}`)
       : null,
     h("span", { class: "grow hide-small" }, state.syncedAt ? `Up to date as of ${formatClock(state.syncedAt)} · updates from other caregivers appear within ${SYNC_CHECK_SECONDS} s` : ""),
-    h("span", {}, `Signed in: ${state.chart.me.name}`),
+    h("span", {}, `Signed in: ${state.chart.me.name}${context.can("full") ? "" : ` (${accessLabel(state.chart.me.access).toLowerCase()})`}`),
   ].filter(Boolean));
 }
 
 function renderGettingStarted() {
+  if (!context.can("full")) return null; // the setup steps are for caregivers who can make them
   const steps = [
     { done: Boolean(context.patient.name), text: "Fill in the patient profile, especially allergies.", tab: "settings" },
     { done: context.medications.length > 0, text: "Add her medications, scheduled and as-needed.", tab: "medications" },
@@ -404,7 +408,7 @@ document.addEventListener("keydown", (event) => {
   const tabIndex = Number(event.key) - 1;
   if (tabIndex >= 0 && tabIndex < TABS.length) { switchTab(TABS[tabIndex].key); event.preventDefault(); return; }
   const type = SHORTCUT_TYPES[event.key.toLowerCase()];
-  if (type) { openEntryForm(context, type); event.preventDefault(); }
+  if (type && context.can("record")) { openEntryForm(context, type); event.preventDefault(); }
   if (event.key === "?") showShortcuts();
 });
 

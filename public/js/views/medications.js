@@ -43,9 +43,9 @@ function medicationTable(context, medications, { stopped = false } = {}) {
         : medication.instructions),
       h("td", { class: "nowrap" },
         h("div", { class: "row", style: { gap: "4px", flexWrap: "nowrap" } },
-          !stopped ? h("button", { class: "compact", title: medication.kind === "scheduled" ? "Record a dose that is not on the schedule" : "Give a dose", onclick: () => openDoseForm(context, { medication }) },
+          !stopped && context.can("record") ? h("button", { class: "compact", title: medication.kind === "scheduled" ? "Record a dose that is not on the schedule" : "Give a dose", onclick: () => openDoseForm(context, { medication }) },
             medication.kind === "scheduled" ? "Extra dose" : "Give") : null,
-          h("button", { class: "compact", onclick: () => openMedicationForm(context, medication) }, stopped ? "View" : "Edit"))),
+          h("button", { class: "compact", onclick: () => openMedicationForm(context, medication) }, stopped || !context.can("full") ? "View" : "Edit"))),
     ))),
   ));
 }
@@ -59,7 +59,7 @@ export function renderMedications(context) {
 
   return h("div", { class: "stack" },
     h("div", { class: "toolbar" },
-      h("button", { class: "default", onclick: () => openMedicationForm(context) }, "+ Add medication"),
+      context.can("full") ? h("button", { class: "default", onclick: () => openMedicationForm(context) }, "+ Add medication") : null,
       h("span", { class: "small muted" }, "Changes here take effect on the Today screen right away, for both of you."),
     ),
     context.patient.allergies

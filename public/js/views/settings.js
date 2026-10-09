@@ -1,12 +1,13 @@
 // Settings: the patient profile, household preferences (units, goals, time zone),
 // this device's display and reminders, and the caregiver accounts.
 
+import { ACCESS_LEVELS, accessLabel } from "../access.js";
 import { api } from "../api.js";
 import { ML_PER_FLUID_OUNCE } from "../entry-types.js";
 import { LOOK_GROUPS, LOOKS, lookByKey, schemeFor } from "../looks.js";
 import { pushStatus, pushSupported, sendTestPush, turnOffPush, turnOnPush } from "../push.js";
 import { deviceTimeZone, getHouseholdTimeZone } from "../time.js";
-import { field, guardSave, h, openDialog, toast, windowBox } from "../ui.js";
+import { field, guardSave, h, lockControls, openDialog, toast, windowBox } from "../ui.js";
 
 export const DEFAULT_PATIENT = {
   name: "", preferredName: "", dateOfBirth: "", allergies: "", conditions: "", physician: "", physicianPhone: "",
@@ -89,9 +90,11 @@ export function renderSettings(context) {
   const newName = h("input", { required: true, maxlength: "60", autocomplete: "off", name: "new-caregiver-name" });
   const newInitials = h("input", { maxlength: "4", style: { width: "80px" }, name: "new-caregiver-initials" });
   const newPassword = h("input", { type: "password", required: true, minlength: "8", autocomplete: "new-password", name: "new-caregiver-password" });
+  const newAccess = h("select", { name: "new-caregiver-access" },
+    ACCESS_LEVELS.map((level) => h("option", { value: level.value, selected: level.value === "record" }, level.label)));
   const addCaregiver = guardSave(async (formElement) => {
     try {
-      await api("/api/caregivers", { method: "POST", body: { name: newName.value, initials: newInitials.value, password: newPassword.value } });
+      await api("/api/caregivers", { method: "POST", body: { name: newName.value, initials: newInitials.value, password: newPassword.value, access: newAccess.value } });
       formElement.reset();
       await context.reload();
       toast("Caregiver added. Share the name and password with them privately.");
@@ -138,6 +141,28 @@ export function renderSettings(context) {
     }
   };
 
+  const isFull = context.can("full");
+  const changeAccess = async (caregiver, access) => {
+    try {
+      await api(`/api/caregivers/${caregiver.id}/access`, { method: "PUT", body: { access } });
+      await context.reload();
+      toast(`${caregiver.name} now has: ${accessLabel(access).toLowerCase()}.`);
+    } catch (problem) {
+      toast(problem.message, { error: true });
+      await context.reload();
+    }
+  };
+  const accessCell = (caregiver) => isFull && caregiver.id !== context.me.id
+    ? h("select", {
+      "aria-label": `Access for ${caregiver.name}`,
+      onchange: (event) => changeAccess(caregiver, event.target.value),
+    }, ACCESS_LEVELS.map((level) => h("option", { value: level.value, selected: level.value === caregiver.access }, level.label)))
+    : accessLabel(caregiver.access);
+  // Without full access, the patient profile and household settings are shown locked.
+  const onlyFull = (formElement) => isFull ? formElement : h("div", {},
+    h("p", { class: "small muted", style: { marginTop: 0 } }, "Only caregivers with full access can change this."),
+    lockControls(formElement, { hideButtons: true }));
+
   const signOutEverywhere = async () => {
     try {
       await api("/api/me/sign-out-everywhere", { method: "POST", body: {} });
@@ -149,7 +174,7 @@ export function renderSettings(context) {
 
   return h("div", { class: "dashboard" },
     h("div", { class: "column" },
-      windowBox({ title: "Patient" }, form(savePatient,
+      windowBox({ title: "Patient" }, onlyFull(form(savePatient,
         h("div", { class: "field-grid" },
           field("Full name", input("name", { maxlength: "120" })),
           field("Goes by", input("preferredName", { maxlength: "60" })),
@@ -166,10 +191,10 @@ export function renderSettings(context) {
           field("Other notes for caregivers", area("notes"), "wide"),
         ),
         h("div", { class: "row", style: { marginTop: "10px" } }, h("button", { class: "default", type: "submit" }, "Save patient profile")),
-      )),
+      ))),
     ),
     h("div", { class: "column" },
-      windowBox({ title: "Household preferences" }, form(savePreferences,
+      windowBox({ title: "Household preferences" }, onlyFull(form(savePreferences,
         h("div", { class: "field-grid" },
           field("Fluid unit", unitSelect),
           field(`Daily fluid goal (${preferences.fluidUnit === "ml" ? "mL" : "oz"})`, goalInput),
@@ -178,7 +203,7 @@ export function renderSettings(context) {
         ),
         h("p", { class: "small muted" }, "Dose times and days follow the household time zone on every device, so both phones agree on which dose is which. Ask her doctor for the right fluid goal; some heart and kidney conditions limit fluids."),
         h("button", { class: "default", type: "submit" }, "Save preferences"),
-      )),
+      ))),
       windowBox({ title: "This device" },
         h("div", { class: "field-grid" },
           field("Look", skinSelect),
@@ -192,11 +217,12 @@ export function renderSettings(context) {
       ),
       windowBox({ title: "Caregivers" },
         h("div", { class: "well" }, h("table", { class: "grid" },
-          h("thead", {}, h("tr", {}, h("th", {}, "Name"), h("th", {}, "Initials"), h("th", {}, ""))),
+          h("thead", {}, h("tr", {}, h("th", {}, "Name"), h("th", {}, "Initials"), h("th", {}, "Access"), isFull ? h("th", {}, "") : null)),
           h("tbody", {}, activeCaregivers.map((caregiver) => h("tr", {},
             h("td", {}, caregiver.name, caregiver.id === context.me.id ? " (you)" : ""),
             h("td", {}, caregiver.initials),
-            h("td", {}, caregiver.id === context.me.id ? null
+            h("td", {}, accessCell(caregiver)),
+            !isFull ? null : h("td", {}, caregiver.id === context.me.id ? null
               : h("div", { class: "row", style: { gap: "4px" } },
                 h("button", { class: "compact", onclick: () => openResetPassword(caregiver) }, "Reset password…"),
                 h("button", { class: "compact", onclick: () => openRemoveCaregiver(context, caregiver) }, "Remove…")))))))),
@@ -206,15 +232,21 @@ export function renderSettings(context) {
             removedCaregivers.map((caregiver) => h("tr", {},
               h("td", {}, caregiver.name),
               h("td", { class: "small muted" }, "Can't sign in; still named on their past records"),
-              h("td", {}, h("button", { class: "compact", onclick: () => restoreCaregiver(caregiver) }, "Restore")))))))) : null,
-        form(addCaregiver,
-          h("p", { class: "small", style: { marginBottom: 0 } }, h("b", {}, "Add a caregiver"), " — anyone added can see and edit the whole chart."),
+              isFull ? h("td", {}, h("button", { class: "compact", onclick: () => restoreCaregiver(caregiver) }, "Restore")) : null)))))) : null,
+        h("details", { style: { marginTop: "8px" } },
+          h("summary", { style: { cursor: "pointer" } }, "What each access level allows"),
+          h("ul", { class: "small", style: { margin: "6px 0 0", paddingLeft: "20px" } },
+            ACCESS_LEVELS.map((level) => h("li", {}, h("b", {}, level.label), ": ", level.description)))),
+        isFull ? form(addCaregiver,
+          h("p", { class: "small", style: { marginBottom: 0 } }, h("b", {}, "Add a caregiver"), " — choose how much they can change; you can change it later."),
           h("div", { class: "field-grid" },
-            field("Name", newName), field("Initials", newInitials), field("Password (8+ characters)", newPassword)),
+            field("Name", newName), field("Initials", newInitials), field("Password (8+ characters)", newPassword), field("Access", newAccess)),
           h("button", { type: "submit", style: { marginTop: "8px" } }, "Add caregiver"),
-        ),
+        ) : null,
       ),
       windowBox({ title: `Your account: ${context.me.name}` },
+        h("p", { class: "small", style: { marginTop: 0 } }, "Your access: ", h("b", {}, accessLabel(context.me.access)),
+          isFull ? null : " — a caregiver with full access can change it."),
         form(changeName,
           h("div", { class: "field-grid" }, field("Your name (you sign in with it)", myName), field("Initials", myInitials)),
           h("div", { class: "row", style: { marginTop: "8px", marginBottom: "12px" } },
