@@ -99,6 +99,15 @@ export const LOOKS = [
       { value: "buckwheat", label: "Buckwheat" },
     ],
   },
+  {
+    key: "lavender",
+    label: "Lavender",
+    // Calm and soft: a lilac sky over faint sprigs, frosted cards and plum headings.
+    schemes: [
+      { value: "provence", label: "Provence" }, { value: "twilight", label: "Twilight" },
+      { value: "sachet", label: "Sachet" },
+    ],
+  },
 ];
 
 export const DEFAULT_LOOK = "classic";
