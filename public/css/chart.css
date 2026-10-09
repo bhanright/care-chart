@@ -220,6 +220,9 @@ label { display: block; }
 .check { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
 .field-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
 .field-grid .wide { grid-column: 1 / -1; }
+/* Fields in a row stretch to the same height; the space goes under a short label, so the
+   boxes stay level when a neighbor's label wraps onto two lines. */
+.field-grid > .field > span:first-child { margin-bottom: auto; }
 
 /* Group boxes: a real border, so the heading (legend) breaks the line the way Windows
    group boxes did; the white offset line beside it gives the etched look. */
