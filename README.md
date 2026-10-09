@@ -69,9 +69,9 @@ are far above what one household uses.
 - Phone-friendly (on phones the logo and name form a header in place of the window's
   title bar, clear of the status bar when installed), installable to the home screen, a Night theme and a Large text option
   (per device), and keyboard shortcuts on computers (press `?`).
-- **Seventeen looks**, chosen per device in Settings → This device → Look (or with `?look=<key>`
+- **Eighteen looks**, chosen per device in Settings → This device → Look (or with `?look=<key>`
   in the address: `classic`, `win98`, `xp`, `vista`, `win7`, `win10`, `mac`, `aqua`, `tahoe`, `ubuntu`,
-  `yaru`, `kde`, `neon`, `studio`, `honey`, `lavender`, `gram`). The menu lists them in two
+  `yaru`, `kde`, `neon`, `studio`, `honey`, `lavender`, `gram`, `cardclops`). The menu lists them in two
   groups, **OS-Like** (Classic through KDE Plasma) and **Other** (the rest):
   - **Classic** (Windows 95);
   - **Windows 98** (the teal desktop, flat Internet Explorer 4 style toolbar buttons, and
@@ -123,7 +123,11 @@ are far above what one household uses.
     Provence, Twilight or Sachet (dusty lavender with a sage-green accent);
   - **The Gram**, in the style of a photo-sharing app's feed (no logos or brand art):
     sections as posts with story rings, the patient banner as a profile header, profile-style
-    tabs, blue main buttons, the sunset gradient and a script wordmark; true black at night.
+    tabs, blue main buttons, the sunset gradient and a script wordmark; true black at night;
+  - **Cardclops**, the style of the author's card-collection app: flat neon and heavy
+    black ink, hard offset shadows, lumpy blob corners, Lilita One over Rubik, in that
+    app's own themes (Neon, Dark, Light, Lollipop, Astronaut, Necronomicon; the light
+    ones switch to Dark at night).
 
   The first time someone signs in on a phone or computer, a **Choose a look** window
   shows every look as a small picture, grouped the same way, with each look's color
@@ -133,7 +137,7 @@ are far above what one household uses.
   The looks and their groups are listed in `public/js/looks.js`; each one other than Classic is one stylesheet
   in `public/css/` whose rules all sit inside `:root[data-skin="<key>"]`, so looks never
   affect each other. Backgrounds are drawn in CSS, not copied from the originals. Studio's,
-  Honey's and Lavender's fonts are in `public/fonts/` under the SIL Open Font License (license texts
+  Honey's, Lavender's and Cardclops's fonts are in `public/fonts/` under the SIL Open Font License (license texts
   alongside); a device downloads them only while that look is in use.
 
 ## Put it online (about 10 minutes)
@@ -295,7 +299,7 @@ Copy `.dev.vars.example` to `.dev.vars` for local development. The demo password
 | `public/js/time.js` | Household-time-zone dates and clock times; shared with the reminder job |
 | `public/js/push.js` | Turning reminders on and off on a device |
 | `public/js/looks.js` | The looks, their groups and their color schemes |
-| `public/css/win98.css`, `xp.css`, `vista.css`, `win7.css`, `win10.css`, `mac.css`, `ubuntu.css`, `yaru.css`, `kde.css`, `aqua.css`, `tahoe.css`, `neon.css`, `studio.css`, `honey.css`, `lavender.css`, `gram.css` | The other sixteen looks |
+| `public/css/win98.css`, `xp.css`, `vista.css`, `win7.css`, `win10.css`, `mac.css`, `ubuntu.css`, `yaru.css`, `kde.css`, `aqua.css`, `tahoe.css`, `neon.css`, `studio.css`, `honey.css`, `lavender.css`, `gram.css`, `cardclops.css` | The other seventeen looks |
 | `public/images/win10-wallpaper.svg`, `tahoe-wallpaper.svg` | Wallpapers for the Windows 10 and macOS Tahoe looks (drawn for Care Chart) |
 | `design/logo-concepts/` | The logo concepts not used (kept for later), not served |
 | `public/images/logo.png`, `public/icons/` | The logo (a gradient cross with a heart, generated with GPT-5.4 Image 2) and the app icons, notification badge and Apple touch icon made from it |

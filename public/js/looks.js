@@ -163,6 +163,17 @@ export const LOOKS = [
     // In the style of a photo-sharing app's feed: posts, story rings, the sunset gradient.
     schemes: [],
   },
+  {
+    key: "cardclops",
+    label: "Cardclops",
+    group: "other",
+    preview: ["#140a24", "#2a1650", "#b8ff3c"],
+    // The style of Cardclops, the author's card-collection app; its schemes are that app's themes.
+    schemes: [
+      { value: "neon", label: "Neon" }, { value: "dark", label: "Dark" }, { value: "light", label: "Light" },
+      { value: "lollipop", label: "Lollipop" }, { value: "astronaut", label: "Astronaut" }, { value: "necronomicon", label: "Necronomicon" },
+    ],
+  },
 ];
 
 /** The headings the looks are listed under in Settings, in order. */
