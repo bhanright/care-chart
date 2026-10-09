@@ -31,6 +31,15 @@ are far above what one household uses.
   courses with a last day, and stopped medications with the reason. Typing a name
   suggests matches from a built-in list (below); choosing one fills in the name, offers
   that medication's strengths and sets the route.
+- **Visits**: a calendar for the care team (hospice nurses, aides, social workers,
+  chaplains and others). Plan one visit or a weekly series, then mark what happened:
+  completed, declined care (and what she declined), cancelled by hospice or family, or
+  no-show. Today shows the day's visits and asks about any that passed unrecorded;
+  declined and cancelled visits appear among notable changes and in the report.
+- **Briefs and small amounts**: bowel movements and urination record where they happened
+  (brief, toilet, bedpan, or an accident outside the brief, the only one counted as an
+  accident), starting from the last choice. Quick water has sips (5, 10, 15 mL), and an
+  Ensure / shake button records a meal replacement and its fluids together.
 - **Log**: any day's chart, filtered by type and searchable; edit or mark in error.
 - **Trends**: 7 to 90 days of fluids, dose adherence, bowel movements, urination, meals,
   mood, difficult behaviors, pain, sleep, vital signs and as-needed use.

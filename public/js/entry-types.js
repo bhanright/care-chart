@@ -12,14 +12,31 @@
 
 export const ML_PER_FLUID_OUNCE = 29.5735;
 
+/** Sips (a few milliliters at a time) are recorded and shown in mL even when the household uses ounces. */
+export const SIP_AMOUNTS_ML = [5, 10, 15];
+/** Below this, an amount reads better in mL ("5 mL") than in ounces ("0.2 oz"). */
+const SHOW_IN_ML_BELOW = 30;
+
 export function formatFluid(milliliters, unit) {
   if (milliliters === null || milliliters === undefined) return "";
-  return unit === "ml"
-    ? `${Math.round(milliliters)} mL`
-    : `${Math.round((milliliters / ML_PER_FLUID_OUNCE) * 10) / 10} oz`;
+  if (unit === "ml" || (milliliters > 0 && milliliters < SHOW_IN_ML_BELOW)) return `${Math.round(milliliters)} mL`;
+  return `${Math.round((milliliters / ML_PER_FLUID_OUNCE) * 10) / 10} oz`;
 }
 
 const options = (...labels) => labels.map((label) => ({ value: label, label }));
+
+/**
+ * Where a bowel movement or urination happened. For someone who wears briefs, going in
+ * the brief is normal; only ACCIDENT (outside the brief) counts as an accident.
+ */
+export const CONTINENCE_OPTIONS = options("Brief / diaper", "Toilet / commode", "Bedpan / urinal", "Accident (outside brief)");
+export const ACCIDENT = "Accident (outside brief)";
+const placeWords = (continence) => ({
+  "Brief / diaper": "in brief",
+  "Toilet / commode": "toilet",
+  "Bedpan / urinal": "bedpan",
+  [ACCIDENT]: "ACCIDENT outside brief",
+})[continence] ?? null;
 
 export const BRISTOL_SCALE = [
   { value: 1, label: "1", hint: "Type 1: separate hard lumps (severe constipation)" },
@@ -76,22 +93,22 @@ export const ENTRY_TYPES = {
     fields: [
       { key: "bristol", kind: "scale", label: "Bristol stool type", options: BRISTOL_SCALE },
       { key: "amount", kind: "choice", label: "Amount", options: options("Smear", "Small", "Medium", "Large") },
-      { key: "continence", kind: "choice", label: "Where", options: options("Toilet / commode", "Accident (brief)") },
+      { key: "continence", kind: "choice", label: "Where", options: CONTINENCE_OPTIONS, rememberLast: true },
       { key: "concerns", kind: "chips", label: "Concerns", options: options("Blood", "Black / tarry", "Mucus", "Straining", "Pain") },
     ],
-    summary: (data) => ["BM", data.bristol ? `type ${data.bristol}` : null, data.amount?.toLowerCase(), data.continence === "Accident (brief)" ? "accident" : null, ...(data.concerns ?? []).map((item) => item.toLowerCase())].filter(Boolean).join(", "),
+    summary: (data) => ["BM", data.bristol ? `type ${data.bristol}` : null, data.amount?.toLowerCase(), placeWords(data.continence), ...(data.concerns ?? []).map((item) => item.toLowerCase())].filter(Boolean).join(", "),
   },
   urine: {
     label: "Urination",
     badge: "UR",
     color: "#b08a00",
     fields: [
-      { key: "continence", kind: "choice", label: "Where", options: options("Toilet / commode", "Accident (brief)") },
+      { key: "continence", kind: "choice", label: "Where", options: CONTINENCE_OPTIONS, rememberLast: true },
       { key: "amount", kind: "choice", label: "Amount", options: options("Small", "Medium", "Large") },
       { key: "color", kind: "choice", label: "Color", options: options("Pale", "Yellow", "Dark yellow", "Amber / brown", "Pink / red", "Cloudy") },
       { key: "concerns", kind: "chips", label: "Concerns", options: options("Strong odor", "Burning / pain", "Urgency", "Very frequent") },
     ],
-    summary: (data) => ["Urinated", data.amount?.toLowerCase(), data.color?.toLowerCase(), data.continence === "Accident (brief)" ? "accident" : null, ...(data.concerns ?? []).map((item) => item.toLowerCase())].filter(Boolean).join(", "),
+    summary: (data) => ["Urinated", data.amount?.toLowerCase(), data.color?.toLowerCase(), placeWords(data.continence), ...(data.concerns ?? []).map((item) => item.toLowerCase())].filter(Boolean).join(", "),
   },
   behavior: {
     label: "Mood & behavior",

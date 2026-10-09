@@ -6,6 +6,7 @@ import { doseSlots, slotCounts } from "../schedule.js";
 import { dailySummaries } from "../summaries.js";
 import { addDays, ageFrom, dateKey, formatClock, formatClockText, formatDateTime, formatDay, formatDayKey, startOfDay } from "../time.js";
 import { h } from "../ui.js";
+import { VISIT_STATUSES } from "./visits.js";
 
 export const reportState = { from: null, to: null };
 
@@ -109,6 +110,20 @@ export function renderReport(context) {
 
     section("Notable changes", entries.filter((entry) => entry.notable)
       .map((entry) => `${formatDateTime(entry.occurred_at)} — ${ENTRY_TYPES[entry.type]?.label}: ${entry.type === "note" ? "" : entrySummary(entry, context.preferences)}${entry.note ? ` ${entry.note}` : ""}`), true),
+
+    h("h2", {}, "Care team visits"),
+    (() => {
+      const visits = (context.data.visits ?? []).filter((visit) => !visit.voided_at && inRange(visit.scheduled_at) && new Date(visit.scheduled_at) <= now)
+        .sort((a, b) => a.scheduled_at.localeCompare(b.scheduled_at));
+      if (!visits.length) return h("p", {}, "None.");
+      return h("table", {},
+        h("thead", {}, h("tr", {}, ["When", "Who", "Outcome", "Notes"].map((label) => h("th", {}, label)))),
+        h("tbody", {}, visits.map((visit) => h("tr", {},
+          h("td", {}, formatDateTime(visit.scheduled_at)),
+          h("td", {}, `${visit.role}${visit.visitor_name ? ` (${visit.visitor_name})` : ""}`),
+          h("td", { class: visit.status === "completed" ? "" : "flag" }, VISIT_STATUSES[visit.status].label),
+          h("td", {}, visit.outcome_note)))));
+    })(),
 
     section("Vital signs", entries.filter((entry) => entry.type === "vitals")
       .map((entry) => `${formatDateTime(entry.occurred_at)} — ${entrySummary(entry, context.preferences)}`)),

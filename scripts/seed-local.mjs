@@ -71,9 +71,45 @@ for (const medication of medications) {
   const match = existing.find((row) => row.name === medication.name);
   saved.push(match ?? (await call("/api/medications", medication)).medication);
 }
+await seedVisits();
 if (existing.length) {
   console.log("Demo data already present; medications kept, no new history added.");
   process.exit(0);
+}
+
+/**
+ * Demo care team visits: a hospice aide Mon/Wed/Fri at 10, a nurse on Tuesdays at 1 PM and
+ * a social worker once, with the past ones marked (mostly completed, some declined or
+ * cancelled). Runs only when no visits exist yet.
+ */
+async function seedVisits() {
+  const chart = await call(`/api/chart?from=${new Date(Date.now() - 30 * 86400e3).toISOString()}&to=${new Date(Date.now() + 30 * 86400e3).toISOString()}`, undefined, "GET");
+  if ((chart.visits ?? []).length) return;
+  const outcomes = [
+    ["completed", "Bed bath, linens changed, lotion to heels. Skin intact."],
+    ["completed", "Shower chair bath. Ate half her breakfast with help."],
+    ["declined", "Refused the bath; agreed to a face wash and hair brushing only."],
+    ["completed", "Brief change and skin check. Mild redness on sacrum; barrier cream applied."],
+    ["cancelled_by_agency", "Aide out sick; hospice offered Thursday instead."],
+  ];
+  for (let daysAgo = 21; daysAgo >= -14; daysAgo--) {
+    const day = new Date(); day.setDate(day.getDate() - daysAgo);
+    const weekday = day.getDay();
+    const visits = [];
+    if ([1, 3, 5].includes(weekday)) visits.push({ hour: 10, role: "Hospice aide", visitorName: "Maria", durationMinutes: 60 });
+    if (weekday === 2) visits.push({ hour: 13, role: "Hospice nurse (RN)", visitorName: "Dana", durationMinutes: 45 });
+    if (daysAgo === 9) visits.push({ hour: 15, role: "Social worker", visitorName: "Tom", durationMinutes: 60 });
+    for (const visit of visits) {
+      const start = new Date(day); start.setHours(visit.hour, 0, 0, 0);
+      const past = start < new Date(Date.now() - 2 * 3600e3);
+      const [status, outcomeNote] = !past ? ["scheduled", ""]
+        : visit.role === "Hospice nurse (RN)" ? ["completed", "Vitals stable. Reviewed comfort medications; no changes."]
+          : visit.role === "Social worker" ? ["completed", "Talked about respite care options and the family's questions."]
+            : pick(outcomes);
+      await call("/api/visits", { scheduledAt: start.toISOString(), role: visit.role, visitorName: visit.visitorName,
+        agency: "Demo Hospice", durationMinutes: visit.durationMinutes, status, outcomeNote });
+    }
+  }
 }
 
 const at = (daysAgo, hours, minutes = 0) => {
@@ -112,9 +148,9 @@ for (let daysAgo = DAYS_OF_HISTORY; daysAgo >= 0; daysAgo--) {
   for (const [meal, hours] of [["Breakfast", 8], ["Lunch", 12], ["Dinner", 17]]) {
     await entry("food", at(daysAgo, hours, 30), { meal, percentEaten: pick([50, 75, 75, 100, 100, 25]), assistance: pick(["Ate on own", "Set-up only", "Some help"]) });
   }
-  if (daysAgo % 2 === 0 || random() < 0.3) await entry("bowel", at(daysAgo, 9 + Math.floor(random() * 4)), { bristol: pick([3, 4, 4, 2, 5]), amount: pick(["Small", "Medium"]), continence: random() < 0.15 ? "Accident (brief)" : "Toilet / commode" });
+  if (daysAgo % 2 === 0 || random() < 0.3) await entry("bowel", at(daysAgo, 9 + Math.floor(random() * 4)), { bristol: pick([3, 4, 4, 2, 5]), amount: pick(["Small", "Medium"]), continence: random() < 0.1 ? "Accident (outside brief)" : random() < 0.8 ? "Brief / diaper" : "Toilet / commode" });
   for (let count = 0; count < 5 + Math.floor(random() * 3); count++) {
-    await entry("urine", at(daysAgo, 7 + count * 2 + Math.floor(random() * 2), Math.floor(random() * 50)), { continence: random() < 0.2 ? "Accident (brief)" : "Toilet / commode", color: pick(["Pale", "Yellow", "Yellow"]) });
+    await entry("urine", at(daysAgo, 7 + count * 2 + Math.floor(random() * 2), Math.floor(random() * 50)), { continence: random() < 0.05 ? "Accident (outside brief)" : random() < 0.85 ? "Brief / diaper" : "Toilet / commode", color: pick(["Pale", "Yellow", "Yellow"]) });
   }
   const evening = random() < 0.35;
   await entry("behavior", at(daysAgo, 10), { moodScore: pick([4, 4, 5, 3]), moods: ["Calm"], alertness: "Alert", orientedTo: ["Person", "Place"] });

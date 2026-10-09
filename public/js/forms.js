@@ -2,9 +2,9 @@
 // medication orders. Each resolves true when it saved something.
 
 import { api, ApiError } from "./api.js";
-import { ENTRY_TYPES, ML_PER_FLUID_OUNCE, formatFluid } from "./entry-types.js";
+import { ENTRY_TYPES, ML_PER_FLUID_OUNCE, SIP_AMOUNTS_ML, formatFluid } from "./entry-types.js";
 import { attachMedicationSearch } from "./medication-search.js";
-import { formatClock, formatClockText, formatDate, formatDateTime, fromLocalInputValue, relativeTime, toLocalInputValue } from "./time.js";
+import { clockTimeOf, formatClock, formatClockText, formatDate, formatDateTime, fromLocalInputValue, relativeTime, toLocalInputValue } from "./time.js";
 import { choiceButtons, confirmBox, field, guardSave, h, openDialog, promptBox, toast, warningIcon } from "./ui.js";
 
 const FLUID_PRESETS = { oz: [4, 6, 8, 12, 16], ml: [100, 150, 240, 350, 500] };
@@ -29,6 +29,13 @@ export function openEntryForm(context, typeKey, existing = null, preset = {}) {
   const type = ENTRY_TYPES[typeKey];
   const unit = context.preferences.fluidUnit;
   const data = { ...(existing?.data ?? preset) };
+  if (!existing) {
+    // Fields marked rememberLast start with the value of the most recent entry of this type.
+    const latest = [...context.data.entries].reverse().find((entry) => entry.type === typeKey && !entry.voided_at);
+    for (const spec of type.fields) {
+      if (spec.rememberLast && data[spec.key] === undefined && latest?.data[spec.key] !== undefined) data[spec.key] = latest.data[spec.key];
+    }
+  }
   const controls = [];
   let when, note, notable, error;
 
@@ -41,8 +48,14 @@ export function openEntryForm(context, typeKey, existing = null, preset = {}) {
       return h("fieldset", {}, h("legend", {}, spec.label), control);
     }
     if (spec.kind === "fluid") {
-      const toDisplay = (milliliters) => milliliters ? (unit === "ml" ? Math.round(milliliters) : Math.round((milliliters / ML_PER_FLUID_OUNCE) * 10) / 10) : "";
-      const input = h("input", { type: "number", inputmode: "decimal", min: "0", step: unit === "ml" ? "10" : "0.5", value: toDisplay(data[spec.key]), style: { width: "110px" }, required: true });
+      // Ounces show one decimal place, or two for sips so 5 mL does not round to nothing.
+      const toDisplay = (milliliters, ounceDecimals = 1) => {
+        if (!milliliters) return "";
+        if (unit === "ml") return Math.round(milliliters);
+        const scale = 10 ** ounceDecimals;
+        return Math.round((milliliters / ML_PER_FLUID_OUNCE) * scale) / scale;
+      };
+      const input = h("input", { type: "number", inputmode: "decimal", min: "0", step: "any", value: toDisplay(data[spec.key]), style: { width: "110px" }, required: true });
       const store = () => {
         const amount = Number(input.value);
         data[spec.key] = input.value === "" ? null : Math.round(unit === "ml" ? amount : amount * ML_PER_FLUID_OUNCE);
@@ -50,7 +63,14 @@ export function openEntryForm(context, typeKey, existing = null, preset = {}) {
       input.addEventListener("input", store);
       const presets = FLUID_PRESETS[unit].map((amount) =>
         h("button", { type: "button", class: "compact", onclick: () => { input.value = amount; store(); } }, `${amount} ${unit === "ml" ? "mL" : "oz"}`));
-      return field(spec.label, h("div", { class: "row" }, input, h("span", {}, unit === "ml" ? "mL" : "fl oz"), h("span", { class: "spacer" }), presets));
+      // Sip amounts are set in mL whatever the unit, then shown in the box in that unit.
+      const sips = SIP_AMOUNTS_ML.map((milliliters) => h("button", {
+        type: "button", class: "compact",
+        onclick: () => { input.value = toDisplay(milliliters, 2); data[spec.key] = milliliters; },
+      }, `${milliliters} mL`));
+      return field(spec.label, h("div", { class: "stack" },
+        h("div", { class: "row" }, input, h("span", {}, unit === "ml" ? "mL" : "fl oz"), h("span", { class: "spacer" }), presets),
+        h("div", { class: "row" }, h("span", { class: "small muted" }, "Sips:"), sips)));
     }
     if (spec.kind === "number") {
       const input = h("input", { type: "number", inputmode: "decimal", step: spec.step ?? 1, min: spec.minimum, max: spec.maximum, value: data[spec.key] ?? "" });
@@ -115,6 +135,99 @@ export function openEntryForm(context, typeKey, existing = null, preset = {}) {
       error.textContent = problem.message;
     }
   }
+}
+
+// ---- Meal-replacement shakes (Ensure and the like)
+
+const DEFAULT_SHAKE_PRODUCT = "Ensure";
+const DEFAULT_BOTTLE_OUNCES = 8;
+/** Which meal a shake replaces, by the household clock's hour. */
+function mealForHour(hour) {
+  if (hour < 10.5) return "Breakfast";
+  if (hour < 15) return "Lunch";
+  if (hour < 20) return "Dinner";
+  return "Snack";
+}
+
+/**
+ * Records a meal-replacement shake: a meal entry (how much of the bottle she had) and,
+ * unless unticked, a fluid entry for the same amount, since a shake is mostly liquid.
+ * The product and bottle size start as last time's.
+ */
+export function openShakeForm(context) {
+  const lastShake = [...context.data.entries].reverse().find((entry) => entry.type === "food" && entry.data.shakeProduct && !entry.voided_at);
+  let percent = 100;
+  let when, product, bottleOunces, countFluids, error;
+  const hour = Number(clockTimeOf(new Date()).slice(0, 2)) + Number(clockTimeOf(new Date()).slice(3, 5)) / 60;
+  let mealChoice = mealForHour(hour);
+  const save = guardSave(async (close) => {
+    error.textContent = "";
+    const ounces = Number(bottleOunces.value);
+    if (!product.value.trim() || !(ounces > 0)) { error.textContent = "Enter the product and bottle size."; return; }
+    const occurredAt = fromLocalInputValue(when.input.value);
+    const drankMl = Math.round(ounces * ML_PER_FLUID_OUNCE * (percent / 100));
+    const name = product.value.trim();
+    try {
+      const food = await api("/api/entries", {
+        method: "POST",
+        body: {
+          type: "food", occurredAt,
+          data: { meal: mealChoice, percentEaten: percent, description: `${name} (${ounces} oz bottle)`, shakeProduct: name, bottleOunces: ounces },
+          note: "",
+        },
+      });
+      const created = [["entry", food.entry.id]];
+      if (countFluids.checked) {
+        const fluid = await api("/api/entries", {
+          method: "POST",
+          body: { type: "fluid", occurredAt, data: { amountMl: drankMl, drink: "Nutrition shake" }, note: name },
+        });
+        created.push(["entry", fluid.entry.id]);
+      }
+      close(true);
+      await context.reload();
+      toast(`Recorded: ${name}, ${percent}% of the bottle${countFluids.checked ? ` (${formatFluid(drankMl, context.preferences.fluidUnit)} toward fluids)` : ""}`, {
+        action: {
+          label: "Undo",
+          run: async () => {
+            for (const [kind, id] of created) await voidRecord(context, kind, id, "Undone right after recording");
+          },
+        },
+      });
+    } catch (problem) {
+      error.textContent = problem.message;
+    }
+  });
+  return openDialog({
+    title: "Record: meal shake",
+    size: "narrow",
+    build: (close) => h("form", { onsubmit: (event) => { event.preventDefault(); save(close); } },
+      h("div", { class: "field-grid" },
+        when = whenField(new Date()),
+        field("Product", product = h("input", { value: lastShake?.data.shakeProduct ?? DEFAULT_SHAKE_PRODUCT, maxlength: "60", list: "shake-products" })),
+        field("Bottle size (fl oz)", bottleOunces = h("input", { type: "number", min: "1", max: "32", step: "any", inputmode: "decimal", value: lastShake?.data.bottleOunces ?? DEFAULT_BOTTLE_OUNCES })),
+      ),
+      h("datalist", { id: "shake-products" }, ["Ensure", "Ensure Plus", "Boost", "Boost Plus", "Glucerna", "Carnation Breakfast Essentials"].map((value) => h("option", { value }))),
+      h("fieldset", {}, h("legend", {}, "How much of the bottle"), choiceButtons({
+        options: [100, 75, 50, 25].map((value) => ({ value, label: { 100: "All", 75: "¾", 50: "½", 25: "¼" }[value] })),
+        value: percent, label: "How much of the bottle",
+        onchange: (value) => { percent = value ?? 100; },
+      })),
+      h("fieldset", {}, h("legend", {}, "In place of"), choiceButtons({
+        options: ["Breakfast", "Lunch", "Dinner", "Snack"].map((value) => ({ value, label: value })),
+        value: mealChoice, label: "In place of",
+        onchange: (value) => { mealChoice = value ?? mealChoice; },
+      })),
+      h("label", { class: "check", style: { marginTop: "10px" } },
+        countFluids = h("input", { type: "checkbox", checked: true }), "Also count it toward fluids"),
+      error = errorLine(),
+      h("button", { type: "submit", hidden: true }),
+    ),
+    buttons: (close) => [
+      h("button", { class: "default", onclick: () => save(close) }, "Record"),
+      h("button", { onclick: () => close(false) }, "Cancel"),
+    ],
+  });
 }
 
 /** One tap: records a fluid amount now. The button stays disabled until it is saved. */

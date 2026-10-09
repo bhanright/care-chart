@@ -4,6 +4,7 @@ import { currentCaregiver, handleCaregiverRoute, handlePublicAuthRoute } from ".
 import { handleChartRoute } from "./chart";
 import { HttpError, json, type Env } from "./http";
 import { handleReminderRoute, sendDueReminders } from "./reminders";
+import { handleVisitRoute } from "./visits";
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
@@ -25,6 +26,7 @@ export default {
 
       const response = (await handleCaregiverRoute(request, url, env, me))
         ?? (await handleReminderRoute(request, url, env, me))
+        ?? (await handleVisitRoute(request, url, env, me))
         ?? (await handleChartRoute(request, url, env, me));
       return response ?? json({ error: "Not found." }, 404);
     } catch (error) {

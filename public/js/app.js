@@ -13,6 +13,7 @@ import { renderMedications } from "./views/medications.js";
 import { renderReport, reportRange } from "./views/report.js";
 import { DEFAULT_PATIENT, DEFAULT_PREFERENCES, renderSettings } from "./views/settings.js";
 import { renderToday, todayRange } from "./views/today.js";
+import { renderVisits, visitsRange } from "./views/visits.js";
 import { installChartTooltips, renderTrends, trendsRange } from "./views/trends.js";
 
 const SYNC_CHECK_SECONDS = 15;
@@ -25,6 +26,7 @@ const REMEMBERED_REMINDER_KEYS = 300;
 const TABS = [
   { key: "today", label: "Today", render: renderToday, range: todayRange },
   { key: "medications", label: "Medications", render: renderMedications, range: todayRange },
+  { key: "visits", label: "Visits", render: renderVisits, range: visitsRange },
   { key: "log", label: "Log", render: renderLog, range: logRange },
   { key: "trends", label: "Trends", render: renderTrends, range: trendsRange },
   { key: "report", label: "Report", render: renderReport, range: reportRange },
@@ -376,7 +378,7 @@ async function checkReminders() {
 // ---- Keyboard shortcuts
 
 const SHORTCUTS = [
-  ["1 – 6", "Switch tabs (Today, Medications, Log, Trends, Report, Settings)"],
+  ["1 – 7", "Switch tabs (Today, Medications, Visits, Log, Trends, Report, Settings)"],
   ["N", "Write a note"],
   ["F", "Record fluids"],
   ["B", "Record a bowel movement"],

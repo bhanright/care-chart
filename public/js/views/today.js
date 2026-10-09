@@ -1,12 +1,13 @@
 // The Today screen: what is due, what was given, where each as-needed medication
 // stands, today's totals, quick recording and recent notable changes.
 
-import { ENTRY_TYPES, ENTRY_TYPE_ORDER, ML_PER_FLUID_OUNCE, formatFluid } from "../entry-types.js";
-import { openDoseForm, openEffectForm, openEntryForm, quickFluid, quickGive } from "../forms.js";
+import { ACCIDENT, ENTRY_TYPES, ENTRY_TYPE_ORDER, ML_PER_FLUID_OUNCE, SIP_AMOUNTS_ML, formatFluid } from "../entry-types.js";
+import { openDoseForm, openEffectForm, openEntryForm, openShakeForm, quickFluid, quickGive } from "../forms.js";
 import { asNeededStatus, doseSlots, dosesNeedingAttention, isActive } from "../schedule.js";
 import { DAY_MS, HOUR_MS, addDays, dateKey, formatClock, formatClockText, formatDate, formatDuration, relativeTime, startOfDay } from "../time.js";
 import { h, progressBar, windowBox } from "../ui.js";
 import { renderTimeline, timelineItems } from "./timeline.js";
+import { needsOutcome, openVisitForm, visitRow, VISIT_STATUSES, visitTitle } from "./visits.js";
 
 const NOTABLE_LOOKBACK_HOURS = 72;
 // "Behind pace" on fluids: drinking is expected between these hours, and the tile warns
@@ -34,6 +35,7 @@ export function renderToday(context) {
     h("div", { class: "dashboard today" },
       h("div", { class: "column" },
         renderAttention(context, now),
+        renderVisitsToday(context, now, today),
         renderTodaysDoses(context, now, today),
         renderAsNeeded(context, now),
       ),
@@ -80,7 +82,9 @@ function renderTiles(context, entriesToday, now) {
   const bowelAlert = daysSinceBowel === null ? false : daysSinceBowel >= preferences.bowelAlertDays;
 
   const urinations = of("urine");
-  const accidents = urinations.filter((entry) => entry.data.continence === "Accident (brief)").length;
+  // Going in a brief is normal; only accidents outside the brief are flagged.
+  const accidents = urinations.filter((entry) => entry.data.continence === ACCIDENT).length;
+  const inBrief = urinations.filter((entry) => entry.data.continence === "Brief / diaper").length;
   const meals = of("food").filter((entry) => typeof entry.data.percentEaten === "number" && entry.data.meal !== "Snack");
   const averageEaten = meals.length ? Math.round(meals.reduce((total, entry) => total + entry.data.percentEaten, 0) / meals.length) : null;
 
@@ -98,10 +102,27 @@ function renderTiles(context, entriesToday, now) {
     tile("Last bowel movement", lastBowel ? relativeTime(lastBowel.occurred_at, now) : "None this week",
       lastBowel ? `Type ${lastBowel.data.bristol ?? "?"}, ${formatDate(lastBowel.occurred_at, { weekday: "short" })} ${formatClock(lastBowel.occurred_at)}` : `Alert after ${preferences.bowelAlertDays} days`,
       bowelAlert || !lastBowel ? "alert" : ""),
-    tile("Urinations today", String(urinations.length), accidents ? `${accidents} accident${accidents > 1 ? "s" : ""}` : "no accidents"),
+    tile("Urinations today", String(urinations.length),
+      [inBrief ? `${inBrief} in brief` : null, accidents ? `${accidents} accident${accidents > 1 ? "s" : ""} outside brief` : null]
+        .filter(Boolean).join(", ") || "no accidents", accidents ? "warn" : ""),
     tile("Meals today", averageEaten === null ? "—" : `${averageEaten}%`, meals.length ? `average eaten, ${meals.length} meal${meals.length > 1 ? "s" : ""}` : "no meals charted"),
     tile("Mood", latestMood ? `${latestMood.data.moodScore} / 5` : "—", latestMood ? `as of ${formatClock(latestMood.occurred_at)}` : "not charted today"),
   );
+}
+
+// ---- Care team visits
+
+function renderVisitsToday(context, now, today) {
+  const visits = (context.data.visits ?? []).filter((visit) => !visit.voided_at);
+  const todays = visits.filter((visit) => dateKey(new Date(visit.scheduled_at)) === today);
+  const earlierWaiting = visits.filter((visit) => dateKey(new Date(visit.scheduled_at)) < today && needsOutcome(visit, now));
+  const shown = [...earlierWaiting, ...todays].sort((a, b) => a.scheduled_at.localeCompare(b.scheduled_at));
+  return windowBox({ title: "Care team today", extra: shown.length ? `${shown.length}` : null, className: "phone-order-1" },
+    shown.length
+      ? h("div", { class: "stack" }, shown.map((visit) => visitRow(context, visit, { showDay: !todays.includes(visit) })))
+      : h("p", { class: "muted", style: { margin: 0 } }, "No visits today."),
+    h("div", { style: { marginTop: "8px" } },
+      h("button", { class: "compact", onclick: () => openVisitForm(context, null, { day: today }) }, "+ Add a visit")));
 }
 
 // ---- Scheduled doses
@@ -226,7 +247,14 @@ function renderAsNeeded(context, now) {
 
 function renderQuickRecord(context) {
   const unit = context.preferences.fluidUnit;
-  const quickAmounts = unit === "ml" ? [120, 240, 360] : [4, 8, 12];
+  // Sips first (she often takes only a few mL at a time), then cupfuls in the household's unit.
+  const quickAmounts = [
+    ...SIP_AMOUNTS_ML.map((milliliters) => ({ milliliters, label: `+${milliliters} mL` })),
+    ...(unit === "ml" ? [120, 240] : [4, 8]).map((amount) => ({
+      milliliters: unit === "ml" ? amount : Math.round(amount * ML_PER_FLUID_OUNCE),
+      label: `+${amount} ${unit === "ml" ? "mL" : "oz"}`,
+    })),
+  ];
   return windowBox({ title: "Record", className: "phone-order-2" },
     h("div", { class: "quick-grid" }, ENTRY_TYPE_ORDER.map((typeKey) => {
       const type = ENTRY_TYPES[typeKey];
@@ -237,8 +265,11 @@ function renderQuickRecord(context) {
       h("span", { class: "small" }, "Quick water:"),
       quickAmounts.map((amount) => h("button", {
         class: "compact",
-        onclick: (event) => quickFluid(context, unit === "ml" ? amount : Math.round(amount * ML_PER_FLUID_OUNCE), event.currentTarget),
-      }, `+${amount} ${unit === "ml" ? "mL" : "oz"}`))),
+        onclick: (event) => quickFluid(context, amount.milliliters, event.currentTarget),
+      }, amount.label))),
+    h("div", { class: "quick-fluids" },
+      h("span", { class: "small" }, "Meal shake:"),
+      h("button", { class: "compact", onclick: () => openShakeForm(context) }, "Ensure / shake…")),
   );
 }
 
@@ -252,7 +283,20 @@ function renderNotable(context, now) {
       (record.safety_override || record.status === "refused" || record.status === "held" || record.effect === "not_effective")
       && new Date(record.given_at) >= since),
   }, { includeVoided: false });
-  return windowBox({ title: "Notable changes — last 3 days", extra: items.length ? `${items.length}` : null, bodyClass: "flush", className: "phone-order-5" },
+  // Care declined, cancelled visits and no-shows are worth seeing at a glance too.
+  const visitNotes = (context.data.visits ?? []).filter((visit) => !visit.voided_at
+    && ["declined", "cancelled_by_agency", "cancelled_by_family", "no_show"].includes(visit.status)
+    && new Date(visit.scheduled_at) >= since && new Date(visit.scheduled_at) <= now)
+    .sort((a, b) => b.scheduled_at.localeCompare(a.scheduled_at));
+  const count = items.length + visitNotes.length;
+  return windowBox({ title: "Notable changes — last 3 days", extra: count ? `${count}` : null, bodyClass: "flush", className: "phone-order-5" },
+    visitNotes.length ? h("div", { class: "notable-visits" }, visitNotes.map((visit) => h("div", { class: "timeline-item notable" },
+      h("div", { class: "when" }, formatDate(visit.scheduled_at, { weekday: "short" })),
+      h("span", { class: "type-badge", style: { background: "#5b6c8f" } }, "VI"),
+      h("div", { class: "what" },
+        h("div", { class: "summary" }, `${VISIT_STATUSES[visit.status].label}: ${visitTitle(visit)}`),
+        visit.outcome_note ? h("div", { class: "note small" }, visit.outcome_note) : null),
+      h("div", { class: "who" }, h("button", { class: "compact", onclick: () => openVisitForm(context, visit) }, "Open"))))) : null,
     h("div", { class: "well", style: { maxHeight: "320px" } },
-      renderTimeline(items, context, { emptyText: "Nothing flagged. Tick \"Notable change\" when recording to show it here.", showDay: true })));
+      renderTimeline(items, context, { emptyText: visitNotes.length ? "Nothing else flagged." : "Nothing flagged. Tick \"Notable change\" when recording to show it here.", showDay: true })));
 }

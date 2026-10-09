@@ -63,7 +63,7 @@ async function currentRevision(env: Env): Promise<number> {
 }
 
 /** Runs one write together with the revision bump and returns the write's first row. */
-async function write<T>(env: Env, statement: D1PreparedStatement): Promise<T | null> {
+export async function write<T>(env: Env, statement: D1PreparedStatement): Promise<T | null> {
   const [result] = await env.DB.batch<T>([statement, bumpRevision(env)]);
   return (result.results?.[0] as T | undefined) ?? null;
 }
@@ -77,7 +77,7 @@ function jsonList(value: unknown, field: string, check: (item: unknown) => boole
  * updated_at it was opened with; if the other caregiver saved in between, the save is
  * refused instead of silently erasing their change.
  */
-async function requireUnchanged(env: Env, body: Record<string, unknown>, current: { updated_at: string; updated_by: number | null }): Promise<void> {
+export async function requireUnchanged(env: Env, body: Record<string, unknown>, current: { updated_at: string; updated_by: number | null }): Promise<void> {
   const expected = body.expectedUpdatedAt;
   if (typeof expected !== "string" || expected === current.updated_at) return;
   const editor = current.updated_by
@@ -338,7 +338,7 @@ export async function handleChartRoute(request: Request, url: URL, env: Env, me:
   // Everything one screen needs for a time range, in one round trip.
   if (path === "/api/chart" && method === "GET") {
     const { from, to } = timeRange(url);
-    const [medications, administrations, entries, settings, caregivers, revision] = await Promise.all([
+    const [medications, administrations, entries, settings, caregivers, revision, visits] = await Promise.all([
       env.DB.prepare("SELECT * FROM medications ORDER BY name COLLATE NOCASE").all(),
       env.DB.prepare(
         `SELECT * FROM administrations WHERE (given_at >= ? AND given_at < ?) OR (scheduled_for >= ? AND scheduled_for < ?)
@@ -349,6 +349,7 @@ export async function handleChartRoute(request: Request, url: URL, env: Env, me:
       env.DB.prepare("SELECT key, value, updated_at FROM settings").all<{ key: string; value: string; updated_at: string }>(),
       env.DB.prepare("SELECT id, name, initials, removed_at FROM caregivers ORDER BY name").all(),
       currentRevision(env),
+      env.DB.prepare("SELECT * FROM visits WHERE scheduled_at >= ? AND scheduled_at < ? ORDER BY scheduled_at").bind(from, to).all(),
     ]);
     return json({
       from, to, revision, me,
@@ -358,6 +359,7 @@ export async function handleChartRoute(request: Request, url: URL, env: Env, me:
       settings: Object.fromEntries(settings.results.map((row) => [row.key, JSON.parse(row.value)])),
       settingsUpdatedAt: Object.fromEntries(settings.results.map((row) => [row.key, row.updated_at])),
       caregivers: caregivers.results,
+      visits: visits.results,
     });
   }
 
@@ -469,7 +471,7 @@ export async function handleChartRoute(request: Request, url: URL, env: Env, me:
 
   // A complete copy of the chart, for backups.
   if (path === "/api/export" && method === "GET") {
-    const tables = ["caregivers", "settings", "medications", "administrations", "entries"];
+    const tables = ["caregivers", "settings", "medications", "administrations", "entries", "visits"];
     const columns: Record<string, string> = { caregivers: "id, name, initials, created_at" };
     const dumps = await Promise.all(tables.map((table) =>
       env.DB.prepare(`SELECT ${columns[table] ?? "*"} FROM ${table}`).all()));

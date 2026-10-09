@@ -1,5 +1,6 @@
 // Day-by-day totals used by the Trends charts and the Report.
 
+import { ACCIDENT } from "./entry-types.js";
 import { doseSlots, slotCounts } from "./schedule.js";
 import { addDays, dateKey, startOfDay } from "./time.js";
 
@@ -39,7 +40,8 @@ export function dailySummaries(context, firstDay, lastDay) {
       bowelCount: of("bowel").length,
       bristolTypes: of("bowel").map((entry) => entry.data.bristol).filter(Boolean),
       urineCount: of("urine").length,
-      accidents: [...of("urine"), ...of("bowel")].filter((entry) => entry.data.continence === "Accident (brief)").length,
+      // Going in a brief is normal; only accidents outside the brief count.
+      accidents: [...of("urine"), ...of("bowel")].filter((entry) => entry.data.continence === ACCIDENT).length,
       moodAverage: average(behavior.filter((entry) => entry.data.moodScore).map((entry) => entry.data.moodScore)),
       behaviorsSeen: behavior.flatMap((entry) => entry.data.behaviors ?? []),
       painMaximum: pain.length ? Math.max(...pain.map((entry) => entry.data.score)) : null,
