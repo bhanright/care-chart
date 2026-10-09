@@ -221,14 +221,21 @@ label { display: block; }
 .field-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
 .field-grid .wide { grid-column: 1 / -1; }
 
+/* Group boxes: a real border, so the heading (legend) breaks the line the way Windows
+   group boxes did; the white offset line beside it gives the etched look. */
 fieldset {
-  border: none;
-  box-shadow: var(--etched);
+  border: 1px solid var(--shadow);
+  box-shadow: 1px 1px 0 var(--highlight), inset 1px 1px 0 var(--highlight);
   padding: 12px 10px 10px;
   margin: 10px 0 0;
   min-width: 0;
 }
-legend { padding: 0 4px; }
+/* The background hides the inner white line behind the heading text. */
+legend { padding: 0 4px; background: var(--surface); }
+/* Looks whose group boxes have no inner line keep the heading clear, since their boxes
+   often sit on other colors (XP's blue panels, white cards). */
+:root:is([data-skin="xp"], [data-skin="vista"], [data-skin="win7"], [data-skin="aqua"],
+  [data-skin="ubuntu"], [data-skin="yaru"], [data-skin="kde"], [data-skin="neon"]) legend { background: transparent; }
 
 /* Segmented choices (scales, chips): Win95 toggle buttons. */
 .choices { display: flex; flex-wrap: wrap; gap: 4px; }

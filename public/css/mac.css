@@ -107,7 +107,7 @@
   input, select, textarea { border: none; border-radius: 0; box-shadow: var(--sunken); background: var(--field); }
   input:focus, select:focus, textarea:focus { box-shadow: var(--sunken), 0 0 0 3px var(--selection); outline: none; }
   input[type="checkbox"], input[type="radio"] { box-shadow: none; accent-color: #555555; }
-  fieldset { box-shadow: var(--etched); border-radius: 4px; }
+  fieldset { border: 1px solid var(--platinum-dark); box-shadow: 1px 1px 0 #ffffff, inset 1px 1px 0 #ffffff; border-radius: 4px; }
 
   /* ---- Platinum windows: pinstripes, centered title, close box on the left */
 
