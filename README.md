@@ -298,7 +298,8 @@ Copy `.dev.vars.example` to `.dev.vars` for local development. The demo password
 | `public/css/win98.css`, `xp.css`, `vista.css`, `win7.css`, `win10.css`, `mac.css`, `ubuntu.css`, `yaru.css`, `kde.css`, `aqua.css`, `tahoe.css`, `neon.css`, `studio.css`, `honey.css`, `lavender.css`, `gram.css` | The other sixteen looks |
 | `public/images/win10-wallpaper.svg`, `tahoe-wallpaper.svg` | Wallpapers for the Windows 10 and macOS Tahoe looks (drawn for Care Chart) |
 | `design/logo-concepts/` | The logo concepts not used (kept for later), not served |
-| `public/images/logo.png`, `public/icon-192.png`, `public/icon-512.png` | The logo (a gradient cross with a heart, generated with GPT-5.4 Image 2) and the app icons made from it |
+| `public/images/logo.png`, `public/icons/` | The logo (a gradient cross with a heart, generated with GPT-5.4 Image 2) and the app icons, notification badge and Apple touch icon made from it |
+| `public/images/og-card.png` | The link preview shown when the address is pasted into a chat (Open Graph tags in `index.html`) |
 | `public/fonts/` | Fonts for Studio, Honey and Lavender, with their licenses |
 | `public/js/medication-search.js` | Medication name suggestions from `public/data/medications.json` |
 | `scripts/build-medication-list.mjs` | Builds that list from CMS, WHO and RxNorm data |

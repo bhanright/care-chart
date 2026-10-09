@@ -359,7 +359,7 @@ function saveNotified(keys) {
 
 async function notify(title, body, tag) {
   if (!("Notification" in window) || Notification.permission !== "granted") return;
-  const options = { body, tag, icon: "/icon-192.png", badge: "/icon-192.png", renotify: true };
+  const options = { body, tag, icon: "/icons/care-chart-192.png", badge: "/icons/badge-96.png", renotify: true };
   try {
     // Android only shows notifications through a service worker.
     if (serviceWorker) await serviceWorker.showNotification(title, options);

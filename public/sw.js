@@ -17,8 +17,8 @@ self.addEventListener("push", (event) => {
     tag: notice.tag,
     renotify: Boolean(notice.tag),
     requireInteraction: Boolean(notice.urgent),
-    icon: "/icon-192.png",
-    badge: "/icon-192.png",
+    icon: "/icons/care-chart-192.png",
+    badge: "/icons/badge-96.png", // a white silhouette; Android uses only its shape
     data: { url: notice.url },
   }));
 });
