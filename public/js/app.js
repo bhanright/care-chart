@@ -4,6 +4,7 @@
 import { accessLabel, hasAccess } from "./access.js";
 import { api } from "./api.js";
 import { openEntryForm } from "./forms.js";
+import { openLookPicker } from "./look-picker.js";
 import { DEFAULT_LOOK, LOOKS, lookByKey, schemeFor } from "./looks.js";
 import { serverRemindsThisDevice } from "./push.js";
 import { asNeededStatus, dosesNeedingAttention, isActive, normalizeMedication } from "./schedule.js";
@@ -219,9 +220,21 @@ function renderFrame() {
   ));
 }
 
+// Each device is offered the "Choose a look" window once, the first time someone signs in
+// there (device.lookChosen remembers it). Shown at most once per page load.
+let lookPickerOffered = false;
+function offerLookPicker() {
+  if (lookPickerOffered || device.lookChosen) return;
+  lookPickerOffered = true;
+  openLookPicker(context);
+}
+
 function render({ keepFocus = null } = {}) {
   if (!state.chart) return;
-  if (!frame) renderFrame();
+  if (!frame) {
+    renderFrame();
+    setTimeout(offerLookPicker); // after the first screen is drawn behind it
+  }
   const scroll = window.scrollY;
   // A background update must not pull the caret out of a field being typed in.
   const focusedId = keepFocus ?? (frame.panel.contains(document.activeElement) && document.activeElement.id ? document.activeElement.id : null);

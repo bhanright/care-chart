@@ -121,6 +121,11 @@ are far above what one household uses.
     sections as posts with story rings, the patient banner as a profile header, profile-style
     tabs, blue main buttons, the sunset gradient and a script wordmark; true black at night.
 
+  The first time someone signs in on a phone or computer, a **Choose a look** window
+  shows every look as a small picture, grouped the same way, with each look's color
+  schemes and Day/Night; choosing one restyles the app behind it at once. It is offered
+  once per device (`public/js/look-picker.js`).
+
   The looks and their groups are listed in `public/js/looks.js`; each one other than Classic is one stylesheet
   in `public/css/` whose rules all sit inside `:root[data-skin="<key>"]`, so looks never
   affect each other. Backgrounds are drawn in CSS, not copied from the originals. Studio's,
