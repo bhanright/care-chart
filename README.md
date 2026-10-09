@@ -35,7 +35,9 @@ are far above what one household uses.
   - **View only**: sees the whole chart (forms open read-only) and changes nothing.
 
   Everyone manages their own name, password, sign-outs and reminders. Nobody can change
-  their own access, so there is always someone with full access. Accounts made before
+  their own access, so there is always someone with full access. The caregiver who set
+  up the chart is its **owner**: they always have full access, and nobody else can
+  change it, remove them or reset their password. Accounts made before
   access levels existed have full access.
 - **Schedule changes** count from the moment they are made, so adding a dose time in the
   afternoon never makes that morning, or any earlier day, look missed. Doses recorded

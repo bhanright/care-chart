@@ -19,7 +19,17 @@ export interface Caregiver {
   name: string;
   initials: string;
   access: Access;
+  /** 1 for the chart's owner (who set it up): others cannot remove them, reset their
+   * password or change their access. */
+  owner?: number;
   removed_at?: string | null;
+}
+
+/** Refuses to let another caregiver take an action against the chart's owner. */
+async function protectOwner(env: Env, caregiverId: number, action: string): Promise<void> {
+  const other = await env.DB.prepare("SELECT name, owner FROM caregivers WHERE id = ?")
+    .bind(caregiverId).first<{ name: string; owner: number }>();
+  if (other?.owner) throw new HttpError(403, `${other.name} owns this chart, so nobody else can ${action}.`);
 }
 
 /** Tells every open screen to reload, the way chart writes do (see chart.ts). */
@@ -84,16 +94,16 @@ async function requireUnusedName(env: Env, name: string, exceptId = 0): Promise<
     : `There is already a caregiver named ${name}.`);
 }
 
-export async function createCaregiver(env: Env, name: string, password: string, initials = "", access: Access = "full"): Promise<Caregiver> {
+export async function createCaregiver(env: Env, name: string, password: string, initials = "", access: Access = "full", owner = false): Promise<Caregiver> {
   checkPassword(password);
   await requireUnusedName(env, name);
   const salt = crypto.getRandomValues(new Uint8Array(16));
   const hash = await hashPassword(password, salt);
   const finalInitials = (initials || initialsOf(name)).slice(0, 4).toUpperCase();
   const row = await env.DB.prepare(
-    `INSERT INTO caregivers (name, initials, password_hash, password_salt, created_at, access)
-     VALUES (?, ?, ?, ?, ?, ?) RETURNING id, name, initials, access`,
-  ).bind(name, finalInitials, hash, toBase64(salt), nowIso(), access).first<Caregiver>();
+    `INSERT INTO caregivers (name, initials, password_hash, password_salt, created_at, access, owner)
+     VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id, name, initials, access, owner`,
+  ).bind(name, finalInitials, hash, toBase64(salt), nowIso(), access, owner ? 1 : 0).first<Caregiver>();
   return row!;
 }
 
@@ -128,7 +138,7 @@ export async function currentCaregiver(request: Request, env: Env): Promise<Care
   const token = cookieValue(request, SESSION_COOKIE);
   if (!token) return null;
   return await env.DB.prepare(
-    `SELECT caregivers.id, caregivers.name, caregivers.initials, caregivers.access
+    `SELECT caregivers.id, caregivers.name, caregivers.initials, caregivers.access, caregivers.owner
        FROM sessions JOIN caregivers ON caregivers.id = sessions.caregiver_id
       WHERE sessions.token_hash = ? AND sessions.expires_at > ? AND caregivers.removed_at IS NULL`,
   ).bind(await sha256(token), nowIso()).first<Caregiver>();
@@ -201,7 +211,7 @@ export async function handlePublicAuthRoute(request: Request, url: URL, env: Env
       await recordFailure(env, address);
       throw new HttpError(403, "That setup code is not right.");
     }
-    const caregiver = await createCaregiver(env, text(body, "name", 60, true), text(body, "password", 200, true));
+    const caregiver = await createCaregiver(env, text(body, "name", 60, true), text(body, "password", 200, true), "", "full", true);
     const token = await startSession(env, caregiver.id);
     return json({ caregiver }, 200, { "Set-Cookie": sessionCookie(token, SESSION_DAYS * 86400) });
   }
@@ -244,7 +254,7 @@ export async function handleCaregiverRoute(request: Request, url: URL, env: Env,
   const method = request.method;
 
   if (path === "/api/caregivers" && method === "GET") {
-    const { results } = await env.DB.prepare("SELECT id, name, initials, access, removed_at FROM caregivers ORDER BY name").all<Caregiver>();
+    const { results } = await env.DB.prepare("SELECT id, name, initials, access, owner, removed_at FROM caregivers ORDER BY name").all<Caregiver>();
     return json({ caregivers: results });
   }
 
@@ -294,6 +304,7 @@ export async function handleCaregiverRoute(request: Request, url: URL, env: Env,
     if (!other) throw new HttpError(404, "No such caregiver.");
     if (action === "remove") {
       if (other.removed_at) throw new HttpError(409, `${other.name} was already removed.`);
+      await protectOwner(env, otherId, "remove them");
       const body = await readJson(request);
       if (!(await passwordMatches(env, me.id, text(body, "yourPassword", 200, true)))) {
         throw new HttpError(403, "Your password is not right.");
@@ -318,6 +329,7 @@ export async function handleCaregiverRoute(request: Request, url: URL, env: Env,
   if (accessMatch && method === "PUT") {
     const otherId = Number(accessMatch[1]);
     if (otherId === me.id) throw new HttpError(400, "You cannot change your own access. Another caregiver with full access can.");
+    await protectOwner(env, otherId, "change their access");
     const body = await readJson(request);
     const other = await env.DB.prepare("UPDATE caregivers SET access = ? WHERE id = ? RETURNING id")
       .bind(oneOf(body, "access", ACCESS_LEVELS), otherId).first();
@@ -337,6 +349,7 @@ export async function handleCaregiverRoute(request: Request, url: URL, env: Env,
   if (resetMatch && method === "PUT") {
     const otherId = Number(resetMatch[1]);
     if (otherId === me.id) throw new HttpError(400, "Use Change password for your own account.");
+    await protectOwner(env, otherId, "reset their password");
     const body = await readJson(request);
     if (!(await passwordMatches(env, me.id, text(body, "yourPassword", 200, true)))) {
       throw new HttpError(403, "Your password is not right.");

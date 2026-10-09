@@ -152,7 +152,8 @@ export function renderSettings(context) {
       await context.reload();
     }
   };
-  const accessCell = (caregiver) => isFull && caregiver.id !== context.me.id
+  // The chart's owner keeps full access; nobody else can change it, remove them or reset their password.
+  const accessCell = (caregiver) => caregiver.owner ? `${accessLabel(caregiver.access)} (owner)` : isFull && caregiver.id !== context.me.id
     ? h("select", {
       "aria-label": `Access for ${caregiver.name}`,
       onchange: (event) => changeAccess(caregiver, event.target.value),
@@ -222,7 +223,7 @@ export function renderSettings(context) {
             h("td", {}, caregiver.name, caregiver.id === context.me.id ? " (you)" : ""),
             h("td", {}, caregiver.initials),
             h("td", {}, accessCell(caregiver)),
-            !isFull ? null : h("td", {}, caregiver.id === context.me.id ? null
+            !isFull ? null : h("td", {}, caregiver.id === context.me.id || caregiver.owner ? null
               : h("div", { class: "row", style: { gap: "4px" } },
                 h("button", { class: "compact", onclick: () => openResetPassword(caregiver) }, "Reset password…"),
                 h("button", { class: "compact", onclick: () => openRemoveCaregiver(context, caregiver) }, "Remove…")))))))),
@@ -236,7 +237,8 @@ export function renderSettings(context) {
         h("details", { style: { marginTop: "8px" } },
           h("summary", { style: { cursor: "pointer" } }, "What each access level allows"),
           h("ul", { class: "small", style: { margin: "6px 0 0", paddingLeft: "20px" } },
-            ACCESS_LEVELS.map((level) => h("li", {}, h("b", {}, level.label), ": ", level.description)))),
+            ACCESS_LEVELS.map((level) => h("li", {}, h("b", {}, level.label), ": ", level.description)),
+            h("li", {}, h("b", {}, "Owner"), ": the caregiver who set up the chart always has full access; nobody else can change it, remove them or reset their password."))),
         isFull ? form(addCaregiver,
           h("p", { class: "small", style: { marginBottom: 0 } }, h("b", {}, "Add a caregiver"), " — choose how much they can change; you can change it later."),
           h("div", { class: "field-grid" },

@@ -347,7 +347,7 @@ export async function handleChartRoute(request: Request, url: URL, env: Env, me:
       env.DB.prepare("SELECT * FROM entries WHERE occurred_at >= ? AND occurred_at < ? ORDER BY occurred_at")
         .bind(from, to).all(),
       env.DB.prepare("SELECT key, value, updated_at FROM settings").all<{ key: string; value: string; updated_at: string }>(),
-      env.DB.prepare("SELECT id, name, initials, access, removed_at FROM caregivers ORDER BY name").all(),
+      env.DB.prepare("SELECT id, name, initials, access, owner, removed_at FROM caregivers ORDER BY name").all(),
       currentRevision(env),
       env.DB.prepare("SELECT * FROM visits WHERE scheduled_at >= ? AND scheduled_at < ? ORDER BY scheduled_at").bind(from, to).all(),
     ]);
@@ -472,7 +472,7 @@ export async function handleChartRoute(request: Request, url: URL, env: Env, me:
   // A complete copy of the chart, for backups.
   if (path === "/api/export" && method === "GET") {
     const tables = ["caregivers", "settings", "medications", "administrations", "entries", "visits"];
-    const columns: Record<string, string> = { caregivers: "id, name, initials, access, created_at" };
+    const columns: Record<string, string> = { caregivers: "id, name, initials, access, owner, created_at" };
     const dumps = await Promise.all(tables.map((table) =>
       env.DB.prepare(`SELECT ${columns[table] ?? "*"} FROM ${table}`).all()));
     const body = Object.fromEntries(tables.map((table, index) => [table, dumps[index].results]));
