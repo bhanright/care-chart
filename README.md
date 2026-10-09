@@ -118,7 +118,10 @@ steps say `npx`, since the execution policy blocks `npx.ps1`.
    npm run deploy
    ```
 
-   It prints the address, such as `https://care-chart.<your-name>.workers.dev`.
+   This copy is served at **https://carechart.us** (set under `routes` in `wrangler.jsonc`;
+   the domain must be a zone in the same Cloudflare account). For a deployment of your own,
+   change or remove `routes`, and set `workers_dev` to `true` to use a free
+   `https://care-chart.<your-name>.workers.dev` address instead.
 
 6. Open the address, enter the setup code, and create your account. Then, in
    **Settings → Caregivers**, add the other caregiver's account and tell them the
