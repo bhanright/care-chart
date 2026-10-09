@@ -70,7 +70,7 @@ are far above what one household uses.
   in the address: `classic`, `win98`, `xp`, `vista`, `win7`, `win10`, `mac`, `aqua`, `tahoe`, `ubuntu`,
   `yaru`, `kde`, `neon`, `studio`, `honey`, `lavender`, `gram`). The menu lists them in two
   groups, **OS-Like** (Classic through KDE Plasma) and **Other** (the rest):
-  - **Classic** (Windows 95), the default;
+  - **Classic** (Windows 95);
   - **Windows 98** (the teal desktop, flat Internet Explorer 4 style toolbar buttons, and
     Windows 98 color schemes: Windows Standard, Rainy Day, Eggplant, Marine, Plum, Spruce,
     Desert);
@@ -82,7 +82,8 @@ are far above what one household uses.
     close, pivot tabs, the dashboard figures as Start-menu live tiles, the Win32 green
     progress bar, dark Action Center notifications, the status bar as the taskbar on wide
     screens, a Hero-style wallpaper) in Blue, Teal, Green, Purple or Storm, with Windows
-    10's dark mode at night;
+    10's dark mode at night. It is the default, so a new device starts in it (sign-in
+    screen included) until its look is chosen;
   - **Mac OS 8/9** (Platinum: pinstriped title bars with centered titles and the close box on
     the left, ringed default buttons in dialogs, lavender highlights, Balloon Help tips);
   - **Mac OS X (Aqua)** (pinstripes, the red/yellow/green window buttons, gel buttons with a

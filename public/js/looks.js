@@ -171,7 +171,7 @@ export const LOOK_GROUPS = [
   { key: "other", label: "Other" },
 ];
 
-export const DEFAULT_LOOK = "classic";
+export const DEFAULT_LOOK = "win10";
 
 export function lookByKey(key) {
   return LOOKS.find((look) => look.key === key) ?? LOOKS.find((look) => look.key === DEFAULT_LOOK);
