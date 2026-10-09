@@ -4,10 +4,11 @@
 // color schemes; the chosen one is set as data-scheme on <html>.
 
 export const LOOKS = [
-  { key: "classic", label: "Classic (Windows 95)", schemes: [] },
+  { key: "classic", label: "Classic (Windows 95)", group: "os", schemes: [] },
   {
     key: "win98",
     label: "Windows 98",
+    group: "os",
     // A selection of Windows 98's named color schemes.
     schemes: [
       { value: "standard", label: "Windows Standard" }, { value: "rainy-day", label: "Rainy Day" },
@@ -18,11 +19,13 @@ export const LOOKS = [
   {
     key: "xp",
     label: "Windows XP",
+    group: "os",
     schemes: [{ value: "blue", label: "Blue" }, { value: "olive", label: "Olive Green" }, { value: "silver", label: "Silver" }],
   },
   {
     key: "vista",
     label: "Windows Vista",
+    group: "os",
     // Glass colors from Vista's Window Color and Appearance settings.
     schemes: [
       { value: "default", label: "Default" }, { value: "graphite", label: "Graphite" },
@@ -32,19 +35,32 @@ export const LOOKS = [
   {
     key: "win7",
     label: "Windows 7",
+    group: "os",
     // Aero glass colors from Windows 7's Personalization settings.
     schemes: [{ value: "sky", label: "Sky" }, { value: "twilight", label: "Twilight" }, { value: "leaf", label: "Leaf" }, { value: "rose", label: "Rose" }],
   },
-  { key: "mac", label: "Mac OS 8/9 (Platinum)", schemes: [] },
+  {
+    key: "win10",
+    label: "Windows 10",
+    group: "os",
+    // Accent colors from Windows 10's Colors settings.
+    schemes: [
+      { value: "blue", label: "Blue" }, { value: "teal", label: "Teal" }, { value: "green", label: "Green" },
+      { value: "purple", label: "Purple" }, { value: "storm", label: "Storm" },
+    ],
+  },
+  { key: "mac", label: "Mac OS 8/9 (Platinum)", group: "os", schemes: [] },
   {
     key: "aqua",
     label: "Mac OS X (Aqua)",
+    group: "os",
     // Aqua's two appearances, and the brushed-metal windows of 10.3 and 10.4.
     schemes: [{ value: "blue", label: "Blue" }, { value: "graphite", label: "Graphite" }, { value: "brushed-metal", label: "Brushed Metal" }],
   },
   {
     key: "ubuntu",
     label: "Ubuntu (GNOME 2, before Unity)",
+    group: "os",
     schemes: [
       { value: "human", label: "Human (6.06–9.10)" },
       { value: "ambiance", label: "Ambiance (10.04)" },
@@ -54,6 +70,7 @@ export const LOOKS = [
   {
     key: "yaru",
     label: "Ubuntu (modern)",
+    group: "os",
     // Ubuntu's accent colors (Settings → Appearance).
     schemes: [
       { value: "orange", label: "Orange" }, { value: "bark", label: "Bark" }, { value: "sage", label: "Sage" },
@@ -65,6 +82,7 @@ export const LOOKS = [
   {
     key: "kde",
     label: "KDE Plasma",
+    group: "os",
     // Accent colors from Plasma's Colors settings.
     schemes: [
       { value: "blue", label: "Breeze blue" }, { value: "purple", label: "Purple" }, { value: "green", label: "Green" },
@@ -74,6 +92,7 @@ export const LOOKS = [
   {
     key: "neon",
     label: "Neon Material (wildcard)",
+    group: "other",
     // An imagined operating system: Material Design crossed with cyberpunk.
     schemes: [
       { value: "neon-city", label: "Neon City" }, { value: "toxic", label: "Toxic" },
@@ -83,6 +102,7 @@ export const LOOKS = [
   {
     key: "studio",
     label: "Studio",
+    group: "other",
     // A 2024 studio-website style: cream paper, serif headings, one accent color.
     schemes: [
       { value: "lime", label: "Acid lime" }, { value: "sage", label: "Sage" },
@@ -93,6 +113,7 @@ export const LOOKS = [
   {
     key: "honey",
     label: "Honey",
+    group: "other",
     // Warm and friendly: butter, amber and brown, rounded type and a faint honeycomb.
     schemes: [
       { value: "wildflower", label: "Wildflower" }, { value: "clover", label: "Clover" },
@@ -102,12 +123,26 @@ export const LOOKS = [
   {
     key: "lavender",
     label: "Lavender",
+    group: "other",
     // Calm and soft: a lilac sky over faint sprigs, frosted cards and plum headings.
     schemes: [
       { value: "provence", label: "Provence" }, { value: "twilight", label: "Twilight" },
       { value: "sachet", label: "Sachet" },
     ],
   },
+  {
+    key: "gram",
+    label: "The Gram",
+    group: "other",
+    // In the style of a photo-sharing app's feed: posts, story rings, the sunset gradient.
+    schemes: [],
+  },
+];
+
+/** The headings the looks are listed under in Settings, in order. */
+export const LOOK_GROUPS = [
+  { key: "os", label: "OS-Like" },
+  { key: "other", label: "Other" },
 ];
 
 export const DEFAULT_LOOK = "classic";

@@ -1,0 +1,267 @@
+/* Care Chart, "The Gram" look: in the style of a photo-sharing app's feed (no logos or
+   brand art, just the general style). A clean white feed on near-white, every section a
+   post with a story ring beside its title, the patient banner as a profile header with
+   a ring around her picture spot, profile-style tabs marked by a line above the current
+   one, bright blue main buttons, gray secondary buttons, the purple-pink-orange sunset
+   gradient on rings and progress bars, and a script wordmark. Night is the app's dark mode.
+
+   Chosen per device in Settings → This device → Look; app.js sets data-skin="gram" on
+   <html>. Everything sits inside one :root[data-skin="gram"] block (CSS nesting), so this
+   file changes nothing in the other looks. */
+
+:root[data-skin="gram"] {
+  --sunset: linear-gradient(45deg, #feda75 0%, #fa7e1e 25%, #d62976 50%, #962fbf 75%, #4f5bd5 100%);
+  --page: #fafafa;
+  --post: #ffffff;
+  --ink: #262626;
+  --ink-soft: #8e8e8e;
+  --line: #dbdbdb;
+  --line-soft: #efefef;
+  --blue: #0095f6;
+  --blue-hover: #1877f2;
+  --secondary: #efefef;
+  --secondary-hover: #dbdbdb;
+  --heart: #ff3040;
+  --script: "Segoe Script", "Snell Roundhand", "Brush Script MT", "Apple Chancery", cursive;
+
+  /* ---- The classic tokens, re-pointed */
+  --desk: var(--page);
+  --surface: var(--post);
+  --surface-light: var(--line-soft);
+  --highlight: transparent;
+  --shadow: var(--line);
+  --dark-shadow: var(--line);
+  --field: var(--post);
+  --field-alternate: #fafafa;
+  --text: var(--ink);
+  --text-muted: var(--ink-soft);
+  --selection: var(--blue);
+  --selection-text: #ffffff;
+  --link: #00376b;
+  --raised: none;
+  --sunken: inset 0 0 0 1px var(--line);
+  --etched: none;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --mono: var(--font);
+  --base-size: 14px;
+  --overdue: #ed4956; --overdue-fill: #fde8ea; --due: #a05a00; --due-fill: #fff1d6;
+  --given: #1a7f37; --given-fill: #e3f5e8; --held: #7a3fb0; --held-fill: #f2e8fb;
+  --upcoming: #737373; --upcoming-fill: #efefef; --allergy: #ed4956; --notable: #ed4956;
+  --progress: var(--blue);
+  color-scheme: light;
+
+  /* ---- Night: the app's dark mode, true black */
+  &[data-theme="night"] {
+    --page: #000000; --post: #000000; --ink: #f5f5f5; --ink-soft: #a8a8a8; --line: #262626; --line-soft: #121212;
+    --secondary: #363636; --secondary-hover: #262626; --field-alternate: #0c0c0c; --link: #e0f1ff;
+    --overdue: #ff6b76; --overdue-fill: #3a1216; --due: #ffc56b; --due-fill: #33240b;
+    --given: #7ee2a0; --given-fill: #0f2a19; --held: #d1b3f5; --held-fill: #2a1a3d;
+    --upcoming: #c7c7c7; --upcoming-fill: #262626; --allergy: #ff6b76; --notable: #ff6b76;
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    &[data-theme="auto"] {
+      --page: #000000; --post: #000000; --ink: #f5f5f5; --ink-soft: #a8a8a8; --line: #262626; --line-soft: #121212;
+      --secondary: #363636; --secondary-hover: #262626; --field-alternate: #0c0c0c; --link: #e0f1ff;
+      --overdue: #ff6b76; --overdue-fill: #3a1216; --due: #ffc56b; --due-fill: #33240b;
+      --given: #7ee2a0; --given-fill: #0f2a19; --held: #d1b3f5; --held-fill: #2a1a3d;
+      --upcoming: #c7c7c7; --upcoming-fill: #262626; --allergy: #ff6b76; --notable: #ff6b76;
+      color-scheme: dark;
+    }
+  }
+
+  & body { background: var(--page); }
+
+  /* ---- Buttons: blue for the main action, gray for the rest */
+
+  button, .button {
+    border: none; border-radius: 8px; background: var(--secondary); color: var(--ink);
+    box-shadow: none; padding: 7px 16px; font-weight: 600;
+  }
+  button:hover:not(:disabled), .button:hover { background: var(--secondary-hover); }
+  button:active:not(:disabled), button.pressed { box-shadow: none; padding: 7px 16px; opacity: 0.7; }
+  button.default { outline: none; background: var(--blue); color: #ffffff; }
+  button.default:hover:not(:disabled) { background: var(--blue-hover); }
+  button[aria-pressed="true"], button[aria-pressed="true"]:active:not(:disabled) {
+    background: var(--ink); color: var(--page); padding: 7px 16px; box-shadow: none; opacity: 1;
+  }
+  button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--blue); outline-offset: 1px; box-shadow: none;
+  }
+  button:disabled { opacity: 0.4; text-shadow: none; }
+  button.compact, button.compact:active:not(:disabled) { padding: 4px 12px; }
+  .choices button, .choices button:active:not(:disabled), .choices button[aria-pressed="true"] { padding: 5px 13px; }
+  button.danger { color: var(--overdue); }
+  button.link-button, button.link-button:hover { border: none; background: none; color: var(--blue); padding: 0; }
+
+  input, select, textarea { border: 1px solid var(--line); border-radius: 6px; background: var(--field-alternate); box-shadow: none; color: var(--ink); }
+  input:focus, select:focus, textarea:focus { border-color: var(--ink-soft); outline: none; }
+  input[type="checkbox"], input[type="radio"] { border: none; accent-color: var(--blue); }
+  .field > span:first-child, .field > label:first-child { font-weight: 600; }
+  fieldset { box-shadow: none; border: 1px solid var(--line); border-radius: 8px; }
+  legend { font-weight: 600; }
+
+  /* ---- The top bar: a script wordmark on white */
+
+  .window.app-window { background: transparent; border: none; box-shadow: none; padding: 0; }
+  .app-window > .title-bar {
+    background: var(--post); color: var(--ink); text-shadow: none;
+    border: 1px solid var(--line); border-radius: 8px; margin: 0 0 14px; padding: 8px 10px 8px 16px; min-height: 0;
+    font: 400 1.85em/1.1 var(--script);
+    & .title-icon { display: none; }
+    & .title-button {
+      width: 30px; height: 30px; min-height: 0; padding: 0; border-radius: 50%;
+      background: transparent; border: 2px solid var(--ink); color: var(--ink); font: 700 14px/1 var(--font);
+    }
+  }
+  .app-window > .window-body { padding: 0 !important; }
+
+  /* ---- Profile tabs: small capitals, the current one marked by a line above it */
+
+  .tabs { padding: 0; gap: 0 22px; justify-content: center; border-top: 1px solid var(--line); margin-bottom: 16px; }
+  .tab, .tab:active:not(:disabled) {
+    background: transparent; border: none; border-radius: 0; box-shadow: none; top: 0; margin: -1px 0 0; transform: none;
+    padding: 14px 2px 12px; color: var(--ink-soft); opacity: 1;
+    font: 600 12px/1 var(--font); text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .tab:hover:not(:disabled) { color: var(--ink); background: transparent; }
+  .tab[aria-selected="true"], .tab[aria-selected="true"]:hover:not(:disabled) {
+    background: transparent; color: var(--ink); padding: 14px 2px 12px; box-shadow: inset 0 1px 0 var(--ink);
+  }
+  .tab .badge { background: var(--heart); color: #ffffff; border-radius: 999px; box-shadow: none; padding: 1px 6px; letter-spacing: 0; }
+  .tab-panel { background: transparent; border: none; box-shadow: none; margin: 0; padding: 0; min-height: 0; }
+
+  /* ---- Sections: posts, with a story ring beside the title */
+
+  .window:not(.app-window):not(.dialog):not(.login) {
+    background: var(--post); border: 1px solid var(--line); border-radius: 8px; box-shadow: none; padding: 0; overflow: clip;
+    & > .title-bar {
+      background: none; color: var(--ink); text-shadow: none;
+      border-bottom: 1px solid var(--line-soft); padding: 10px 14px; min-height: 0; gap: 10px;
+      font: 600 14px/1.3 var(--font);
+      & .title-icon { display: none; }
+      & .title { white-space: normal; }
+      & .title-extra { color: var(--ink-soft); font-weight: 400; font-size: 1em; opacity: 1; }
+    }
+    & > .title-bar::before {
+      content: ""; flex: none; width: 26px; height: 26px; border-radius: 50%;
+      background: radial-gradient(circle closest-side, var(--secondary-hover) 0 70%, var(--post) 71% 82%, transparent 83%), var(--sunset);
+    }
+  }
+
+  .status-bar { padding: 18px 4px 0; gap: 14px; color: var(--ink-soft); font-size: 12px; justify-content: center; flex-wrap: wrap; }
+  .status-bar > * { box-shadow: none; padding: 0; }
+  .status-light { border-radius: 50%; box-shadow: none; }
+
+  /* ---- The patient banner as a profile header */
+
+  .patient-banner {
+    background: transparent; border: none; box-shadow: none; padding: 6px 4px 18px; margin-bottom: 0;
+    & .patient-name { font-size: 1.45em; font-weight: 400; display: flex; align-items: center; gap: 14px; }
+    & .patient-name::before {
+      content: ""; flex: none; width: 58px; height: 58px; border-radius: 50%;
+      /* The picture spot: a gray circle, a white gap, then the gradient ring. */
+      background: radial-gradient(circle closest-side, var(--secondary-hover) 0 78%, var(--page) 79% 88%, transparent 89%), var(--sunset);
+    }
+    & .patient-name span { font-weight: 600; }
+    & .patient-facts { gap: 6px 16px; color: var(--ink); }
+    & .allergies { color: var(--allergy); }
+    & .clock { font-family: var(--font); color: var(--ink-soft); font-size: 0.95em; }
+  }
+
+  .tiles { gap: 10px; margin-bottom: 16px; }
+  .tile {
+    background: var(--post); border: 1px solid var(--line); border-radius: 8px; box-shadow: none; padding: 10px 14px;
+    & .tile-label { order: 2; text-transform: none; letter-spacing: 0; color: var(--ink-soft); font-size: 0.88em; }
+    & .tile-value { order: 1; font: 600 1.45em/1.15 var(--font); }
+    & .progress { order: 3; }
+    & .tile-detail { order: 4; }
+  }
+  .tile.alert { background: var(--overdue-fill); border-color: transparent; }
+  .tile.warn { background: var(--due-fill); border-color: transparent; }
+
+  .progress { height: 4px; padding: 0; border: none; border-radius: 999px; box-shadow: none; background: var(--line); overflow: hidden; }
+  .progress > div, .progress.over > div { background: var(--sunset); border-radius: 999px; }
+
+  /* ---- Lists inside posts */
+
+  .dose-row .dose-time, .timeline-item .when, .status-chip, .visit-when { font-family: var(--font); font-variant-numeric: tabular-nums; }
+  .well { box-shadow: none; }
+  .dose-row { box-shadow: none; border: 1px solid var(--line-soft); border-left-width: 4px; border-radius: 8px; }
+  .prn-card, .visit-row { box-shadow: none; border: 1px solid var(--line-soft); border-radius: 8px; }
+  .quick-grid button { border-radius: 12px; }
+  .type-badge { border-radius: 6px; box-shadow: none; }
+  .warning-box { box-shadow: none; border-radius: 8px; }
+
+  .status-chip { border: none; border-radius: 999px; padding: 1px 9px; font-weight: 600; }
+  button.status-chip, button.status-chip:active:not(:disabled) {
+    border: none; border-radius: 999px; padding: 1px 9px; box-shadow: none; opacity: 1;
+    background: var(--upcoming-fill); color: var(--upcoming);
+  }
+  button.status-chip.given { background: var(--given-fill); color: var(--given); }
+  button.status-chip.due { background: var(--due-fill); color: var(--due); }
+  button.status-chip.overdue, button.status-chip.missed { background: var(--overdue-fill); color: var(--overdue); }
+  button.status-chip.refused, button.status-chip.held { background: var(--held-fill); color: var(--held); }
+
+  table.grid th { background: var(--post); box-shadow: inset 0 -1px var(--line); font-weight: 600; color: var(--ink-soft); }
+  table.grid td { border-bottom: 1px solid var(--line-soft); }
+  table.grid tr:nth-child(even) td { background: var(--field-alternate); }
+  .timeline-item { border-bottom: 1px solid var(--line-soft); }
+  .day-heading { background: var(--field-alternate); box-shadow: inset 0 -1px var(--line); font-weight: 600; }
+
+  .calendar { background: transparent; box-shadow: none; gap: 4px; padding: 8px; }
+  .calendar-weekday { background: transparent; color: var(--ink-soft); font-weight: 600; }
+  .calendar-day { border-radius: 8px; box-shadow: inset 0 0 0 1px var(--line-soft); }
+  .calendar-day.selected { box-shadow: inset 0 0 0 2px var(--ink); }
+  .calendar-day.today .calendar-date { border-radius: 999px; background: var(--heart); color: #ffffff; }
+  button.status-chip.calendar-visit, button.status-chip.calendar-visit:active:not(:disabled) { border-radius: 6px; padding: 1px 5px; }
+
+  /* ---- Dialogs, toasts and suggestions */
+
+  .dialog-layer { background: rgba(0, 0, 0, 0.65); }
+  .dialog {
+    background: var(--post); border: none; border-radius: 12px; padding: 0; overflow: clip;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+    & > .title-bar {
+      background: var(--post); color: var(--ink); text-shadow: none; border-bottom: 1px solid var(--line);
+      padding: 0 6px 0 48px; min-height: 44px; justify-content: center; text-align: center;
+      font: 600 16px/1.2 var(--font);
+      & .title { text-align: center; }
+      & .title-icon { display: none; }
+      & .title-button { width: 36px; height: 36px; min-height: 0; padding: 0; border-radius: 50%; background: transparent; color: var(--ink); font: 400 16px/1 var(--font); }
+    }
+    & .window-body { padding: 14px 16px; }
+  }
+  .dialog-buttons { border-top: 1px solid var(--line); padding: 12px 16px; }
+  .toasts { left: 0; right: 0; bottom: 18px; max-width: none; align-items: center; }
+  .toast {
+    background: #262626; color: #ffffff; border: none; border-radius: 8px; padding: 10px 10px 10px 16px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+    & button { background: transparent; color: var(--blue); padding: 4px 8px; }
+    & button:hover:not(:disabled) { background: rgba(255, 255, 255, 0.1); }
+  }
+  .toast.error { background: var(--overdue); & button { color: #ffffff; } }
+  .suggestions { border-radius: 8px; border: 1px solid var(--line); box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15); }
+  .suggestions li[aria-selected="true"] { background: var(--line-soft); color: var(--ink); }
+  .suggestions li[aria-selected="true"] .muted { color: var(--ink-soft); }
+  .who-badge, .otc-badge { border-radius: 999px; box-shadow: none; }
+
+  .login-wrap { background: var(--page); }
+  .window.login {
+    background: var(--post); border: 1px solid var(--line); border-radius: 2px; padding: 0; box-shadow: none;
+    & > .title-bar { background: none; color: var(--ink-soft); text-shadow: none; justify-content: center; font: 600 13px/1 var(--font); padding: 18px 0 0; & .title-icon { display: none; } }
+    & .login-art svg { display: none; }
+    & .login-art b { font: 400 2.2em/1.2 var(--script); }
+  }
+  .report { border-radius: 8px; box-shadow: 0 0 0 1px var(--line); }
+
+  /* ---- Phones */
+
+  @media (max-width: 600px) {
+    .tabs { flex-wrap: wrap; overflow: visible; gap: 0 4px; }
+    .tab, .tab[aria-selected="true"] { flex: 1 0 30%; padding: 12px 2px 10px; }
+    .patient-banner .clock { display: none; }
+    .dialog-layer { align-items: flex-end; padding: 0; }
+    .dialog { border-radius: 12px 12px 0 0; }
+  }
+}

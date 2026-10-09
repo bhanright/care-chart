@@ -53,9 +53,10 @@ are far above what one household uses.
   each phone's, so both phones agree on which dose is which even if one is traveling.
 - Phone-friendly, installable to the home screen, a Night theme and a Large text option
   (per device), and keyboard shortcuts on computers (press `?`).
-- **Fourteen looks**, chosen per device in Settings → This device → Look (or with `?look=<key>`
-  in the address: `classic`, `win98`, `xp`, `vista`, `win7`, `mac`, `aqua`, `ubuntu`, `yaru`,
-  `kde`, `neon`, `studio`, `honey`, `lavender`):
+- **Sixteen looks**, chosen per device in Settings → This device → Look (or with `?look=<key>`
+  in the address: `classic`, `win98`, `xp`, `vista`, `win7`, `win10`, `mac`, `aqua`, `ubuntu`,
+  `yaru`, `kde`, `neon`, `studio`, `honey`, `lavender`, `gram`). The menu lists them in two
+  groups, **OS-Like** (Classic through KDE Plasma) and **Other** (the rest):
   - **Classic** (Windows 95), the default;
   - **Windows 98** (the teal desktop, flat Internet Explorer 4 style toolbar buttons, and
     Windows 98 color schemes: Windows Standard, Rainy Day, Eggplant, Marine, Plum, Spruce,
@@ -64,6 +65,11 @@ are far above what one household uses.
     buttons, green progress blocks, a Bliss-style sky) in XP's Blue, Olive Green or Silver;
   - **Windows 7** (Aero: tinted glass frames, the wide red close button, glossy buttons,
     Control Panel–style sections, a Harmony-style wallpaper) in Sky, Twilight, Leaf or Rose;
+  - **Windows 10** (flat and square: white title bars with wide caption buttons and the red
+    close, pivot tabs, the dashboard figures as Start-menu live tiles, the Win32 green
+    progress bar, dark Action Center notifications, the status bar as the taskbar on wide
+    screens, a Hero-style wallpaper) in Blue, Teal, Green, Purple or Storm, with Windows
+    10's dark mode at night;
   - **Mac OS 8/9** (Platinum: pinstriped title bars with centered titles and the close box on
     the left, ringed default buttons in dialogs, lavender highlights, Balloon Help tips);
   - **Mac OS X (Aqua)** (pinstripes, the red/yellow/green window buttons, gel buttons with a
@@ -93,9 +99,12 @@ are far above what one household uses.
     tabs, in Wildflower, Clover or Buckwheat;
   - **Lavender**, calm and soft: a misty lilac sky over faint lavender sprigs, frosted white
     cards with plum headings marked by a lilac bar, a pill-shaped tab bar and Nunito, in
-    Provence, Twilight or Sachet (dusty lavender with a sage-green accent).
+    Provence, Twilight or Sachet (dusty lavender with a sage-green accent);
+  - **The Gram**, in the style of a photo-sharing app's feed (no logos or brand art):
+    sections as posts with story rings, the patient banner as a profile header, profile-style
+    tabs, blue main buttons, the sunset gradient and a script wordmark; true black at night.
 
-  The looks are listed in `public/js/looks.js`; each one other than Classic is one stylesheet
+  The looks and their groups are listed in `public/js/looks.js`; each one other than Classic is one stylesheet
   in `public/css/` whose rules all sit inside `:root[data-skin="<key>"]`, so looks never
   affect each other. Backgrounds are drawn in CSS, not copied from the originals. Studio's,
   Honey's and Lavender's fonts are in `public/fonts/` under the SIL Open Font License (license texts
@@ -257,8 +266,9 @@ Copy `.dev.vars.example` to `.dev.vars` for local development. The demo password
 | `public/js/schedule.js` | Dose timing: due, overdue, as-needed limits; shared with the reminder job (tested by `scripts/check-schedule.mjs`) |
 | `public/js/time.js` | Household-time-zone dates and clock times; shared with the reminder job |
 | `public/js/push.js` | Turning reminders on and off on a device |
-| `public/js/looks.js` | The looks and their color schemes |
-| `public/css/win98.css`, `xp.css`, `vista.css`, `win7.css`, `mac.css`, `ubuntu.css`, `yaru.css`, `kde.css`, `aqua.css`, `neon.css`, `studio.css`, `honey.css`, `lavender.css` | The other thirteen looks |
+| `public/js/looks.js` | The looks, their groups and their color schemes |
+| `public/css/win98.css`, `xp.css`, `vista.css`, `win7.css`, `win10.css`, `mac.css`, `ubuntu.css`, `yaru.css`, `kde.css`, `aqua.css`, `neon.css`, `studio.css`, `honey.css`, `lavender.css`, `gram.css` | The other fifteen looks |
+| `public/images/win10-wallpaper.svg` | The Windows 10 look's wallpaper (drawn for Care Chart) |
 | `public/fonts/` | Fonts for Studio, Honey and Lavender, with their licenses |
 | `public/js/medication-search.js` | Medication name suggestions from `public/data/medications.json` |
 | `scripts/build-medication-list.mjs` | Builds that list from CMS, WHO and RxNorm data |

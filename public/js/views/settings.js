@@ -3,7 +3,7 @@
 
 import { api } from "../api.js";
 import { ML_PER_FLUID_OUNCE } from "../entry-types.js";
-import { LOOKS, lookByKey, schemeFor } from "../looks.js";
+import { LOOK_GROUPS, LOOKS, lookByKey, schemeFor } from "../looks.js";
 import { pushStatus, pushSupported, sendTestPush, turnOffPush, turnOnPush } from "../push.js";
 import { deviceTimeZone, getHouseholdTimeZone } from "../time.js";
 import { field, guardSave, h, openDialog, toast, windowBox } from "../ui.js";
@@ -74,7 +74,9 @@ export function renderSettings(context) {
   const sizeSelect = h("select", { onchange: () => context.setDevice({ textSize: sizeSelect.value }) },
     [["normal", "Normal"], ["large", "Large"]].map(([value, label]) => h("option", { value, selected: device.textSize === value }, label)));
   const skinSelect = h("select", { onchange: () => { context.setDevice({ skin: skinSelect.value }); context.rerender(); } },
-    LOOKS.map((look) => h("option", { value: look.key, selected: device.skin === look.key }, look.label)));
+    LOOK_GROUPS.map((group) => h("optgroup", { label: group.label },
+      LOOKS.filter((look) => look.group === group.key)
+        .map((look) => h("option", { value: look.key, selected: device.skin === look.key }, look.label)))));
   const currentLook = lookByKey(device.skin);
   const currentScheme = schemeFor(device.skin, device.schemes);
   const schemeSelect = h("select", {

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+  <!-- In the spirit of Windows 10's "Hero" wallpaper (drawn for Care Chart, not the original
+       image): a glowing four-pane window in perspective, light pouring out of it to the left. -->
+  <defs>
+    <linearGradient id="night" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#001433"/>
+      <stop offset="0.55" stop-color="#002a66"/>
+      <stop offset="1" stop-color="#000a1f"/>
+    </linearGradient>
+    <linearGradient id="beam" x1="1" y1="0" x2="0" y2="0">
+      <stop offset="0" stop-color="#5fc4ff" stop-opacity="0.55"/>
+      <stop offset="0.6" stop-color="#1a7fe0" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#0050b0" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="pane" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#bfe8ff"/>
+      <stop offset="0.45" stop-color="#3fb0ff"/>
+      <stop offset="1" stop-color="#0068d0"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="28"/></filter>
+    <filter id="soft"><feGaussianBlur stdDeviation="6"/></filter>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#night)"/>
+  <polygon points="1030,300 1030,690 0,1000 0,40" fill="url(#beam)" filter="url(#soft)"/>
+  <polygon points="1030,320 1030,500 0,420 0,180" fill="url(#beam)" opacity="0.6"/>
+  <polygon points="1030,505 1030,680 0,900 0,640" fill="url(#beam)" opacity="0.5"/>
+  <g filter="url(#glow)" opacity="0.9">
+    <polygon points="1030,300 1480,230 1480,745 1030,690" fill="#2a9dff"/>
+  </g>
+  <g fill="url(#pane)">
+    <polygon points="1030,300 1220,271 1220,482 1030,490"/>
+    <polygon points="1236,268 1480,230 1480,480 1236,482"/>
+    <polygon points="1030,506 1220,498 1220,706 1030,690"/>
+    <polygon points="1236,498 1480,496 1480,745 1236,708"/>
+  </g>
+</svg>
