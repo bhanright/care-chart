@@ -211,6 +211,10 @@ function renderFrame() {
         h("button", { class: "title-button", title: "Keyboard shortcuts", "aria-label": "Keyboard shortcuts", onclick: showShortcuts }, "?"),
       ),
       h("div", { class: "window-body", style: { padding: "6px" } },
+        // On phones this header takes the place of the title bar (see chart.css).
+        h("header", { class: "app-header" },
+          h("img", { src: "/images/logo.png", alt: "", width: "34", height: "34" }),
+          h("span", { class: "app-header-name" }, "Care Chart")),
         frame.banner,
         frame.tabs,
         frame.panel,

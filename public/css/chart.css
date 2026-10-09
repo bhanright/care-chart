@@ -601,8 +601,20 @@ body.dialog-open { overflow: hidden; }
   .phone-order-1 { order: 1; } .phone-order-2 { order: 2; } .phone-order-3 { order: 3; }
   .phone-order-4 { order: 4; } .phone-order-5 { order: 5; } .phone-order-6 { order: 6; }
 }
+/* The phone header: the logo and the name, in place of the window's title bar. */
+.app-header { display: none; }
+
 @media (max-width: 600px) {
   .app { padding: 6px 4px; gap: 6px; }
+  .app-window > .title-bar { display: none !important; }
+  .app-header {
+    display: flex; align-items: center; gap: 10px;
+    /* Clear of the phone's status bar when installed to the home screen. */
+    padding: calc(10px + env(safe-area-inset-top, 0px)) 6px 12px;
+    color: var(--text);
+  }
+  .app-header img { width: 34px; height: 34px; flex: none; }
+  .app-header-name { font-size: 1.45em; font-weight: bold; letter-spacing: -0.01em; }
   /* All six tabs stay visible on a phone: two rows instead of a hidden scroll. */
   .tabs { flex-wrap: wrap; overflow: visible; padding: 4px 2px 0; }
   .tab { flex: 1 0 30%; padding: 4px 6px; top: 0; margin-bottom: -1px; }

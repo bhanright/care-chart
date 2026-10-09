@@ -64,7 +64,8 @@ are far above what one household uses.
   keys (below), a device still reminds you while the app is open.
 - **One household clock**: dose times follow the household time zone (Settings), not
   each phone's, so both phones agree on which dose is which even if one is traveling.
-- Phone-friendly, installable to the home screen, a Night theme and a Large text option
+- Phone-friendly (on phones the logo and name form a header in place of the window's
+  title bar, clear of the status bar when installed), installable to the home screen, a Night theme and a Large text option
   (per device), and keyboard shortcuts on computers (press `?`).
 - **Seventeen looks**, chosen per device in Settings → This device → Look (or with `?look=<key>`
   in the address: `classic`, `win98`, `xp`, `vista`, `win7`, `win10`, `mac`, `aqua`, `tahoe`, `ubuntu`,

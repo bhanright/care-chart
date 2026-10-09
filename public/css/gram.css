@@ -260,6 +260,7 @@
   /* ---- Phones */
 
   @media (max-width: 600px) {
+    .app-header-name { font: 400 1.75em/1.1 var(--script); }
     .tabs { flex-wrap: wrap; overflow: visible; gap: 0 4px; }
     .tab, .tab[aria-selected="true"] { flex: 1 0 30%; padding: 12px 2px 10px; }
     .patient-banner .clock { display: none; }
