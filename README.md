@@ -269,6 +269,7 @@ Copy `.dev.vars.example` to `.dev.vars` for local development. The demo password
 | `public/js/looks.js` | The looks, their groups and their color schemes |
 | `public/css/win98.css`, `xp.css`, `vista.css`, `win7.css`, `win10.css`, `mac.css`, `ubuntu.css`, `yaru.css`, `kde.css`, `aqua.css`, `neon.css`, `studio.css`, `honey.css`, `lavender.css`, `gram.css` | The other fifteen looks |
 | `public/images/win10-wallpaper.svg` | The Windows 10 look's wallpaper (drawn for Care Chart) |
+| `public/images/logo.png`, `public/icon-192.png`, `public/icon-512.png` | The logo (a gradient cross with a heart, generated with GPT-5.4 Image 2) and the app icons made from it |
 | `public/fonts/` | Fonts for Studio, Honey and Lavender, with their licenses |
 | `public/js/medication-search.js` | Medication name suggestions from `public/data/medications.json` |
 | `scripts/build-medication-list.mjs` | Builds that list from CMS, WHO and RxNorm data |

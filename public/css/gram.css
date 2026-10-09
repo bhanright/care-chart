@@ -145,7 +145,7 @@
     }
     & > .title-bar::before {
       content: ""; flex: none; width: 26px; height: 26px; border-radius: 50%;
-      background: url("/images/chart-mark.svg") center / 50% no-repeat,
+      background: url("/images/logo.png") center / 56% no-repeat,
         radial-gradient(circle closest-side, #ffffff 0 70%, var(--post) 71% 82%, transparent 83%), var(--sunset);
     }
   }
@@ -161,8 +161,8 @@
     & .patient-name { font-size: 1.45em; font-weight: 400; display: flex; align-items: center; gap: 14px; }
     & .patient-name::before {
       content: ""; flex: none; width: 58px; height: 58px; border-radius: 50%;
-      /* The picture spot: the Care Chart clipboard on white, a gap, then the gradient ring. */
-      background: url("/images/chart-mark.svg") center / 46% no-repeat,
+      /* The picture spot: the Care Chart logo on white, a gap, then the gradient ring. */
+      background: url("/images/logo.png") center / 54% no-repeat,
         radial-gradient(circle closest-side, #ffffff 0 78%, var(--page) 79% 88%, transparent 89%), var(--sunset);
     }
     & .patient-name span { font-weight: 600; }
