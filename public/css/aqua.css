@@ -1,0 +1,303 @@
+/* Care Chart, "Mac OS X (Aqua)" look: Mac OS X 10.0–10.4. Pinstriped windows, the
+   red/yellow/green window buttons on the left, centered titles in Lucida Grande, glossy
+   "gel" push buttons with the default one in pulsing Aqua blue, a segmented tab control,
+   the striped blue progress bar, pop-up forms that drop down from the top like Aqua
+   sheets, Growl-style notices, and group boxes for sections, over an Aqua-blue wallpaper
+   drawn in CSS. Schemes: Blue and Graphite (the two Aqua appearances) and Brushed Metal.
+
+   Chosen per device in Settings → This device → Look; app.js sets data-skin="aqua" and
+   data-scheme on <html>. Everything sits inside one :root[data-skin="aqua"] block (CSS
+   nesting), so this file changes nothing in the other looks. */
+
+:root[data-skin="aqua"] {
+  /* ---- Blue (the default appearance) */
+  --gel: linear-gradient(180deg, #d3e9ff 0%, #8ac2fb 45%, #3e8ef0 50%, #5fa8f7 80%, #9fd0ff 100%);
+  --gel-border: #2c5e9e;
+  --gel-text: #00163a;
+  --selection-color: #3875d7;
+  --pinstripes: repeating-linear-gradient(180deg, #ececec 0 2px, #f6f6f6 2px 4px);
+  --window-title: linear-gradient(180deg, #ededed 0%, #d6d6d6 100%);
+  --wallpaper:
+    radial-gradient(ellipse 80% 40% at 60% 35%, rgba(255, 255, 255, 0.45), transparent 70%),
+    radial-gradient(ellipse 60% 30% at 30% 65%, rgba(140, 210, 255, 0.5), transparent 70%),
+    linear-gradient(170deg, transparent 40%, rgba(255, 255, 255, 0.25) 48%, transparent 56%),
+    radial-gradient(ellipse 130% 110% at 50% 40%, #6fb2f5 0%, #2b6fd1 45%, #0e2f73 100%);
+
+  &[data-scheme="graphite"] {
+    --gel: linear-gradient(180deg, #e8ecf0 0%, #b5bfc9 45%, #7d8b99 50%, #94a2b0 80%, #c4ced8 100%);
+    --gel-border: #4f5b67;
+    --gel-text: #10161c;
+    --selection-color: #7a8a99;
+    --wallpaper:
+      radial-gradient(ellipse 80% 40% at 60% 35%, rgba(255, 255, 255, 0.3), transparent 70%),
+      radial-gradient(ellipse 130% 110% at 50% 40%, #9aa6b2 0%, #5d6975 50%, #2b333b 100%);
+  }
+  &[data-scheme="brushed-metal"] {
+    --pinstripes:
+      repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 1px, rgba(0, 0, 0, 0.03) 1px 3px),
+      linear-gradient(180deg, #d4d4d4 0%, #b4b4b4 100%);
+    --window-title: transparent;
+  }
+
+  /* ---- The classic tokens, re-pointed */
+  --desk: #2b6fd1;
+  --surface: #ececec;
+  --surface-light: #f6f6f6;
+  --highlight: #ffffff;
+  --shadow: #a5a5a5;
+  --dark-shadow: #6e6e6e;
+  --field: #ffffff;
+  --field-alternate: #edf3fe; /* Aqua's alternating list rows */
+  --text: #000000;
+  --text-muted: #555555;
+  --selection: var(--selection-color);
+  --selection-text: #ffffff;
+  --link: #1550c8;
+  --raised: none;
+  --sunken: inset 0 1px 2px rgba(0, 0, 0, 0.25), 0 0 0 1px #9a9a9a;
+  --etched: none;
+  --font: "Lucida Grande", "Lucida Sans Unicode", "Segoe UI", Tahoma, sans-serif;
+  --mono: "Monaco", "Lucida Console", Consolas, monospace;
+  --base-size: 13.5px;
+  --progress: var(--selection-color);
+  color-scheme: light;
+
+  /* ---- Night: dark pinstripes (Aqua had no dark mode) */
+  &[data-theme="night"] {
+    --pinstripes: repeating-linear-gradient(180deg, #2c2d30 0 2px, #26272a 2px 4px);
+    --window-title: linear-gradient(180deg, #4a4b4f 0%, #36373a 100%);
+    --surface: #2a2b2e; --surface-light: #34353a; --highlight: #55565c; --shadow: #18181a; --dark-shadow: #000000;
+    --field: #1e1f22; --field-alternate: #252a33; --text: #ececec; --text-muted: #b0b0b5; --link: #8fbaff;
+    --sunken: inset 0 1px 2px rgba(0, 0, 0, 0.6), 0 0 0 1px #4a4b50;
+    --overdue: #ff9a9a; --overdue-fill: #4a1d1d; --due: #ffd36b; --due-fill: #45391a;
+    --given: #93e093; --given-fill: #1d3a1f; --held: #cdb5f2; --held-fill: #33284a;
+    --upcoming: #c9cdd1; --upcoming-fill: #2c3033; --allergy: #ff8a8a; --notable: #ff8a8a;
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    &[data-theme="auto"] {
+      --pinstripes: repeating-linear-gradient(180deg, #2c2d30 0 2px, #26272a 2px 4px);
+      --window-title: linear-gradient(180deg, #4a4b4f 0%, #36373a 100%);
+      --surface: #2a2b2e; --surface-light: #34353a; --highlight: #55565c; --shadow: #18181a; --dark-shadow: #000000;
+      --field: #1e1f22; --field-alternate: #252a33; --text: #ececec; --text-muted: #b0b0b5; --link: #8fbaff;
+      --sunken: inset 0 1px 2px rgba(0, 0, 0, 0.6), 0 0 0 1px #4a4b50;
+      --overdue: #ff9a9a; --overdue-fill: #4a1d1d; --due: #ffd36b; --due-fill: #45391a;
+      --given: #93e093; --given-fill: #1d3a1f; --held: #cdb5f2; --held-fill: #33284a;
+      --upcoming: #c9cdd1; --upcoming-fill: #2c3033; --allergy: #ff8a8a; --notable: #ff8a8a;
+      color-scheme: dark;
+    }
+  }
+
+  & body { background: var(--wallpaper), var(--desk); background-attachment: fixed; }
+
+  /* ---- Gel buttons: white and glossy; the default one is Aqua blue and gently pulses */
+
+  button, .button {
+    border: 1px solid #8a8a8a;
+    border-radius: 999px;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.6) 48%, rgba(255, 255, 255, 0) 52%),
+      linear-gradient(180deg, #f4f4f4 0%, #dcdcdc 60%, #f2f2f2 100%);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+    color: #000000;
+    padding: 4px 16px;
+    font-family: var(--font);
+  }
+  button:active:not(:disabled), button.pressed {
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.25) 48%, rgba(255, 255, 255, 0) 52%),
+      linear-gradient(180deg, #c8c8c8 0%, #a9a9a9 60%, #c8c8c8 100%);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+    padding: 4px 16px;
+  }
+  button.default, button[aria-pressed="true"], button[aria-pressed="true"]:active:not(:disabled) {
+    outline: none; background: var(--gel); border-color: var(--gel-border); color: var(--gel-text); padding: 4px 16px;
+  }
+  button.default { animation: aqua-pulse 1.6s ease-in-out infinite alternate; }
+  button:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(80, 150, 240, 0.6); }
+  button:disabled { color: #a0a0a0; text-shadow: none; opacity: 0.7; animation: none; }
+  button.compact, button.compact:active:not(:disabled), button.compact.default { padding: 2px 11px; }
+  .choices button, .choices button:active:not(:disabled), .choices button[aria-pressed="true"] { padding: 3px 12px; }
+  button.link-button, button.link-button:active:not(:disabled) { border: none; background: none; box-shadow: none; animation: none; }
+
+  input, select, textarea { border: none; border-radius: 0; box-shadow: var(--sunken); background: var(--field); }
+  input:focus, select:focus, textarea:focus { outline: none; box-shadow: var(--sunken), 0 0 0 3px rgba(80, 150, 240, 0.55); }
+  input[type="checkbox"], input[type="radio"] { box-shadow: none; accent-color: var(--selection-color); }
+  fieldset { box-shadow: none; border: 1px solid rgba(0, 0, 0, 0.18); border-radius: 6px; background: rgba(0, 0, 0, 0.03); }
+
+  /* ---- Windows: pinstripes, a centered title and the three colored buttons */
+
+  .window.app-window, .dialog, .window.login {
+    border: 1px solid #7a7a7a;
+    border-radius: 7px 7px 4px 4px;
+    background: var(--pinstripes);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    padding: 0;
+    overflow: clip;
+    & > .title-bar {
+      position: relative;
+      background: var(--window-title);
+      color: var(--text);
+      border-bottom: 1px solid #8f8f8f;
+      font: 400 13px/1.2 var(--font);
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+      justify-content: center;
+      min-height: 24px;
+      padding: 3px 70px;
+      & .title { flex: 0 1 auto; text-align: center; }
+      & .title-icon { display: none; }
+      /* The three window buttons. Only close does anything; the others show as inactive. */
+      &::before {
+        content: ""; position: absolute; left: 9px; top: 50%; transform: translateY(-50%);
+        width: 54px; height: 13px;
+        background:
+          radial-gradient(circle at 6.5px 6.5px, #ececec 0 3px, #c9c9c9 4px, #9c9c9c 6px, transparent 6.6px),
+          radial-gradient(circle at 26.5px 6.5px, #ececec 0 3px, #c9c9c9 4px, #9c9c9c 6px, transparent 6.6px),
+          radial-gradient(circle at 46.5px 6.5px, #ececec 0 3px, #c9c9c9 4px, #9c9c9c 6px, transparent 6.6px);
+      }
+    }
+  }
+  &[data-scheme="brushed-metal"] .window.app-window > .title-bar,
+  &[data-scheme="brushed-metal"] .window.login > .title-bar { border-bottom: none; }
+  .window.app-window > .window-body { padding: 10px !important; background: transparent; }
+
+  .title-button, .title-button:active:not(:disabled) {
+    position: absolute; top: 50%; transform: translateY(-50%); right: 10px;
+    width: 15px; height: 15px; min-height: 0; min-width: 0; padding: 0;
+    border: 1px solid #7a7a7a; border-radius: 50%;
+    background: radial-gradient(circle at 50% 30%, #ffffff, #c9c9c9); color: #333333;
+    font: bold 9px/1 var(--font); box-shadow: none; animation: none;
+  }
+  /* Close: the red gel button, placed over the first of the three. */
+  .title-button[aria-label="Close"], .title-button[aria-label="Close"]:active:not(:disabled) {
+    left: 9px; right: auto; width: 13px; height: 13px; border-color: #9b2a1f;
+    background: radial-gradient(circle at 50% 30%, #ffc1b8 0%, #f2544a 45%, #c42214 100%); color: transparent;
+  }
+  .title-button[aria-label="Close"]:hover:not(:disabled) { color: #4d0000; font-size: 9px; }
+
+  /* ---- Tabs: a segmented control in the middle */
+
+  .tabs { justify-content: center; padding: 2px 0 10px; gap: 0; flex-wrap: wrap; overflow: visible; }
+  .tab, .tab:active:not(:disabled) {
+    border: 1px solid #8a8a8a; border-left-width: 0; border-radius: 0; top: 0; margin: 0;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.6) 48%, rgba(255, 255, 255, 0) 52%),
+      linear-gradient(180deg, #f4f4f4 0%, #dcdcdc 60%, #f2f2f2 100%);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); padding: 3px 16px; color: #000000;
+  }
+  .tab:first-child { border-left-width: 1px; border-radius: 999px 0 0 999px; }
+  .tab:last-child { border-radius: 0 999px 999px 0; }
+  .tab[aria-selected="true"], .tab[aria-selected="true"]:active:not(:disabled) {
+    background: var(--gel); color: var(--gel-text); font-weight: bold; top: 0; padding: 3px 16px; border-color: var(--gel-border);
+  }
+  .tab-panel { background: transparent; border: none; box-shadow: none; margin: 0; padding: 0; }
+
+  /* ---- Sections: Aqua group boxes, a small bold heading above a rounded, recessed box */
+
+  .window:not(.app-window):not(.dialog):not(.login) {
+    background: transparent; border: none; box-shadow: none; padding: 0;
+    & > .title-bar {
+      background: none; color: var(--text); text-shadow: none;
+      font: bold 13px/1.3 var(--font); padding: 4px 4px 4px; min-height: 0;
+      & .title-icon { display: none; }
+      & .title-extra { color: var(--text-muted); font-weight: normal; }
+    }
+    & > .window-body {
+      background: rgba(0, 0, 0, 0.045); border: 1px solid rgba(0, 0, 0, 0.17); border-radius: 7px;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+    }
+    & > .window-body.flush { overflow: clip; }
+  }
+
+  .status-bar { padding: 8px 4px 0; color: var(--text-muted); font-size: 0.85em; }
+  .status-bar > * { box-shadow: none; padding: 0 10px 0 0; }
+  .status-light { border-radius: 50%; box-shadow: inset 0 -2px 3px rgba(0, 0, 0, 0.3); }
+
+  /* ---- Cards and tiles */
+
+  .patient-banner { box-shadow: 0 0 0 1px #9a9a9a, inset 0 1px 2px rgba(0, 0, 0, 0.1); border-radius: 4px; }
+  .tile { box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.17); border-radius: 7px; background: var(--field); }
+  .tile .tile-label { text-transform: none; letter-spacing: 0; font-weight: bold; }
+  .dose-row, .prn-card { border-radius: 5px; }
+  .quick-grid button { border-radius: 10px; }
+  .type-badge { border-radius: 4px; }
+
+  /* Chips that are buttons keep their status colors. */
+  button.status-chip, button.status-chip:active:not(:disabled) {
+    border: 1px solid currentColor; border-radius: 999px; padding: 1px 8px; box-shadow: none; animation: none;
+    background: var(--upcoming-fill); color: var(--upcoming);
+  }
+  button.status-chip.given { background: var(--given-fill); color: var(--given); }
+  button.status-chip.due { background: var(--due-fill); color: var(--due); }
+  button.status-chip.overdue, button.status-chip.missed { background: var(--overdue-fill); color: var(--overdue); }
+  button.status-chip.refused, button.status-chip.held { background: var(--held-fill); color: var(--held); }
+
+  /* The striped Aqua progress bar, glossy on top. */
+  .progress {
+    height: 14px; padding: 0; border: 1px solid #7a7a7a; border-radius: 999px; box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(180deg, #e6e6e6, #ffffff);
+    overflow: hidden;
+    & > div, &.over > div {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.25) 48%, rgba(255, 255, 255, 0) 52%),
+        repeating-linear-gradient(-45deg, var(--selection-color) 0 7px, color-mix(in srgb, var(--selection-color) 55%, #ffffff) 7px 14px);
+      background-size: 100% 100%, 20px 20px;
+      animation: aqua-stripes 1s linear infinite;
+    }
+  }
+
+  /* ---- Lists */
+
+  table.grid th { background: linear-gradient(180deg, #fafafa, #e1e1e1); box-shadow: inset 0 -1px #a5a5a5, inset -1px 0 #c8c8c8; }
+  &[data-theme="night"] table.grid th { background: #34353a; }
+  table.grid tr:nth-child(even) td { background: var(--field-alternate); }
+  .day-heading { background: var(--surface-light); box-shadow: inset 0 -1px var(--shadow); }
+
+  /* ---- Sheets, Growl notices and suggestions */
+
+  .dialog-layer { background: transparent; align-items: flex-start; padding-top: 0; }
+  .dialog {
+    border-top: none; border-radius: 0 0 6px 6px;
+    animation: aqua-sheet 220ms ease-out;
+    & > .title-bar { background: transparent; border-bottom: none; font-weight: bold; padding-top: 10px; }
+    & > .title-bar::before { display: none; }
+    & > .title-bar .title-button { display: none; }
+  }
+  .toasts { top: 16px; bottom: auto; right: 16px; }
+  .toast {
+    background: rgba(0, 0, 0, 0.72); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 10px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4); padding: 10px 12px;
+    & button { animation: none; padding: 2px 10px; }
+  }
+  .suggestions { box-shadow: 0 0 0 1px #8a8a8a, 0 8px 20px rgba(0, 0, 0, 0.3); border-radius: 0 0 6px 6px; }
+  .suggestions li[aria-selected="true"] { background: var(--selection-color); color: #ffffff; }
+  .who-badge, .otc-badge { border-radius: 999px; box-shadow: none; }
+
+  .report { box-shadow: 0 0 0 1px #9a9a9a; }
+
+  @media (prefers-reduced-motion: reduce) {
+    button.default, .progress > div, .dialog { animation: none; }
+  }
+
+  /* ---- Phones */
+
+  @media (max-width: 600px) {
+    .window.app-window { border-radius: 0; }
+    .window.app-window > .window-body { padding: 6px !important; }
+    .tab, .tab[aria-selected="true"] { padding: 4px 10px; }
+    .toasts { left: 12px; right: 12px; }
+  }
+}
+
+@keyframes aqua-pulse {
+  from { filter: brightness(1); }
+  to { filter: brightness(1.18); }
+}
+@keyframes aqua-stripes {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 0 0, 20px 0; }
+}
+@keyframes aqua-sheet {
+  from { transform: translateY(-40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}

@@ -1,0 +1,232 @@
+/* Care Chart, "Mac OS 8/9" look: the Platinum appearance. Light-gray windows with
+   pinstriped title bars, the title centered and the square close box on the left;
+   rounded push buttons, the default one wearing the thick black ring that meant "Return
+   presses me"; lavender highlights; speech-balloon "Balloon Help" tips; on a dithered
+   periwinkle desktop pattern. Apple's system fonts (Charcoal, Chicago) cannot be shipped,
+   so close system fonts stand in.
+
+   Chosen per device in Settings → This device → Look; app.js sets data-skin="mac" on
+   <html>. Everything sits inside one :root[data-skin="mac"] block (CSS nesting), so this
+   file changes nothing in the other looks. */
+
+:root[data-skin="mac"] {
+  --platinum: #dddddd;
+  --platinum-light: #eeeeee;
+  --platinum-dark: #999999;
+  --frame-line: #000000;
+  --pinstripes: repeating-linear-gradient(180deg, #ffffff 0 1px, #bbbbbb 1px 2px, transparent 2px 3px);
+  --title-font: bold 12px/1 "Charcoal", "Chicago", "Geneva", "Lucida Grande", Verdana, sans-serif;
+  --desktop-pattern: repeating-conic-gradient(#7d7db8 0 25%, #6f6fab 0 50%) 0 0 / 4px 4px;
+
+  /* ---- The classic tokens, re-pointed */
+  --desk: #6f6fab;
+  --surface: var(--platinum);
+  --surface-light: var(--platinum-light);
+  --highlight: #ffffff;
+  --shadow: var(--platinum-dark);
+  --dark-shadow: #555555;
+  --field: #ffffff;
+  --field-alternate: #f3f3f8;
+  --text: #000000;
+  --text-muted: #555555;
+  --selection: #ccccff;      /* the classic Mac lavender highlight */
+  --selection-text: #000000;
+  --link: #0000cc;
+  --raised: inset -1px -1px #999999, inset 1px 1px #ffffff;
+  --sunken: inset 1px 1px #888888, inset -1px -1px #ffffff, 0 0 0 1px #000000;
+  --etched: inset 1px 1px #999999, inset -1px -1px #ffffff;
+  --font: "Geneva", "Lucida Grande", Verdana, "Segoe UI", sans-serif;
+  --mono: "Monaco", "Lucida Console", Consolas, monospace;
+  --progress: #6666cc;
+  color-scheme: light;
+
+  /* ---- Night: a dimmed Platinum ("Graphite" in spirit) */
+  &[data-theme="night"] {
+    --platinum: #3a3a3e; --platinum-light: #46464b; --platinum-dark: #26262a; --frame-line: #000000;
+    --pinstripes: repeating-linear-gradient(180deg, #5a5a60 0 1px, #2a2a2e 1px 2px, transparent 2px 3px);
+    --desktop-pattern: repeating-conic-gradient(#25254a 0 25%, #1d1d3c 0 50%) 0 0 / 4px 4px;
+    --desk: #1d1d3c; --highlight: #5a5a60; --dark-shadow: #000000;
+    --field: #232326; --field-alternate: #2a2a30; --text: #ececec; --text-muted: #b0b0b6;
+    --selection: #4a4a8c; --selection-text: #ffffff; --link: #a8a8ff;
+    --raised: inset -1px -1px #1a1a1d, inset 1px 1px #5a5a60;
+    --sunken: inset 1px 1px #111111, inset -1px -1px #4a4a50, 0 0 0 1px #000000;
+    --overdue: #ff9a9a; --overdue-fill: #4a1d1d; --due: #ffd36b; --due-fill: #45391a;
+    --given: #93e093; --given-fill: #1d3a1f; --held: #cdb5f2; --held-fill: #33284a;
+    --upcoming: #c9cdd1; --upcoming-fill: #2c3033; --allergy: #ff8a8a; --notable: #ff8a8a;
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    &[data-theme="auto"] {
+      --platinum: #3a3a3e; --platinum-light: #46464b; --platinum-dark: #26262a; --frame-line: #000000;
+      --pinstripes: repeating-linear-gradient(180deg, #5a5a60 0 1px, #2a2a2e 1px 2px, transparent 2px 3px);
+      --desktop-pattern: repeating-conic-gradient(#25254a 0 25%, #1d1d3c 0 50%) 0 0 / 4px 4px;
+      --desk: #1d1d3c; --highlight: #5a5a60; --dark-shadow: #000000;
+      --field: #232326; --field-alternate: #2a2a30; --text: #ececec; --text-muted: #b0b0b6;
+      --selection: #4a4a8c; --selection-text: #ffffff; --link: #a8a8ff;
+      --raised: inset -1px -1px #1a1a1d, inset 1px 1px #5a5a60;
+      --sunken: inset 1px 1px #111111, inset -1px -1px #4a4a50, 0 0 0 1px #000000;
+      --overdue: #ff9a9a; --overdue-fill: #4a1d1d; --due: #ffd36b; --due-fill: #45391a;
+      --given: #93e093; --given-fill: #1d3a1f; --held: #cdb5f2; --held-fill: #33284a;
+      --upcoming: #c9cdd1; --upcoming-fill: #2c3033; --allergy: #ff8a8a; --notable: #ff8a8a;
+      color-scheme: dark;
+    }
+  }
+
+  & body { background: var(--desktop-pattern), var(--desk); font-size: var(--base-size); }
+
+  /* ---- Push buttons: rounded, lightly shaded; pressed turns dark; the default wears a ring */
+
+  button, .button {
+    border: 1px solid var(--frame-line);
+    border-radius: 5px;
+    background: linear-gradient(180deg, var(--platinum-light) 0%, var(--platinum) 100%);
+    box-shadow: inset 1px 1px #ffffff, inset -1px -1px var(--platinum-dark);
+    color: var(--text);
+    padding: 4px 14px;
+  }
+  button:active:not(:disabled), button.pressed {
+    background: #555555; color: #ffffff;
+    box-shadow: inset 1px 1px #333333, inset -1px -1px #777777;
+    padding: 4px 14px;
+  }
+  button[aria-pressed="true"], button[aria-pressed="true"]:active:not(:disabled) {
+    background: var(--selection); color: var(--selection-text); font-weight: bold;
+    box-shadow: inset 1px 1px #8888cc, inset -1px -1px #eeeeff; padding: 4px 14px;
+  }
+  /* Return presses a dialog's default button; the classic Mac showed it with a thick black
+     ring, one per window. Elsewhere the main action is simply bold. */
+  button.default { font-weight: bold; outline: none; }
+  .dialog-buttons button.default, .login button.default { outline: 3px solid var(--frame-line); outline-offset: 1px; }
+  button:focus-visible { outline: 2px solid var(--selection); outline-offset: 1px; }
+  .dialog-buttons button.default:focus-visible { outline: 3px solid var(--frame-line); }
+  button:disabled { color: var(--platinum-dark); border-color: var(--platinum-dark); text-shadow: none; }
+  button.compact, button.compact:active:not(:disabled), button.compact[aria-pressed="true"] { padding: 2px 9px; }
+  .choices button, .choices button:active:not(:disabled), .choices button[aria-pressed="true"] { padding: 3px 10px; }
+  button.link-button, button.link-button:active:not(:disabled) { border: none; background: none; box-shadow: none; color: var(--link); }
+
+  input, select, textarea { border: none; border-radius: 0; box-shadow: var(--sunken); background: var(--field); }
+  input:focus, select:focus, textarea:focus { box-shadow: var(--sunken), 0 0 0 3px var(--selection); outline: none; }
+  input[type="checkbox"], input[type="radio"] { box-shadow: none; accent-color: #555555; }
+  fieldset { box-shadow: var(--etched); border-radius: 4px; }
+
+  /* ---- Platinum windows: pinstripes, centered title, close box on the left */
+
+  .window {
+    min-width: 0;
+    background: var(--surface);
+    border: 1px solid var(--frame-line);
+    box-shadow: inset 1px 1px #ffffff, inset -1px -1px var(--platinum-dark), 2px 2px 0 rgba(0, 0, 0, 0.35);
+    padding: 0;
+    border-radius: 0;
+    & > .title-bar {
+      position: relative;
+      justify-content: center;
+      min-height: 22px;
+      padding: 3px 30px;
+      margin: 0;
+      background: var(--pinstripes), var(--platinum);
+      background-clip: content-box, border-box;
+      border-bottom: 1px solid var(--frame-line);
+      color: var(--text);
+      font: var(--title-font);
+      text-shadow: none;
+      & .title-icon { display: none; }
+      /* The title sits on a plain gray patch that interrupts the stripes. */
+      /* Long titles wrap rather than widen the window on a phone. */
+      & .title { flex: 0 1 auto; min-width: 0; white-space: normal; padding: 2px 8px; background: var(--platinum); text-align: center; }
+      & .title-extra { position: absolute; right: 32px; top: 50%; transform: translateY(-50%); padding: 0 6px; background: var(--platinum); font: 10px/1 var(--font); }
+    }
+  }
+  .window-body { background: var(--surface); }
+  .window.app-window > .window-body { padding: 8px !important; }
+
+  /* Title-bar boxes: small beveled squares. Close sits at the far left, others at the right. */
+  .title-button, .title-button:active:not(:disabled) {
+    position: absolute; top: 50%; transform: translateY(-50%); right: 8px;
+    width: 13px; height: 13px; min-height: 0; min-width: 0; padding: 0;
+    border: 1px solid var(--frame-line); border-radius: 0;
+    background: linear-gradient(135deg, #ffffff 0%, var(--platinum) 60%, var(--platinum-dark) 100%);
+    box-shadow: inset 1px 1px #ffffff, inset -1px -1px #888888;
+    color: transparent; font-size: 0; /* the classic boxes carry no symbols */
+  }
+  .title-button[aria-label="Close"] { left: 8px; right: auto; }
+  .title-button:active:not(:disabled) { background: #777777; }
+
+  /* ---- Tabs: Platinum tabs with rounded tops */
+
+  .tabs { padding: 4px 8px 0; }
+  .tab, .tab:active:not(:disabled) {
+    border: 1px solid var(--frame-line); border-bottom: none; border-radius: 6px 6px 0 0;
+    background: linear-gradient(180deg, var(--platinum) 0%, #c8c8c8 100%);
+    box-shadow: inset 1px 1px #ffffff; padding: 4px 14px; top: 2px; margin-right: 2px;
+  }
+  .tab[aria-selected="true"], .tab[aria-selected="true"]:active:not(:disabled) {
+    background: var(--platinum-light); top: 1px; padding: 5px 16px; font-weight: bold;
+  }
+  .tab-panel { background: var(--platinum-light); border: 1px solid var(--frame-line); box-shadow: inset 1px 1px #ffffff; margin: 0 8px 8px; }
+  &[data-theme="night"] .tab-panel { background: var(--platinum); }
+
+  /* Sections inside the app are smaller utility windows. */
+  .tab-panel .window > .title-bar { min-height: 18px; padding: 2px 30px; }
+
+  .status-bar > * { box-shadow: var(--etched); }
+
+  /* ---- Cards and tiles */
+
+  .patient-banner { box-shadow: var(--sunken); }
+  .tile { box-shadow: var(--raised), 0 0 0 1px var(--frame-line); border-radius: 4px; }
+  .tile .tile-label { text-transform: none; letter-spacing: 0; font-weight: bold; color: var(--text); }
+  .dose-row, .prn-card { border-radius: 2px; }
+  .quick-grid button { border-radius: 6px; }
+
+  /* Chips that are buttons keep their status colors. */
+  button.status-chip, button.status-chip:active:not(:disabled) {
+    border: 1px solid currentColor; border-radius: 3px; padding: 1px 6px; box-shadow: none;
+    background: var(--upcoming-fill); color: var(--upcoming);
+  }
+  button.status-chip.given { background: var(--given-fill); color: var(--given); }
+  button.status-chip.due { background: var(--due-fill); color: var(--due); }
+  button.status-chip.overdue, button.status-chip.missed { background: var(--overdue-fill); color: var(--overdue); }
+  button.status-chip.refused, button.status-chip.held { background: var(--held-fill); color: var(--held); }
+
+  /* Mac OS 8 progress bar: a lavender-blue fill in a beveled track. */
+  .progress {
+    height: 12px; padding: 0; border: 1px solid var(--frame-line); border-radius: 0; box-shadow: inset 1px 1px #888888;
+    background: var(--platinum-light);
+    & > div, &.over > div { background: linear-gradient(180deg, #ccccff 0%, #8888dd 45%, #6666cc 55%, #9999ee 100%); }
+  }
+
+  /* ---- Tables */
+
+  table.grid th { background: linear-gradient(180deg, var(--platinum-light), var(--platinum)); box-shadow: inset 0 -1px var(--frame-line), inset -1px 0 var(--platinum-dark); }
+  .day-heading { background: var(--platinum); box-shadow: inset 0 -1px var(--frame-line); }
+
+  /* ---- Dialogs, Balloon Help and suggestions */
+
+  .dialog-layer { background: transparent; }
+  .dialog { box-shadow: inset 1px 1px #ffffff, inset -1px -1px var(--platinum-dark), 4px 4px 0 rgba(0, 0, 0, 0.4); }
+  .dialog-buttons { padding: 10px 14px 14px; }
+  .toast {
+    background: #ffffff; color: #000000; border: 1px solid #000000; border-radius: 14px;
+    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35); position: relative; padding: 8px 12px;
+    & button { border-radius: 5px; }
+  }
+  .toast::after {
+    content: ""; position: absolute; right: 28px; bottom: -9px; width: 14px; height: 14px;
+    background: #ffffff; border-right: 1px solid #000000; border-bottom: 1px solid #000000; transform: skewX(35deg) rotate(45deg);
+  }
+  .toast.error { background: #ffe1e1; }
+  .toast.error::after { background: #ffe1e1; }
+  .suggestions { box-shadow: 0 0 0 1px #000000, 2px 2px 0 rgba(0, 0, 0, 0.35); }
+  .who-badge, .otc-badge { border-radius: 3px; box-shadow: none; }
+
+  .report { box-shadow: 0 0 0 1px var(--frame-line); }
+
+  /* ---- Phones */
+
+  @media (max-width: 600px) {
+    .tab, .tab:active:not(:disabled), .tab[aria-selected="true"] { top: 0; padding: 4px 6px; }
+    .window.app-window > .window-body { padding: 4px !important; }
+    .tab-panel { margin: 0 2px 2px; }
+  }
+}

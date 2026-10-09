@@ -1,0 +1,26 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "care-chart",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+  // Every 5 minutes, check for due doses and send reminders (src/reminders.ts).
+  "triggers": { "crons": ["*/5 * * * *"] },
+  "vars": {
+    // Who push services can contact about this sender: the site's address, or a "mailto:" email.
+    "VAPID_SUBJECT": "https://care-chart.bhanright.workers.dev"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "care-chart",
+      // From `wrangler d1 create care-chart`. A fresh deployment of your own needs its own id (see README).
+      "database_id": "8714d36d-71ac-4b97-b8b4-baaf088cccc5",
+      "migrations_dir": "migrations"
+    }
+  ]
+}

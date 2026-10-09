@@ -1,0 +1,304 @@
+/* Care Chart, "Ubuntu (GNOME 2)" look: Ubuntu before Unity. Three schemes:
+     Human     (6.06–9.10): brown-orange title bars, warm gray windows, buttons on the right;
+     Ambiance  (10.04/10.10): dark title bars, window buttons on the left, orange highlights;
+     Radiance  (10.04/10.10): Ambiance's light sibling.
+   GNOME touches: section headings in bold with their content indented (the GNOME
+   preference-dialog layout), rounded Clearlooks-style buttons, dark notification bubbles in
+   the top-right corner (as Ubuntu's notify-osd drew them), and on wide screens the status
+   bar as a bottom panel. Wallpapers are drawn in CSS, not copied from Ubuntu.
+
+   Chosen per device in Settings → This device → Look; app.js sets data-skin="ubuntu" and
+   data-scheme on <html>. Everything sits inside one :root[data-skin="ubuntu"] block (CSS
+   nesting), so this file changes nothing in the other looks. */
+
+:root[data-skin="ubuntu"] {
+  /* ---- Human (the default scheme) */
+  --wallpaper:
+    radial-gradient(ellipse 60% 45% at 30% 35%, rgba(255, 196, 120, 0.55), transparent 70%),
+    radial-gradient(ellipse 120% 100% at 45% 40%, #e2843a 0%, #a24e1d 45%, #4b2310 100%);
+  --window-title: linear-gradient(180deg, #dca46c 0%, #c4874c 50%, #a96d36 100%);
+  --window-title-text: #ffffff;
+  --window-title-shadow: 0 1px 1px rgba(80, 40, 10, 0.8);
+  --window-frame: #7a5a3c;
+  --accent: #e0882f;
+  --button-border: #9a8c7e;
+  --panel: linear-gradient(180deg, #efebe7 0%, #ddd6ce 100%);
+  --panel-text: #3c3020;
+  --heading-text: #3c3020;
+
+  /* ---- The classic tokens, re-pointed */
+  --desk: #a24e1d;
+  --surface: #efebe7;
+  --surface-light: #f7f5f3;
+  --highlight: #ffffff;
+  --shadow: #b8aea3;
+  --dark-shadow: #8a7d70;
+  --field: #ffffff;
+  --field-alternate: #f7f4f0;
+  --text: #2e2a25;
+  --text-muted: #6e655b;
+  --selection: var(--accent);
+  --selection-text: #ffffff;
+  --link: #b85f12;
+  --raised: none;
+  --sunken: inset 0 0 0 1px var(--shadow);
+  --etched: none;
+  --font: "Ubuntu", "DejaVu Sans", "Bitstream Vera Sans", "Segoe UI", Tahoma, sans-serif;
+  --mono: "Ubuntu Mono", "DejaVu Sans Mono", Consolas, monospace;
+  --progress: var(--accent);
+  color-scheme: light;
+
+  &[data-scheme="ambiance"] {
+    --wallpaper:
+      linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.07) 48%, transparent 56%),
+      radial-gradient(ellipse 50% 40% at 70% 30%, rgba(240, 119, 70, 0.25), transparent 70%),
+      radial-gradient(ellipse 120% 100% at 40% 40%, #9c3a6a 0%, #5e2750 45%, #2c001e 100%);
+    --window-title: linear-gradient(180deg, #5c5a54 0%, #45443f 50%, #3c3b37 100%);
+    --window-title-text: #dfdbd2;
+    --window-title-shadow: 0 -1px 0 #000000;
+    --window-frame: #2f2e2a;
+    --accent: #f07746;
+    --button-border: #a8a39b;
+    --panel: linear-gradient(180deg, #4b4a45 0%, #3c3b37 100%);
+    --panel-text: #dfdbd2;
+    --heading-text: #3c3b37;
+    --desk: #5e2750;
+    --surface: #f2f1f0;
+    --surface-light: #f9f8f7;
+    --shadow: #bdb8b0;
+    --text: #3c3b37;
+    --link: #c25520;
+  }
+  &[data-scheme="radiance"] {
+    --wallpaper:
+      linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.08) 48%, transparent 56%),
+      radial-gradient(ellipse 120% 100% at 40% 40%, #a34774 0%, #6a2c5a 45%, #33001f 100%);
+    --window-title: linear-gradient(180deg, #f6f4f1 0%, #e6e2dc 50%, #d6d1c8 100%);
+    --window-title-text: #3c3b37;
+    --window-title-shadow: 0 1px 0 #ffffff;
+    --window-frame: #a8a39b;
+    --accent: #f07746;
+    --button-border: #a8a39b;
+    --panel: linear-gradient(180deg, #f6f4f1 0%, #dfdbd2 100%);
+    --panel-text: #3c3b37;
+    --heading-text: #3c3b37;
+    --desk: #6a2c5a;
+    --surface: #f2f1f0;
+    --surface-light: #f9f8f7;
+    --shadow: #bdb8b0;
+    --text: #3c3b37;
+    --link: #c25520;
+  }
+
+  /* ---- Night: dark window bodies in the scheme's own colors */
+  &[data-theme="night"] {
+    --surface: #3c3b37; --surface-light: #46453f; --highlight: #5a5953; --shadow: #24231f; --dark-shadow: #000000;
+    --field: #2b2a26; --field-alternate: #33322d; --text: #eeeeec; --text-muted: #b5b0a6; --heading-text: #eeeeec;
+    --button-border: #1f1e1b; --link: #ffa070; --sunken: inset 0 0 0 1px #57554f;
+    --panel: linear-gradient(180deg, #4b4a45 0%, #3c3b37 100%); --panel-text: #dfdbd2;
+    --overdue: #ff9a9a; --overdue-fill: #4a1d1d; --due: #ffd36b; --due-fill: #45391a;
+    --given: #93e093; --given-fill: #1d3a1f; --held: #cdb5f2; --held-fill: #33284a;
+    --upcoming: #c9cdd1; --upcoming-fill: #2c3033; --allergy: #ff8a8a; --notable: #ff8a8a;
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    &[data-theme="auto"] {
+      --surface: #3c3b37; --surface-light: #46453f; --highlight: #5a5953; --shadow: #24231f; --dark-shadow: #000000;
+      --field: #2b2a26; --field-alternate: #33322d; --text: #eeeeec; --text-muted: #b5b0a6; --heading-text: #eeeeec;
+      --button-border: #1f1e1b; --link: #ffa070; --sunken: inset 0 0 0 1px #57554f;
+      --panel: linear-gradient(180deg, #4b4a45 0%, #3c3b37 100%); --panel-text: #dfdbd2;
+      --overdue: #ff9a9a; --overdue-fill: #4a1d1d; --due: #ffd36b; --due-fill: #45391a;
+      --given: #93e093; --given-fill: #1d3a1f; --held: #cdb5f2; --held-fill: #33284a;
+      --upcoming: #c9cdd1; --upcoming-fill: #2c3033; --allergy: #ff8a8a; --notable: #ff8a8a;
+      color-scheme: dark;
+    }
+  }
+
+  & body { background: var(--wallpaper), var(--desk); background-attachment: fixed; }
+
+  /* ---- Clearlooks-style buttons: rounded, softly shaded; the accent rings focus */
+
+  button, .button {
+    border: 1px solid var(--button-border);
+    border-radius: 4px;
+    background: linear-gradient(180deg, #fbfaf9 0%, #ece8e3 55%, #e1dcd6 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    color: #2e2a25;
+    padding: 4px 14px;
+  }
+  button:hover:not(:disabled), .button:hover { background: linear-gradient(180deg, #ffffff 0%, #f4f1ee 55%, #ebe7e2 100%); }
+  button:active:not(:disabled), button.pressed, button[aria-pressed="true"] {
+    background: linear-gradient(180deg, #d6d0c9 0%, #e0dbd5 100%);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+    padding: 4px 14px;
+  }
+  button[aria-pressed="true"] { font-weight: bold; border-color: var(--accent); }
+  button.default { outline: none; border-color: var(--accent); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent); }
+  button:focus-visible { outline: 1px dashed var(--accent); outline-offset: -4px; }
+  button:disabled { color: #a9a39b; border-color: #cfc9c1; background: #f2efeb; text-shadow: none; }
+  button.compact, button.compact:active:not(:disabled) { padding: 2px 9px; }
+  .choices button, .choices button:active:not(:disabled), .choices button[aria-pressed="true"] { padding: 3px 10px; }
+  button.link-button, button.link-button:hover { border: none; background: none; box-shadow: none; }
+
+  input, select, textarea {
+    border: 1px solid var(--shadow); border-radius: 3px; box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08); background: var(--field);
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 40%, transparent); }
+  input[type="checkbox"], input[type="radio"] { border: none; box-shadow: none; accent-color: var(--accent); }
+  fieldset { box-shadow: none; border: 1px solid var(--shadow); border-radius: 4px; }
+  legend { font-weight: bold; }
+
+  /* ---- Metacity windows: the app, dialogs and sign-in */
+
+  .window.app-window, .dialog, .window.login {
+    border: 1px solid var(--window-frame);
+    border-radius: 6px 6px 2px 2px;
+    background: var(--surface);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+    padding: 0;
+    & > .title-bar {
+      background: var(--window-title);
+      color: var(--window-title-text);
+      text-shadow: var(--window-title-shadow);
+      font: bold 13px/1.2 var(--font);
+      border-radius: 5px 5px 0 0;
+      padding: 4px 8px;
+      min-height: 28px;
+      & .title-icon { width: 16px; height: 16px; }
+    }
+  }
+  .window.app-window > .window-body { padding: 8px !important; }
+
+  /* Ambiance and Radiance put the window buttons on the left, before the title. */
+  &[data-scheme="ambiance"], &[data-scheme="radiance"] {
+    .title-button { order: -2; }
+    :is(.app-window, .dialog, .login) > .title-bar .title { text-align: center; }
+    :is(.app-window, .dialog, .login) > .title-bar .title-icon { display: none; }
+  }
+
+  /* Window buttons: glossy squares in Human; round in Ambiance and Radiance, close turns orange on hover. */
+  .title-button, .title-button:active:not(:disabled) {
+    width: 20px; height: 20px; min-height: 0; min-width: 0; padding: 0;
+    border: 1px solid rgba(0, 0, 0, 0.45); border-radius: 4px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.1));
+    color: var(--window-title-text); font: bold 11px/1 var(--font); text-shadow: none; box-shadow: none;
+  }
+  &[data-scheme="ambiance"] .title-button, &[data-scheme="radiance"] .title-button {
+    border-radius: 50%; width: 18px; height: 18px;
+    background: radial-gradient(circle at 50% 35%, #8a877f, #4a4944);
+    color: #dfdbd2; border-color: #232320;
+  }
+  &[data-scheme="radiance"] .title-button { background: radial-gradient(circle at 50% 35%, #ffffff, #cfcac2); color: #3c3b37; border-color: #a8a39b; }
+  .title-button:hover:not(:disabled) { filter: brightness(1.15); }
+  .title-button[aria-label="Close"]:hover:not(:disabled) { background: radial-gradient(circle at 50% 35%, #f9a27a, #e05a1f); color: #ffffff; filter: none; }
+
+  /* ---- GTK notebook tabs */
+
+  .tabs { padding: 4px 8px 0; }
+  .tab, .tab:active:not(:disabled) {
+    border: 1px solid var(--shadow); border-bottom: none; border-radius: 4px 4px 0 0;
+    background: linear-gradient(180deg, #e8e3dd, #d9d2ca); box-shadow: none; color: var(--text-muted);
+    padding: 4px 14px; top: 2px; margin-right: 2px;
+  }
+  .tab[aria-selected="true"], .tab[aria-selected="true"]:active:not(:disabled) {
+    background: var(--surface); color: var(--text); font-weight: bold; top: 1px; padding: 5px 16px;
+    box-shadow: inset 0 2px 0 var(--accent);
+  }
+  .tab-panel { background: var(--surface); border: 1px solid var(--shadow); border-radius: 0 4px 4px 4px; box-shadow: none; margin: 0 8px 8px; }
+
+  /* ---- Sections in the GNOME preference-dialog style: a bold heading, content indented */
+
+  .window:not(.app-window):not(.dialog):not(.login) {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    & > .title-bar {
+      background: none; color: var(--heading-text); text-shadow: none;
+      font: bold 14px/1.3 var(--font); padding: 6px 0 4px; min-height: 0;
+      & .title-icon { display: none; }
+      & .title-extra { color: var(--text-muted); font-weight: normal; }
+    }
+    & > .window-body { padding: 4px 0 8px 16px; }
+    & > .window-body.flush { padding: 4px 0 8px 16px; }
+  }
+
+  /* ---- Cards and tiles */
+
+  .patient-banner, .tile { border: 1px solid var(--shadow); border-radius: 5px; box-shadow: none; }
+  .tile .tile-label { text-transform: none; letter-spacing: 0; font-weight: bold; color: var(--text); }
+  .tile.alert { border-color: #d98a8a; }
+  .tile.warn { border-color: #d8b36a; }
+  .well { border-radius: 4px; }
+  .dose-row, .prn-card { border-radius: 4px; }
+  .quick-grid button { border-radius: 6px; }
+  .type-badge { border-radius: 3px; }
+
+  /* Chips that are buttons keep their status colors. */
+  button.status-chip, button.status-chip:active:not(:disabled) {
+    border: 1px solid currentColor; border-radius: 3px; padding: 1px 6px; box-shadow: none;
+    background: var(--upcoming-fill); color: var(--upcoming);
+  }
+  button.status-chip.given { background: var(--given-fill); color: var(--given); }
+  button.status-chip.due { background: var(--due-fill); color: var(--due); }
+  button.status-chip.overdue, button.status-chip.missed { background: var(--overdue-fill); color: var(--overdue); }
+  button.status-chip.refused, button.status-chip.held { background: var(--held-fill); color: var(--held); }
+
+  /* GTK progress bar: the accent, softly shaded, in a rounded trough. */
+  .progress {
+    height: 14px; padding: 0; border: 1px solid var(--shadow); border-radius: 4px; box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15);
+    background: var(--surface-light);
+    & > div, &.over > div {
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 70%, #ffffff) 0%, var(--accent) 55%, color-mix(in srgb, var(--accent) 85%, #000000) 100%);
+      border-radius: 3px;
+    }
+  }
+
+  /* ---- Lists and tables: GtkTreeView headers */
+
+  table.grid th { background: linear-gradient(180deg, #fbfaf9, #e6e1dc); box-shadow: inset -1px 0 var(--shadow), inset 0 -1px var(--shadow); color: var(--text); }
+  &[data-theme="night"] table.grid th { background: #46453f; }
+  .day-heading { background: var(--surface-light); box-shadow: inset 0 -1px var(--shadow); }
+
+  /* ---- Dialogs, notification bubbles and suggestions */
+
+  .dialog-layer { background: rgba(0, 0, 0, 0.25); }
+  .toasts { top: 36px; bottom: auto; right: 16px; }
+  .toast {
+    background: rgba(25, 25, 25, 0.88); color: #ffffff; border: none; border-radius: 10px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45); padding: 10px 14px;
+    & button { background: rgba(255, 255, 255, 0.12); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.35); box-shadow: none; border-radius: 4px; }
+  }
+  .toast.error { background: rgba(120, 20, 20, 0.92); }
+  .suggestions { border-radius: 4px; box-shadow: 0 0 0 1px var(--shadow), 0 6px 14px rgba(0, 0, 0, 0.25); }
+  .who-badge, .otc-badge { border-radius: 3px; box-shadow: none; }
+
+  .report { box-shadow: inset 0 0 0 1px var(--shadow); border-radius: 4px; }
+
+  /* ---- Wide screens: the status bar becomes GNOME's bottom panel */
+
+  @media (min-width: 901px) {
+    .app { padding-bottom: 44px; }
+    .status-bar {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+      padding: 3px 8px; gap: 6px; min-height: 28px;
+      background: var(--panel); color: var(--panel-text);
+      box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+    .status-bar > * {
+      box-shadow: none; border: 1px solid rgba(0, 0, 0, 0.2); border-radius: 3px; padding: 1px 10px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  /* ---- Phones */
+
+  @media (max-width: 600px) {
+    .tab, .tab:active:not(:disabled), .tab[aria-selected="true"] { top: 0; padding: 4px 6px; }
+    .window.app-window > .window-body { padding: 4px !important; }
+    .tab-panel { margin: 0 2px 2px; }
+    .window:not(.app-window):not(.dialog):not(.login) > .window-body,
+    .window:not(.app-window):not(.dialog):not(.login) > .window-body.flush { padding-left: 0; }
+    .toasts { top: auto; bottom: 12px; left: 12px; right: 12px; }
+  }
+}

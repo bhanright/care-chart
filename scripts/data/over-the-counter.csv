@@ -1,0 +1,79 @@
+name,brands,group
+acetaminophen,Tylenol;Tylenol Arthritis;Mapap,Pain and fever
+ibuprofen,Advil;Motrin IB,Pain and fever
+naproxen,Aleve,Pain and fever
+aspirin,Bayer;Ecotrin;Bayer Low Dose,Pain and fever
+acetaminophen / diphenhydramine,Tylenol PM,Pain and sleep
+diclofenac,Voltaren Arthritis Pain gel,Pain (on the skin)
+lidocaine,Salonpas Lidocaine;Aspercreme Lidocaine;Icy Hot Lidocaine,Pain (on the skin)
+menthol,Biofreeze;Bengay;Icy Hot,Pain (on the skin)
+capsaicin,Zostrix;Capzasin,Pain (on the skin)
+trolamine salicylate,Aspercreme,Pain (on the skin)
+diphenhydramine,Benadryl;ZzzQuil;Unisom SleepGels,Allergy and sleep
+doxylamine,Unisom SleepTabs,Sleep
+melatonin,Natrol;Nature Made Melatonin,Sleep
+loratadine,Claritin;Alavert,Allergy
+cetirizine,Zyrtec,Allergy
+fexofenadine,Allegra,Allergy
+levocetirizine,Xyzal,Allergy
+fluticasone,Flonase,Allergy (nasal)
+sodium chloride,Ocean saline spray;Simply Saline,Nasal and eyes
+oxymetazoline,Afrin,Cold (nasal)
+pseudoephedrine,Sudafed,Cold
+phenylephrine,Sudafed PE,Cold
+guaifenesin,Mucinex;Robitussin Chest Congestion,Cough and cold
+dextromethorphan,Delsym;Robitussin Cough,Cough and cold
+dextromethorphan / guaifenesin,Mucinex DM;Robitussin DM,Cough and cold
+benzocaine / menthol,Cepacol,Sore throat
+famotidine,Pepcid AC,Stomach and heartburn
+omeprazole,Prilosec OTC,Stomach and heartburn
+esomeprazole,Nexium 24HR,Stomach and heartburn
+lansoprazole,Prevacid 24HR,Stomach and heartburn
+calcium carbonate,Tums;Rolaids,Stomach and heartburn
+aluminum hydroxide / magnesium hydroxide / simethicone,Mylanta;Maalox,Stomach and heartburn
+bismuth subsalicylate,Pepto-Bismol;Kaopectate,Stomach and diarrhea
+loperamide,Imodium,Diarrhea
+simethicone,Gas-X;Mylicon,Gas
+docusate,Colace,Constipation
+sennosides,Senokot;Ex-Lax,Constipation
+docusate / sennosides,Senokot-S;Peri-Colace,Constipation
+polyethylene glycol 3350,MiraLAX,Constipation
+bisacodyl,Dulcolax,Constipation
+magnesium hydroxide,Phillips' Milk of Magnesia,Constipation
+psyllium,Metamucil;Konsyl,Fiber
+methylcellulose,Citrucel,Fiber
+glycerin,Fleet glycerin suppositories,Constipation
+sodium phosphate,Fleet Enema,Constipation
+meclizine,Dramamine Less Drowsy;Bonine,Dizziness and motion sickness
+dimenhydrinate,Dramamine,Motion sickness
+hydrocortisone,Cortizone-10;Preparation H Hydrocortisone,Skin
+bacitracin / neomycin / polymyxin b,Neosporin;Triple Antibiotic,Skin (wounds)
+bacitracin,Bacitracin ointment,Skin (wounds)
+clotrimazole,Lotrimin AF,Skin (fungus)
+miconazole,Micatin;Monistat,Skin (fungus)
+terbinafine,Lamisil AT,Skin (fungus)
+tolnaftate,Tinactin,Skin (fungus)
+zinc oxide,Desitin;Balmex,Skin (barrier cream)
+petrolatum,Vaseline;Aquaphor,Skin (barrier cream)
+dimethicone,Calmoseptine;Remedy,Skin (barrier cream)
+camphor / menthol,Sarna,Skin (itch)
+calamine,Calamine lotion,Skin (itch)
+phenylephrine / witch hazel,Preparation H,Hemorrhoids
+artificial tears,Systane;Refresh Tears;Blink,Eyes
+ketotifen,Zaditor;Alaway,Eyes (allergy)
+carbamide peroxide,Debrox,Ears
+nicotine,Nicorette;NicoDerm CQ,Quit smoking
+cholecalciferol,Vitamin D3,Vitamins and minerals
+cyanocobalamin,Vitamin B12,Vitamins and minerals
+folic acid,Folic acid,Vitamins and minerals
+ascorbic acid,Vitamin C,Vitamins and minerals
+calcium carbonate / cholecalciferol,Caltrate 600+D;Os-Cal,Vitamins and minerals
+calcium citrate / cholecalciferol,Citracal,Vitamins and minerals
+magnesium oxide,Mag-Ox,Vitamins and minerals
+ferrous sulfate,Feosol;Slow Fe,Vitamins and minerals
+potassium gluconate,Potassium gluconate,Vitamins and minerals
+multivitamin,Centrum Silver;One A Day 50+,Vitamins and minerals
+omega-3 fatty acids,Fish oil;Nature Made Fish Oil,Supplements
+thiamine,Vitamin B1,Vitamins and minerals
+glucose,Dex4 glucose tablets;Glucose gel,Low blood sugar
+lactase,Lactaid,Digestion

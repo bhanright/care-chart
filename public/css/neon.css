@@ -1,0 +1,317 @@
+/* Care Chart, "Neon Material" look: an imagined operating system that is half Google's
+   Material Design and half cyberpunk.
+
+   From Material: surfaces that sit at different heights with layered shadows, a solid
+   app bar, uppercase buttons with a ripple when pressed, underlined text fields, tabs with
+   a sliding indicator, thin linear progress, and a "snackbar" for notices.
+   From cyberpunk: near-black night, neon edges that glow, corners cut off at an angle,
+   faint scanlines and a city grid, monospaced readout labels, and a chromatic "glitch"
+   edge on the app's title.
+
+   Night is the native mode; Day keeps the neon on white Material paper. Schemes are four
+   neon pairings. Chosen per device in Settings → This device → Look; app.js sets
+   data-skin="neon" and data-scheme on <html>. Everything sits inside one
+   :root[data-skin="neon"] block (CSS nesting), so this file changes nothing else. */
+
+:root[data-skin="neon"] {
+  /* ---- Neon City (the default): magenta primary, cyan accent */
+  --primary: #ff2bd6;
+  --accent: #00f0ff;
+  --on-primary: #12001a;
+  &[data-scheme="toxic"] { --primary: #b6ff1f; --accent: #ffe600; --on-primary: #0d1400; }
+  &[data-scheme="synthwave"] { --primary: #ff6ec7; --accent: #ff9e3d; --on-primary: #1a0010; }
+  &[data-scheme="ice"] { --primary: #3ab8ff; --accent: #7dffea; --on-primary: #001224; }
+
+  --cut: 10px;                 /* size of the angled corner cuts */
+  --cut-small: 6px;
+  --night-bg: #07070d;
+  --elevation-1: 0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.4);
+  --elevation-2: 0 3px 6px rgba(0, 0, 0, 0.5), 0 3px 6px rgba(0, 0, 0, 0.35);
+  --elevation-4: 0 10px 20px rgba(0, 0, 0, 0.55), 0 6px 6px rgba(0, 0, 0, 0.4);
+  --glow-primary: 0 0 12px color-mix(in srgb, var(--primary) 55%, transparent);
+  --glow-accent: 0 0 10px color-mix(in srgb, var(--accent) 50%, transparent);
+  --hud-font: "Cascadia Mono", "JetBrains Mono", "Roboto Mono", ui-monospace, Consolas, monospace;
+
+  /* ---- Day: white Material paper, neon edges (the classic tokens, re-pointed) */
+  --desk: #eceef6;
+  --surface: #ffffff;
+  --surface-light: #f4f5fb;
+  --highlight: transparent;
+  --shadow: rgba(20, 20, 60, 0.14);
+  --dark-shadow: rgba(20, 20, 60, 0.3);
+  --field: #ffffff;
+  --field-alternate: #f6f7fc;
+  --text: #15151f;
+  --text-muted: #5d6078;
+  --selection: var(--primary);
+  --selection-text: var(--on-primary);
+  --link: color-mix(in srgb, var(--primary) 70%, #000000);
+  --raised: none;
+  --sunken: inset 0 0 0 1px var(--shadow);
+  --etched: none;
+  --font: "Roboto", "Segoe UI", system-ui, sans-serif;
+  --mono: var(--hud-font);
+  --progress: var(--primary);
+  --grid-line: rgba(80, 90, 160, 0.07);
+  --edge: color-mix(in srgb, var(--primary) 45%, transparent);
+  /* Neon on white is too pale to read, so day mode darkens it for labels and readouts. */
+  --readout: color-mix(in srgb, var(--primary) 70%, #000000);
+  --readout-strong: var(--text);
+  color-scheme: light;
+
+  /* ---- Night: the native mode */
+  &[data-theme="night"] {
+    --desk: var(--night-bg); --surface: #12121e; --surface-light: #1a1a2a; --shadow: rgba(255, 255, 255, 0.08);
+    --dark-shadow: rgba(0, 0, 0, 0.6); --field: #0d0d17; --field-alternate: #141422;
+    --text: #e8eaff; --text-muted: #9095bd; --link: var(--accent);
+    --grid-line: color-mix(in srgb, var(--accent) 9%, transparent);
+    --readout: var(--accent); --readout-strong: var(--accent);
+    --overdue: #ff5c7a; --overdue-fill: #2a0b16; --due: #ffd25a; --due-fill: #2a2108;
+    --given: #4dffa6; --given-fill: #072a1a; --held: #c79bff; --held-fill: #1e1236;
+    --upcoming: #a8acd0; --upcoming-fill: #191a2b; --allergy: #ff5c7a; --notable: #ff5c7a;
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    &[data-theme="auto"] {
+      --desk: var(--night-bg); --surface: #12121e; --surface-light: #1a1a2a; --shadow: rgba(255, 255, 255, 0.08);
+      --dark-shadow: rgba(0, 0, 0, 0.6); --field: #0d0d17; --field-alternate: #141422;
+      --text: #e8eaff; --text-muted: #9095bd; --link: var(--accent);
+      --grid-line: color-mix(in srgb, var(--accent) 9%, transparent);
+      --readout: var(--accent); --readout-strong: var(--accent);
+    --overdue: #ff5c7a; --overdue-fill: #2a0b16; --due: #ffd25a; --due-fill: #2a2108;
+      --given: #4dffa6; --given-fill: #072a1a; --held: #c79bff; --held-fill: #1e1236;
+      --upcoming: #a8acd0; --upcoming-fill: #191a2b; --allergy: #ff5c7a; --notable: #ff5c7a;
+      color-scheme: dark;
+    }
+  }
+
+  /* ---- The city: a grid, a horizon glow and scanlines over everything */
+
+  & body {
+    background:
+      radial-gradient(ellipse 90% 45% at 50% 110%, color-mix(in srgb, var(--primary) 30%, transparent), transparent 70%),
+      radial-gradient(ellipse 60% 35% at 85% -5%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%),
+      repeating-linear-gradient(0deg, var(--grid-line) 0 1px, transparent 1px 48px),
+      repeating-linear-gradient(90deg, var(--grid-line) 0 1px, transparent 1px 48px),
+      var(--desk);
+    background-attachment: fixed;
+  }
+  & body::after {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 100;
+    background: repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.05) 0 1px, transparent 1px 3px);
+  }
+
+  /* ---- Buttons: uppercase, Material elevation, cut corners, a ripple when pressed */
+
+  button, .button {
+    border: none;
+    border-radius: 2px;
+    background: var(--surface-light);
+    color: var(--text);
+    box-shadow: var(--elevation-1), inset 0 0 0 1px var(--edge);
+    padding: 7px 16px;
+    font: 500 0.86em/1.2 var(--font);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    clip-path: polygon(0 0, calc(100% - var(--cut-small)) 0, 100% var(--cut-small), 100% 100%, var(--cut-small) 100%, 0 calc(100% - var(--cut-small)));
+    transition: box-shadow 150ms, background-color 150ms, transform 150ms;
+  }
+  button:hover:not(:disabled), .button:hover { box-shadow: var(--elevation-2), inset 0 0 0 1px var(--primary), var(--glow-primary); }
+  /* The ripple: a burst of the accent from the center while pressed. */
+  button:active:not(:disabled), button.pressed {
+    background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--accent) 45%, transparent) 0 35%, var(--surface-light) 70%);
+    box-shadow: var(--elevation-1), inset 0 0 0 1px var(--accent); padding: 7px 16px; transform: translateY(1px);
+  }
+  button.default, button[aria-pressed="true"], button[aria-pressed="true"]:active:not(:disabled) {
+    outline: none; background: var(--primary); color: var(--on-primary); font-weight: 700; padding: 7px 16px;
+    box-shadow: var(--elevation-2), var(--glow-primary);
+  }
+  button.default:hover:not(:disabled) { box-shadow: var(--elevation-4), 0 0 18px color-mix(in srgb, var(--primary) 70%, transparent); }
+  button:focus-visible { outline: none; box-shadow: var(--elevation-2), inset 0 0 0 2px var(--accent), var(--glow-accent); }
+  button:disabled { opacity: 0.45; text-shadow: none; }
+  button.compact, button.compact:active:not(:disabled), button.compact.default { padding: 3px 10px; font-size: 0.78em; }
+  .choices button, .choices button:active:not(:disabled), .choices button[aria-pressed="true"] { padding: 5px 12px; }
+  button.link-button, button.link-button:hover { clip-path: none; box-shadow: none; background: none; text-transform: none; letter-spacing: 0; color: var(--link); }
+
+  /* Material text fields: an underline that lights up in the accent. */
+  input, select, textarea {
+    border: none; border-radius: 2px 2px 0 0; background: var(--field-alternate);
+    box-shadow: inset 0 -1px var(--text-muted); color: var(--text); padding: 8px 10px 6px;
+  }
+  input:focus, select:focus, textarea:focus { outline: none; box-shadow: inset 0 -2px var(--accent), 0 6px 10px -8px var(--accent); }
+  input[type="checkbox"], input[type="radio"] { background: none; box-shadow: none; accent-color: var(--primary); }
+  .field > span:first-child, .field > label:first-child, legend {
+    font: 500 0.72em/1.4 var(--hud-font); text-transform: uppercase; letter-spacing: 0.12em; color: var(--readout);
+  }
+  fieldset { box-shadow: none; border: 1px solid var(--shadow); border-radius: 2px; }
+
+  /* ---- The app: a solid app bar with a glitching title */
+
+  .window.app-window {
+    background: transparent; border: none; box-shadow: none; padding: 0;
+    & > .title-bar {
+      background: var(--primary); color: var(--on-primary);
+      min-height: 52px; padding: 8px 16px;
+      font: 900 18px/1.1 var(--hud-font); text-transform: uppercase; letter-spacing: 0.3em;
+      text-shadow: -2px 0 color-mix(in srgb, var(--accent) 80%, transparent), 2px 0 rgba(255, 255, 255, 0.35);
+      box-shadow: var(--elevation-4), var(--glow-primary);
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut) * 3) 100%, 0 100%);
+      & .title-icon { filter: invert(1) hue-rotate(180deg); }
+    }
+    & > .window-body { padding: 14px 0 0 !important; }
+  }
+
+  /* Title-bar buttons: small cut-corner squares. */
+  .title-button, .title-button:active:not(:disabled) {
+    width: 28px; height: 28px; min-height: 0; min-width: 0; padding: 0; text-transform: none; letter-spacing: 0;
+    background: rgba(0, 0, 0, 0.18); color: inherit; box-shadow: none; font: 700 13px/1 var(--hud-font);
+  }
+  .title-button:hover:not(:disabled) { background: rgba(0, 0, 0, 0.32); box-shadow: none; }
+
+  /* ---- Tabs: Material tabs; the indicator glows */
+
+  .tabs { padding: 0 2px; gap: 0; box-shadow: inset 0 -1px var(--shadow); margin-bottom: 14px; }
+  .tab, .tab:active:not(:disabled) {
+    background: transparent; box-shadow: none; clip-path: none; border-radius: 0; top: 0; margin: 0;
+    padding: 12px 18px; color: var(--text-muted); font: 500 0.82em/1 var(--font); letter-spacing: 0.12em; transform: none;
+  }
+  .tab:hover:not(:disabled) { color: var(--text); box-shadow: inset 0 -2px color-mix(in srgb, var(--accent) 40%, transparent); }
+  .tab[aria-selected="true"], .tab[aria-selected="true"]:hover:not(:disabled) {
+    background: transparent; color: var(--readout); font-weight: 700; padding: 12px 18px;
+    box-shadow: inset 0 -3px var(--accent), 0 8px 14px -12px var(--accent);
+  }
+  .tab-panel { background: transparent; border: none; box-shadow: none; margin: 0; padding: 0; }
+
+  /* ---- Cards: raised surfaces with a cut corner, a neon edge and a readout heading */
+
+  .window:not(.app-window):not(.dialog):not(.login), .patient-banner, .tile {
+    background: var(--surface);
+    border: none;
+    border-radius: 0;
+    box-shadow: var(--elevation-2), inset 0 0 0 1px var(--edge);
+    clip-path: polygon(0 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% 100%, 0 100%);
+  }
+  .window:not(.app-window):not(.dialog):not(.login) {
+    padding: 0;
+    min-width: 0;
+    & > .title-bar {
+      background: linear-gradient(90deg, color-mix(in srgb, var(--primary) 16%, transparent), transparent 70%);
+      color: var(--text); text-shadow: none; min-height: 0; padding: 10px 14px 8px;
+      font: 700 0.78em/1.2 var(--hud-font); text-transform: uppercase; letter-spacing: 0.16em;
+      border-bottom: 1px solid var(--edge);
+      & .title-icon { display: none; }
+      /* Long headings wrap; spaced capitals on one line would widen the page on phones. */
+      & .title { white-space: normal; overflow-wrap: anywhere; }
+      & .title::before { content: "// "; color: var(--readout); }
+      & .title-extra { color: var(--readout); font-weight: 400; }
+    }
+  }
+  .patient-banner { padding: 12px 16px; }
+  .patient-banner .patient-name { font: 700 1.35em/1.1 var(--font); letter-spacing: 0.02em; }
+  .patient-banner .clock { font-family: var(--hud-font); color: var(--readout); }
+
+  .tile {
+    & .tile-label { font: 500 0.7em/1.3 var(--hud-font); text-transform: uppercase; letter-spacing: 0.12em; color: var(--readout); }
+    & .tile-value { font: 300 2em/1 var(--font); color: var(--text); }
+  }
+  .tile.alert { background: var(--overdue-fill); box-shadow: var(--elevation-2), inset 0 0 0 1px var(--overdue), 0 0 14px color-mix(in srgb, var(--overdue) 35%, transparent); }
+  .tile.alert .tile-value { color: var(--overdue); }
+  .tile.warn { background: var(--due-fill); box-shadow: var(--elevation-2), inset 0 0 0 1px var(--due); }
+
+  /* The cut corners clip each card's own shadow, so the containers cast it instead;
+     a drop-shadow filter follows the cut shape. */
+  .tiles, .dashboard > .column, .tab-panel > .stack { filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.35)); }
+
+  .well { box-shadow: none; background: transparent; }
+  .dose-row {
+    box-shadow: inset 0 0 0 1px var(--shadow);
+    clip-path: polygon(0 0, calc(100% - var(--cut-small)) 0, 100% var(--cut-small), 100% 100%, 0 100%);
+  }
+  .dose-row.overdue { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--overdue) 55%, transparent), inset 6px 0 14px -10px var(--overdue); }
+  .dose-row .dose-time, .timeline-item .when { font-family: var(--hud-font); color: var(--readout-strong); }
+  .prn-card { box-shadow: inset 0 0 0 1px var(--shadow); }
+  .quick-grid button { min-height: 76px; }
+  .quick-grid .type-badge { box-shadow: 0 0 10px currentColor; }
+  .type-badge { box-shadow: none; border-radius: 0; font-family: var(--hud-font); }
+
+  /* Chips that are buttons keep their status colors, as glowing readouts. */
+  .status-chip { font-family: var(--hud-font); border-radius: 0; text-transform: uppercase; letter-spacing: 0.06em; }
+  button.status-chip, button.status-chip:active:not(:disabled) {
+    clip-path: none; border: 1px solid currentColor; padding: 1px 7px; font-size: 0.74em; font-weight: 500;
+    background: var(--upcoming-fill); color: var(--upcoming); box-shadow: none; transform: none;
+  }
+  button.status-chip.given { background: var(--given-fill); color: var(--given); }
+  button.status-chip.due { background: var(--due-fill); color: var(--due); }
+  button.status-chip.overdue, button.status-chip.missed { background: var(--overdue-fill); color: var(--overdue); box-shadow: 0 0 8px color-mix(in srgb, var(--overdue) 45%, transparent); }
+  button.status-chip.refused, button.status-chip.held { background: var(--held-fill); color: var(--held); }
+
+  /* Material linear progress with a neon glow. */
+  .progress {
+    height: 4px; padding: 0; border: none; border-radius: 0; box-shadow: none; background: color-mix(in srgb, var(--primary) 20%, transparent);
+    & > div, &.over > div { background: var(--primary); box-shadow: var(--glow-primary); }
+  }
+
+  /* ---- Lists */
+
+  table.grid th {
+    background: var(--surface); box-shadow: inset 0 -1px var(--edge);
+    font: 500 0.72em/1.4 var(--hud-font); text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-muted);
+  }
+  table.grid td { border-bottom: 1px solid var(--shadow); }
+  table.grid tr:nth-child(even) td { background: transparent; }
+  .timeline-item { border-bottom: 1px solid var(--shadow); }
+  .timeline-item:nth-child(even) { background: transparent; }
+  .day-heading {
+    background: var(--surface); box-shadow: inset 0 -1px var(--edge);
+    font: 700 0.74em/1.4 var(--hud-font); text-transform: uppercase; letter-spacing: 0.14em; color: var(--readout-strong);
+  }
+
+  /* ---- Dialogs: the highest surface, with a cut corner and a neon frame */
+
+  .dialog-layer { background: rgba(4, 4, 12, 0.7); align-items: center; }
+  .dialog, .window.login {
+    background: var(--surface); border: none; border-radius: 0; padding: 0;
+    box-shadow: var(--elevation-4), inset 0 0 0 1px var(--primary), var(--glow-primary);
+    clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+    & > .title-bar {
+      background: none; color: var(--text); min-height: 0; padding: 18px 20px 6px;
+      font: 700 1.2em/1.2 var(--font); letter-spacing: 0.02em; text-shadow: -1px 0 var(--accent), 1px 0 var(--primary);
+      & .title-icon { display: none; }
+      & .title-button { color: var(--text); background: transparent; }
+    }
+    & .window-body { padding: 10px 20px; }
+  }
+  .dialog-buttons { padding: 8px 20px 20px; }
+
+  /* Snackbar: Material's notice bar, bottom left, with a neon action. */
+  .toasts { left: 16px; right: auto; bottom: 16px; }
+  .toast {
+    background: #1d1d2b; color: #e8eaff; border: none; border-radius: 2px;
+    box-shadow: var(--elevation-4), inset 3px 0 var(--accent); padding: 10px 12px 10px 16px;
+    font-family: var(--font);
+    & button { background: transparent; color: var(--accent); box-shadow: none; clip-path: none; font-weight: 700; }
+  }
+  .toast.error { box-shadow: var(--elevation-4), inset 3px 0 var(--overdue); }
+  .suggestions { border-radius: 0; box-shadow: var(--elevation-4), inset 0 0 0 1px var(--edge); background: var(--surface); }
+  .suggestions li[aria-selected="true"] { background: color-mix(in srgb, var(--primary) 25%, var(--surface)); color: var(--text); box-shadow: inset 3px 0 var(--accent); }
+  .suggestions li[aria-selected="true"] .muted { color: var(--text-muted); }
+  .who-badge, .otc-badge { border-radius: 0; box-shadow: none; font-family: var(--hud-font); }
+
+  /* Sign-in: the login panel floats over the city. */
+  .login-wrap { background: transparent; }
+
+  .status-bar { padding: 14px 2px 0; font: 0.72em/1.4 var(--hud-font); text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); }
+  .status-bar > * { box-shadow: none; padding: 0 12px 0 0; }
+  .status-light { box-shadow: 0 0 8px currentColor; background: var(--given); }
+
+  .report { box-shadow: var(--elevation-2); }
+
+  /* ---- Phones */
+
+  @media (max-width: 600px) {
+    .tabs { flex-wrap: wrap; overflow: visible; }
+    .tab, .tab[aria-selected="true"] { flex: 1 0 30%; padding: 10px 6px; }
+    .window.app-window > .title-bar { letter-spacing: 0.18em; font-size: 15px; }
+    .toasts { right: 16px; }
+  }
+}

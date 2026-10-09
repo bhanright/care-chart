@@ -1,0 +1,277 @@
+/* Care Chart, "Windows 7" look: Aero. Frosted, tinted glass window frames with a glowing
+   title and the wide red close button; glossy buttons that turn light blue on hover;
+   white Control Panel–style sections; the green glossy progress bar; gradient tooltips;
+   over a blue "Harmony"-style wallpaper drawn in CSS (not the original image). The glass
+   tint follows Windows 7's Personalization colors: Sky, Twilight, Leaf and Rose.
+
+   Chosen per device in Settings → This device → Look; app.js sets data-skin="win7" and
+   data-scheme on <html>. Everything sits inside one :root[data-skin="win7"] block (CSS
+   nesting), so this file changes nothing in the other looks. */
+
+:root[data-skin="win7"] {
+  /* ---- Glass: Sky (the default) */
+  --glass-tint: rgba(116, 176, 236, 0.55);
+  --glass-tint-strong: rgba(92, 150, 214, 0.78);
+  --glass-edge: rgba(0, 0, 0, 0.55);
+  --glass-shine: rgba(255, 255, 255, 0.55);
+  --heading: #1e3287;
+  --wallpaper:
+    radial-gradient(ellipse 70% 55% at 62% 42%, rgba(120, 210, 255, 0.55), transparent 70%),
+    linear-gradient(118deg, transparent 38%, rgba(255, 255, 255, 0.16) 44%, transparent 52%),
+    linear-gradient(128deg, transparent 50%, rgba(160, 230, 255, 0.18) 56%, transparent 64%),
+    radial-gradient(ellipse 120% 90% at 50% 40%, #2a8ad8 0%, #0d5aa7 45%, #08326b 100%);
+
+  /* ---- The classic tokens, re-pointed */
+  --desk: #0d5aa7;
+  --surface: #f0f0f0;
+  --surface-light: #f7f7f7;
+  --highlight: #ffffff;
+  --shadow: #c9c9c9;
+  --dark-shadow: #8e8f8f;
+  --field: #ffffff;
+  --field-alternate: #f5f9fd;
+  --text: #000000;
+  --text-muted: #5a5a5a;
+  --selection: #3399ff;
+  --selection-text: #ffffff;
+  --link: #0066cc;
+  --raised: none;
+  --sunken: inset 0 0 0 1px #abadb3;
+  --etched: none;
+  --font: "Segoe UI", Tahoma, sans-serif;
+  --progress: #06b025;
+  color-scheme: light;
+
+  &[data-scheme="twilight"] { --glass-tint: rgba(64, 84, 132, 0.6); --glass-tint-strong: rgba(48, 66, 110, 0.82); }
+  &[data-scheme="leaf"] { --glass-tint: rgba(110, 178, 92, 0.55); --glass-tint-strong: rgba(84, 150, 70, 0.8); }
+  &[data-scheme="rose"] { --glass-tint: rgba(226, 128, 164, 0.55); --glass-tint-strong: rgba(198, 98, 138, 0.8); }
+
+  /* ---- Night: dark glass on a night-blue wallpaper (Windows 7 had no dark mode) */
+  &[data-theme="night"] {
+    --glass-tint: rgba(40, 52, 72, 0.7); --glass-tint-strong: rgba(30, 40, 58, 0.88);
+    --heading: #9cc3ff;
+    --wallpaper: radial-gradient(ellipse 120% 90% at 50% 40%, #12305a 0%, #0a1a35 55%, #040a17 100%);
+    --surface: #2b2d31; --surface-light: #33363b; --highlight: #4a4d54; --shadow: #1b1c1f; --dark-shadow: #000000;
+    --field: #1e1f22; --field-alternate: #24272c; --text: #e8eaed; --text-muted: #a9adb4;
+    --selection: #2f6fd1; --link: #8fbaff; --sunken: inset 0 0 0 1px #4b5160;
+    --overdue: #ff9a9a; --overdue-fill: #4a1d1d; --due: #ffd36b; --due-fill: #45391a;
+    --given: #93e093; --given-fill: #1d3a1f; --held: #cdb5f2; --held-fill: #33284a;
+    --upcoming: #c9cdd1; --upcoming-fill: #2c3033; --allergy: #ff8a8a; --notable: #ff8a8a;
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    &[data-theme="auto"] {
+      --glass-tint: rgba(40, 52, 72, 0.7); --glass-tint-strong: rgba(30, 40, 58, 0.88);
+      --heading: #9cc3ff;
+      --wallpaper: radial-gradient(ellipse 120% 90% at 50% 40%, #12305a 0%, #0a1a35 55%, #040a17 100%);
+      --surface: #2b2d31; --surface-light: #33363b; --highlight: #4a4d54; --shadow: #1b1c1f; --dark-shadow: #000000;
+      --field: #1e1f22; --field-alternate: #24272c; --text: #e8eaed; --text-muted: #a9adb4;
+      --selection: #2f6fd1; --link: #8fbaff; --sunken: inset 0 0 0 1px #4b5160;
+      --overdue: #ff9a9a; --overdue-fill: #4a1d1d; --due: #ffd36b; --due-fill: #45391a;
+      --given: #93e093; --given-fill: #1d3a1f; --held: #cdb5f2; --held-fill: #33284a;
+      --upcoming: #c9cdd1; --upcoming-fill: #2c3033; --allergy: #ff8a8a; --notable: #ff8a8a;
+      color-scheme: dark;
+    }
+  }
+
+  & body { background: var(--wallpaper), var(--desk); background-attachment: fixed; }
+
+  /* ---- Buttons: glossy gray, light blue on hover, deeper blue when pressed */
+
+  button, .button {
+    border: 1px solid #707070;
+    border-radius: 3px;
+    background: linear-gradient(180deg, #f2f2f2 0%, #ebebeb 49%, #dddddd 50%, #cfcfcf 100%);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+    color: #000000;
+    padding: 4px 14px;
+  }
+  button:hover:not(:disabled), .button:hover {
+    border-color: #3c7fb1;
+    background: linear-gradient(180deg, #eaf6fd 0%, #d9f0fc 49%, #bee6fd 50%, #a7d9f5 100%);
+  }
+  button:active:not(:disabled), button.pressed, button[aria-pressed="true"] {
+    border-color: #2c628b;
+    background: linear-gradient(180deg, #e5f4fc 0%, #c4e5f6 49%, #98d1ef 50%, #68b3db 100%);
+    box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.3);
+    padding: 4px 14px;
+  }
+  button[aria-pressed="true"] { font-weight: 600; }
+  button.default { outline: none; border-color: #3399ff; box-shadow: inset 0 0 0 1px #8fd6ff, 0 0 3px rgba(51, 153, 255, 0.6); }
+  button:focus-visible { outline: 1px dotted #000000; outline-offset: -4px; }
+  button:disabled { color: #a0a0a0; border-color: #adb2b5; background: #f4f4f4; text-shadow: none; box-shadow: none; }
+  button.compact, button.compact:active:not(:disabled) { padding: 2px 9px; }
+  .choices button, .choices button:active:not(:disabled), .choices button[aria-pressed="true"] { padding: 3px 10px; }
+  button.link-button, button.link-button:hover { border: none; background: none; box-shadow: none; }
+
+  input, select, textarea {
+    border: 1px solid #abadb3; border-top-color: #8e8f8f; border-radius: 2px; box-shadow: none; background: var(--field);
+  }
+  input:hover, select:hover, textarea:hover { border-color: #5794bf; border-top-color: #3d7bad; }
+  input:focus, select:focus, textarea:focus { border-color: #3d7bad; border-top-color: #3d7bad; }
+  input[type="checkbox"], input[type="radio"] { border: none; accent-color: #3399ff; }
+  fieldset { box-shadow: none; border: 1px solid #d5dfe5; border-radius: 3px; }
+  legend { color: var(--heading); }
+
+  /* ---- Aero glass windows: the app, dialogs and sign-in */
+
+  .window.app-window, .dialog, .window.login {
+    background: var(--glass-tint);
+    backdrop-filter: blur(9px) saturate(1.3); -webkit-backdrop-filter: blur(9px) saturate(1.3);
+    border: 1px solid var(--glass-edge);
+    border-radius: 7px;
+    box-shadow: inset 0 0 0 1px var(--glass-shine), 0 8px 26px rgba(0, 0, 0, 0.5);
+    padding: 0 7px 7px;
+    & > .title-bar {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.05) 60%, transparent 100%);
+      color: #000000;
+      text-shadow: 0 0 9px #ffffff, 0 0 4px #ffffff, 0 0 2px #ffffff;
+      font: 400 13px/1.2 "Segoe UI", Tahoma, sans-serif;
+      border-radius: 6px 6px 0 0;
+      margin: 0 -7px;
+      padding: 5px 7px 5px 10px;
+      min-height: 30px;
+    }
+    & > .window-body, & > .dialog-buttons {
+      background: var(--surface); border: 1px solid rgba(0, 0, 0, 0.45);
+    }
+    & > .dialog-buttons { border-top: none; }
+    & > .window-body:has(+ .dialog-buttons) { border-bottom: none; }
+  }
+  .window.app-window > .window-body { padding: 8px !important; background: var(--surface); }
+
+  /* Caption buttons: glassy, with the wide red close button. */
+  .title-button, .title-button:active:not(:disabled) {
+    width: 26px; height: 19px; min-height: 0; min-width: 0; padding: 0;
+    border: 1px solid rgba(0, 0, 0, 0.55); border-radius: 3px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.25) 49%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0.3) 100%);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+    color: #ffffff; text-shadow: 0 0 2px #000000, 0 0 2px #000000; font: bold 11px/1 "Segoe UI", sans-serif;
+  }
+  .title-button[aria-label="Close"] {
+    width: 43px;
+    background: linear-gradient(180deg, #e8a493 0%, #d4735f 45%, #c4402b 50%, #c75a42 100%);
+  }
+  .title-button:hover:not(:disabled) { filter: brightness(1.2); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7), 0 0 6px rgba(140, 210, 255, 0.9); }
+  .title-button[aria-label="Close"]:hover:not(:disabled) { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6), 0 0 6px rgba(255, 120, 90, 0.9); }
+
+  /* ---- Tabs */
+
+  .tabs { padding: 4px 6px 0; }
+  .tab, .tab:active:not(:disabled) {
+    background: linear-gradient(180deg, #f2f2f2 0%, #ebebeb 49%, #dddddd 50%, #cfcfcf 100%);
+    border: 1px solid #898c95; border-bottom: none; border-radius: 3px 3px 0 0;
+    box-shadow: none; padding: 4px 12px; top: 2px; margin-right: -1px; color: #000000;
+  }
+  .tab:hover:not(:disabled) { background: linear-gradient(180deg, #eaf6fd 0%, #d9f0fc 49%, #bee6fd 50%, #a7d9f5 100%); }
+  .tab[aria-selected="true"], .tab[aria-selected="true"]:hover:not(:disabled) {
+    background: #ffffff; top: 1px; padding: 5px 14px; font-weight: 600; color: #000000;
+  }
+  .tab-panel {
+    background: linear-gradient(180deg, #ffffff 0%, #eef3fa 100%);
+    border: 1px solid #898c95; box-shadow: none; margin: 0 6px 6px;
+  }
+  &[data-theme="night"] .tab-panel { background: #24272c; }
+  @media (prefers-color-scheme: dark) { &[data-theme="auto"] .tab-panel { background: #24272c; } }
+
+  /* ---- Sections: Control Panel style, white with a blue heading */
+
+  .window:not(.app-window):not(.dialog):not(.login) {
+    background: var(--field);
+    border: 1px solid #d5dfe5;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    padding: 0;
+    & > .title-bar {
+      background: none; color: var(--heading);
+      font: 400 15px/1.3 "Segoe UI", Tahoma, sans-serif;
+      padding: 8px 12px 4px; min-height: 0;
+      border-bottom: 1px solid #e3e9ef;
+      & .title-icon { display: none; }
+      & .title-extra { color: var(--text-muted); }
+    }
+  }
+
+  .status-bar { padding: 4px 0 0; }
+  .status-bar > * { box-shadow: none; border-right: 1px solid #d5dfe5; padding: 2px 10px; }
+  .status-bar > *:last-child { border-right: none; }
+  .status-light { border-radius: 50%; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25), 0 0 4px currentColor; }
+
+  /* ---- Patient banner, tiles and cards */
+
+  .patient-banner {
+    border: 1px solid #d5dfe5; border-radius: 4px; box-shadow: none;
+    background: linear-gradient(180deg, #ffffff 0%, #f1f6fc 100%);
+  }
+  &[data-theme="night"] .patient-banner { background: var(--field); }
+  .tile {
+    background: var(--field); border: 1px solid #d5dfe5; border-radius: 4px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    & .tile-label { color: var(--heading); text-transform: none; letter-spacing: 0; font-size: 0.9em; }
+  }
+  .tile.alert { background: var(--overdue-fill); border-color: #e3a3a3; }
+  .tile.warn { background: var(--due-fill); border-color: #e6c77a; }
+  .dose-row, .prn-card { border-radius: 3px; }
+  .quick-grid button { border-radius: 4px; }
+  .type-badge { border-radius: 3px; }
+
+  /* Chips that are buttons keep their status colors (the glossy button style would cover them). */
+  button.status-chip, button.status-chip:active:not(:disabled) {
+    border: 1px solid currentColor; border-radius: 2px; padding: 1px 6px; box-shadow: none;
+    background: var(--upcoming-fill); color: var(--upcoming);
+  }
+  button.status-chip.given { background: var(--given-fill); color: var(--given); }
+  button.status-chip.due { background: var(--due-fill); color: var(--due); }
+  button.status-chip.overdue, button.status-chip.missed { background: var(--overdue-fill); color: var(--overdue); }
+  button.status-chip.refused, button.status-chip.held { background: var(--held-fill); color: var(--held); }
+
+  /* Windows 7 progress bar: glossy green with a highlight. */
+  .progress {
+    height: 15px; padding: 0; border: 1px solid #bcbcbc; border-radius: 3px; box-shadow: none;
+    background: linear-gradient(180deg, #f3f3f3, #dadada);
+    & > div, &.over > div {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.15) 45%, transparent 50%),
+        linear-gradient(180deg, #37e15a 0%, #06b025 60%, #19c43a 100%);
+      border-radius: 2px;
+    }
+  }
+
+  /* ---- Tables: Explorer column headers and light-blue hover */
+
+  .well { box-shadow: inset 0 0 0 1px #d5dfe5; }
+  table.grid th {
+    background: linear-gradient(180deg, #ffffff 0%, #f3f6fa 100%);
+    box-shadow: inset -1px 0 #e3e9ef, inset 0 -1px #d5dfe5;
+    color: #4c607a;
+  }
+  table.grid tr:hover td { background: #e5f3fb; }
+  &[data-theme="night"] table.grid tr:hover td { background: #26364a; }
+  .day-heading { background: #f3f6fa; color: var(--heading); box-shadow: inset 0 -1px #d5dfe5; }
+  &[data-theme="night"] .day-heading, &[data-theme="night"] table.grid th { background: #2b2d31; color: var(--heading); }
+
+  /* ---- Dialogs, tooltips and suggestions */
+
+  .dialog-layer { background: rgba(0, 0, 0, 0.18); }
+  .toast {
+    background: linear-gradient(180deg, #ffffff 0%, #e4e5f0 100%); color: #000000;
+    border: 1px solid #767676; border-radius: 3px; box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+  }
+  .suggestions { box-shadow: inset 0 0 0 1px #abadb3, 2px 3px 8px rgba(0, 0, 0, 0.25); }
+  .suggestions li[aria-selected="true"] {
+    background: linear-gradient(180deg, #e5f3fb 0%, #c4e3f8 100%); color: #000000; box-shadow: inset 0 0 0 1px #7da2ce;
+  }
+  .suggestions li[aria-selected="true"] .muted { color: #333333; }
+  .who-badge, .otc-badge { border-radius: 3px; box-shadow: none; }
+
+  .report { box-shadow: inset 0 0 0 1px #d5dfe5; }
+
+  /* ---- Phones */
+
+  @media (max-width: 600px) {
+    .tab, .tab:active:not(:disabled), .tab[aria-selected="true"] { top: 0; padding: 4px 6px; }
+    .window.app-window > .window-body { padding: 4px !important; }
+    .tab-panel { margin: 0 2px 2px; }
+    .window.app-window { padding: 0 4px 4px; }
+    .window.app-window > .title-bar { margin: 0 -4px; }
+  }
+}

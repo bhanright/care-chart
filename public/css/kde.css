@@ -1,0 +1,275 @@
+/* Care Chart, "KDE Plasma" look: Plasma 6 with the Breeze theme. Windows whose title bar
+   shares the window color, with a centered title and flat window buttons (close turns
+   into a red circle under the pointer); crisp light buttons and fields that take a blue
+   focus ring; white cards for sections; tabs underlined in the accent; thin progress
+   bars; notification cards above a floating, translucent panel at the bottom of the
+   screen; over a faceted blue wallpaper in the spirit of Plasma's "Next" (drawn in CSS).
+   The schemes are accent colors from Plasma's Colors settings.
+
+   Chosen per device in Settings → This device → Look; app.js sets data-skin="kde" and
+   data-scheme on <html>. Everything sits inside one :root[data-skin="kde"] block (CSS
+   nesting), so this file changes nothing in the other looks. */
+
+:root[data-skin="kde"] {
+  /* ---- Accent: Breeze blue (the default) */
+  --accent: #3daee9;
+  --accent-strong: #2980b9; /* for text and fills that must stand out */
+  &[data-scheme="purple"] { --accent: #9b59b6; --accent-strong: #8e44ad; }
+  &[data-scheme="green"] { --accent: #27ae60; --accent-strong: #1e8c4d; }
+  &[data-scheme="orange"] { --accent: #f67400; --accent-strong: #c45c00; }
+  &[data-scheme="red"] { --accent: #da4453; --accent-strong: #b8303f; }
+  &[data-scheme="teal"] { --accent: #1abc9c; --accent-strong: #138d75; }
+
+  --wallpaper:
+    linear-gradient(152deg, transparent 0 34%, rgba(255, 255, 255, 0.07) 34% 52%, transparent 52%),
+    linear-gradient(28deg, transparent 0 46%, rgba(0, 0, 0, 0.18) 46% 70%, transparent 70%),
+    linear-gradient(110deg, transparent 0 58%, rgba(255, 255, 255, 0.05) 58% 76%, transparent 76%),
+    linear-gradient(200deg, transparent 0 62%, rgba(29, 153, 243, 0.35) 62% 80%, transparent 80%),
+    linear-gradient(160deg, #1d6fb8 0%, #11487e 45%, #0b2c4f 100%);
+  --window: #eff0f1;
+  --view: #ffffff;
+  --header: #dee0e2;
+  --header-text: #232627;
+  --frame: rgba(35, 38, 39, 0.25);
+  --button-border: rgba(35, 38, 39, 0.3);
+  --separator: rgba(35, 38, 39, 0.14);
+  --panel: rgba(239, 240, 241, 0.82);
+  --panel-text: #232627;
+
+  /* ---- The classic tokens, re-pointed */
+  --desk: #11487e;
+  --surface: var(--window);
+  --surface-light: #f7f7f8;
+  --highlight: transparent;
+  --shadow: var(--separator);
+  --dark-shadow: var(--frame);
+  --field: var(--view);
+  --field-alternate: #f7f7f7;
+  --text: #232627;
+  --text-muted: #6e7175;
+  --selection: var(--accent);
+  --selection-text: #ffffff;
+  --link: var(--accent-strong);
+  --raised: none;
+  --sunken: inset 0 0 0 1px var(--separator);
+  --etched: none;
+  --font: "Noto Sans", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --mono: "Hack", "Noto Sans Mono", "DejaVu Sans Mono", Consolas, monospace;
+  --base-size: 14px;
+  --progress: var(--accent);
+  color-scheme: light;
+
+  /* ---- Night: Breeze Dark */
+  &[data-theme="night"] {
+    --window: #292c30; --view: #1b1e20; --header: #2e3236; --header-text: #fcfcfc;
+    --frame: rgba(0, 0, 0, 0.6); --button-border: rgba(252, 252, 252, 0.22); --separator: rgba(252, 252, 252, 0.12);
+    --panel: rgba(32, 35, 38, 0.82); --panel-text: #fcfcfc;
+    --surface-light: #31363b; --field-alternate: #202326; --text: #fcfcfc; --text-muted: #a1a9b1;
+    --overdue: #ff9a9a; --overdue-fill: #4a1d1d; --due: #ffd36b; --due-fill: #45391a;
+    --given: #93e093; --given-fill: #1d3a1f; --held: #cdb5f2; --held-fill: #33284a;
+    --upcoming: #c9cdd1; --upcoming-fill: #31363b; --allergy: #ff8a8a; --notable: #ff8a8a;
+    --link: var(--accent);
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    &[data-theme="auto"] {
+      --window: #292c30; --view: #1b1e20; --header: #2e3236; --header-text: #fcfcfc;
+      --frame: rgba(0, 0, 0, 0.6); --button-border: rgba(252, 252, 252, 0.22); --separator: rgba(252, 252, 252, 0.12);
+      --panel: rgba(32, 35, 38, 0.82); --panel-text: #fcfcfc;
+      --surface-light: #31363b; --field-alternate: #202326; --text: #fcfcfc; --text-muted: #a1a9b1;
+      --overdue: #ff9a9a; --overdue-fill: #4a1d1d; --due: #ffd36b; --due-fill: #45391a;
+      --given: #93e093; --given-fill: #1d3a1f; --held: #cdb5f2; --held-fill: #33284a;
+      --upcoming: #c9cdd1; --upcoming-fill: #31363b; --allergy: #ff8a8a; --notable: #ff8a8a;
+      --link: var(--accent);
+      color-scheme: dark;
+    }
+  }
+
+  & body { background: var(--wallpaper), var(--desk); background-attachment: fixed; }
+
+  /* ---- Buttons and fields: crisp, light, a blue edge on hover and focus */
+
+  button, .button {
+    border: 1px solid var(--button-border);
+    border-radius: 5px;
+    background: var(--view);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.06);
+    color: var(--text);
+    padding: 5px 14px;
+  }
+  button:hover:not(:disabled), .button:hover { border-color: var(--accent); }
+  button:active:not(:disabled), button.pressed {
+    background: color-mix(in srgb, var(--accent) 22%, var(--view)); border-color: var(--accent); box-shadow: none; padding: 5px 14px;
+  }
+  button[aria-pressed="true"], button[aria-pressed="true"]:active:not(:disabled) {
+    background: color-mix(in srgb, var(--accent) 20%, var(--view)); border-color: var(--accent); padding: 5px 14px; font-weight: 600;
+  }
+  button.default { outline: none; border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--view)); }
+  button:focus-visible { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 45%, transparent); }
+  button:disabled { opacity: 0.55; color: var(--text); text-shadow: none; }
+  button.compact, button.compact:active:not(:disabled) { padding: 2px 10px; }
+  .choices button, .choices button:active:not(:disabled), .choices button[aria-pressed="true"] { padding: 4px 11px; }
+  button.link-button, button.link-button:hover { border: none; background: none; box-shadow: none; color: var(--link); }
+
+  input, select, textarea {
+    border: 1px solid var(--button-border); border-radius: 5px; background: var(--view); box-shadow: none; color: var(--text);
+  }
+  input:hover, select:hover, textarea:hover { border-color: color-mix(in srgb, var(--accent) 70%, var(--button-border)); }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent); }
+  input[type="checkbox"], input[type="radio"] { border: none; box-shadow: none; accent-color: var(--accent); }
+  fieldset { box-shadow: none; border: 1px solid var(--separator); border-radius: 5px; }
+  legend { font-weight: 600; }
+
+  /* ---- Windows: the title bar shares the header color; the title is centered */
+
+  .window.app-window, .dialog, .window.login {
+    border: 1px solid var(--frame);
+    border-radius: 6px;
+    background: var(--window);
+    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.45);
+    padding: 0;
+    overflow: clip;
+    & > .title-bar {
+      position: relative;
+      background: var(--header);
+      color: var(--header-text);
+      border-bottom: 1px solid var(--separator);
+      font: 400 13.5px/1.2 var(--font);
+      text-shadow: none;
+      justify-content: center;
+      min-height: 32px;
+      padding: 4px 40px;
+      & .title { flex: 0 1 auto; text-align: center; }
+      & .title-icon { position: absolute; left: 10px; }
+    }
+  }
+  .window.app-window > .window-body { padding: 10px !important; }
+
+  /* Window buttons: flat glyphs at the right; close becomes a red circle on hover. */
+  .title-button, .title-button:active:not(:disabled) {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    width: 22px; height: 22px; min-height: 0; min-width: 0; padding: 0;
+    border: none; border-radius: 50%; background: transparent; box-shadow: none;
+    color: var(--header-text); font: 400 13px/1 var(--font);
+  }
+  .title-button:hover:not(:disabled) { background: color-mix(in srgb, var(--header-text) 15%, transparent); }
+  .title-button[aria-label="Close"]:hover:not(:disabled) { background: #da4453; color: #ffffff; }
+
+  /* ---- Tabs: flat, the current one underlined in the accent */
+
+  .tabs { padding: 0 6px; gap: 0; border-bottom: 1px solid var(--separator); }
+  .tab, .tab:active:not(:disabled) {
+    background: transparent; border: none; border-radius: 0; box-shadow: none; top: 0; margin: 0;
+    padding: 8px 16px; color: var(--text-muted);
+  }
+  .tab:hover:not(:disabled) { color: var(--text); box-shadow: inset 0 -3px color-mix(in srgb, var(--accent) 45%, transparent); }
+  .tab[aria-selected="true"], .tab[aria-selected="true"]:hover:not(:disabled) {
+    background: transparent; color: var(--text); padding: 8px 16px; font-weight: 600; box-shadow: inset 0 -3px var(--accent);
+  }
+  .tab-panel { background: transparent; border: none; box-shadow: none; margin: 0; padding: 12px 2px 2px; }
+
+  /* ---- Sections: white cards with a header line */
+
+  .window:not(.app-window):not(.dialog):not(.login) {
+    background: var(--view);
+    border: 1px solid var(--separator);
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    padding: 0;
+    & > .title-bar {
+      background: none; color: var(--text); text-shadow: none;
+      font: 600 14px/1.3 var(--font); padding: 9px 12px; min-height: 0;
+      border-bottom: 1px solid var(--separator);
+      & .title-icon { display: none; }
+      & .title-extra { color: var(--text-muted); font-weight: 400; }
+    }
+  }
+
+  /* ---- Cards and tiles */
+
+  .patient-banner { background: var(--view); border: 1px solid var(--separator); border-radius: 6px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06); }
+  .tile {
+    background: var(--view); border: 1px solid var(--separator); border-radius: 6px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    & .tile-label { text-transform: none; letter-spacing: 0; font-weight: 600; color: var(--text-muted); }
+  }
+  .tile.alert { background: var(--overdue-fill); }
+  .tile.warn { background: var(--due-fill); }
+  .well { box-shadow: none; }
+  .dose-row, .prn-card { border-radius: 5px; }
+  .quick-grid button { border-radius: 6px; }
+  .type-badge { border-radius: 4px; box-shadow: none; }
+
+  /* Chips that are buttons keep their status colors. */
+  button.status-chip, button.status-chip:active:not(:disabled) {
+    border: 1px solid currentColor; border-radius: 4px; padding: 1px 7px; box-shadow: none;
+    background: var(--upcoming-fill); color: var(--upcoming);
+  }
+  button.status-chip.given { background: var(--given-fill); color: var(--given); }
+  button.status-chip.due { background: var(--due-fill); color: var(--due); }
+  button.status-chip.overdue, button.status-chip.missed { background: var(--overdue-fill); color: var(--overdue); }
+  button.status-chip.refused, button.status-chip.held { background: var(--held-fill); color: var(--held); }
+
+  .progress {
+    height: 6px; padding: 0; border: none; border-radius: 3px; box-shadow: none; background: var(--separator);
+    & > div, &.over > div { background: var(--accent); border-radius: 3px; }
+  }
+
+  /* Numbers and times in the look's own font (the classic look sets them in monospace). */
+  .tile .tile-value, .dose-row .dose-time, .timeline-item .when, .patient-banner .clock, .status-chip {
+    font-family: var(--font); font-variant-numeric: tabular-nums;
+  }
+  .tile .tile-value { font-weight: 600; }
+
+  /* ---- Lists */
+
+  table.grid th { background: var(--view); box-shadow: inset 0 -1px var(--separator), inset -1px 0 var(--separator); color: var(--text); font-weight: 600; }
+  table.grid td { border-bottom: 1px solid var(--separator); }
+  table.grid tr:nth-child(even) td { background: var(--field-alternate); }
+  table.grid tr:hover td { background: color-mix(in srgb, var(--accent) 12%, var(--view)); }
+  .day-heading { background: var(--window); box-shadow: inset 0 -1px var(--separator); }
+
+  /* ---- Dialogs, notifications and suggestions */
+
+  .dialog-layer { background: rgba(0, 0, 0, 0.3); }
+  .toasts { right: 14px; bottom: 64px; }
+  .toast {
+    background: var(--window); color: var(--text); border: 1px solid var(--frame); border-radius: 8px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35); padding: 10px 12px;
+    border-left: 4px solid var(--accent);
+    & button { border-radius: 5px; }
+  }
+  .toast.error { border-left-color: #da4453; }
+  .suggestions { border-radius: 6px; box-shadow: 0 0 0 1px var(--frame), 0 8px 24px rgba(0, 0, 0, 0.25); }
+  .suggestions li[aria-selected="true"] { background: color-mix(in srgb, var(--accent) 22%, var(--view)); color: var(--text); box-shadow: inset 0 0 0 1px var(--accent); }
+  .suggestions li[aria-selected="true"] .muted { color: var(--text-muted); }
+  .who-badge, .otc-badge { border-radius: 4px; box-shadow: none; }
+
+  .report { border-radius: 6px; box-shadow: 0 0 0 1px var(--separator); }
+
+  /* ---- Wide screens: the status bar becomes Plasma's floating panel */
+
+  @media (min-width: 901px) {
+    .app { padding-bottom: 72px; }
+    .status-bar {
+      position: fixed; left: 50%; transform: translateX(-50%); bottom: 10px; z-index: 30;
+      width: min(1100px, calc(100vw - 40px));
+      padding: 6px 12px; gap: 8px; min-height: 40px; align-items: center;
+      background: var(--panel); color: var(--panel-text);
+      backdrop-filter: blur(16px) saturate(1.4); -webkit-backdrop-filter: blur(16px) saturate(1.4);
+      border: 1px solid var(--frame); border-radius: 10px;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+    }
+    .status-bar > * { box-shadow: none; padding: 2px 10px; border-radius: 5px; }
+    .status-bar > *:hover { background: color-mix(in srgb, var(--accent) 15%, transparent); }
+  }
+
+  /* ---- Phones */
+
+  @media (max-width: 600px) {
+    .window.app-window { border-radius: 0; border: none; }
+    .window.app-window > .window-body { padding: 6px !important; }
+    .tabs { flex-wrap: wrap; overflow: visible; }
+    .tab, .tab[aria-selected="true"] { flex: 1 0 30%; padding: 8px 6px; }
+    .toasts { right: 12px; left: 12px; bottom: 12px; }
+  }
+}

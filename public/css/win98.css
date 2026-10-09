@@ -1,0 +1,89 @@
+/* Care Chart, "Windows 98" look. Close to the Classic (Windows 95) look on purpose, with
+   what set 98 apart: the teal desktop, Microsoft Sans Serif lettering, flat
+   Internet Explorer 4 style toolbar buttons that rise only under the pointer, and
+   Windows 98's named color schemes, each with its own title-bar gradient, window color
+   and desktop (colors recreated by eye, not copied from the original files).
+
+   Chosen per device in Settings → This device → Look; app.js sets data-skin="win98" and
+   data-scheme on <html>. Everything sits inside one :root[data-skin="win98"] block (CSS
+   nesting), so this file changes nothing in the other looks. */
+
+:root[data-skin="win98"] {
+  /* ---- Windows Standard (the default scheme) */
+  --desk: #008080;
+  --surface: #c0c0c0;
+  --surface-light: #dfdfdf;
+  --highlight: #ffffff;
+  --shadow: #808080;
+  --dark-shadow: #000000;
+  --title-start: #000080;
+  --title-end: #1084d0;
+  --title-text: #ffffff;
+  --selection: #000080;
+  --font: "Microsoft Sans Serif", "MS Sans Serif", Tahoma, Verdana, sans-serif;
+
+  &[data-scheme="rainy-day"] {
+    --desk: #4f6f8f; --surface: #b4bdcb; --surface-light: #d3d9e2; --shadow: #6f7c90;
+    --title-start: #4a6383; --title-end: #a3b8d4; --selection: #4a6383;
+  }
+  &[data-scheme="eggplant"] {
+    --desk: #5a3a5a; --surface: #98b8a8; --surface-light: #c0d6cb; --shadow: #5f7f6f;
+    --title-start: #5a2f5a; --title-end: #a080a0; --selection: #5a2f5a;
+  }
+  &[data-scheme="marine"] {
+    --desk: #006a6a; --surface: #b0cccc; --surface-light: #d2e4e4; --shadow: #6a8c8c;
+    --title-start: #005a5a; --title-end: #3aa6a6; --selection: #005a5a;
+  }
+  &[data-scheme="plum"] {
+    --desk: #503a50; --surface: #c8b8b8; --surface-light: #e0d6d6; --shadow: #8c7878;
+    --title-start: #4a304a; --title-end: #9c7c9c; --selection: #4a304a;
+  }
+  &[data-scheme="spruce"] {
+    --desk: #2a4a2a; --surface: #a8c4a8; --surface-light: #cadcca; --shadow: #6a886a;
+    --title-start: #2c5a2c; --title-end: #78a878; --selection: #2c5a2c;
+  }
+  &[data-scheme="desert"] {
+    --desk: #a08560; --surface: #d6c8a8; --surface-light: #e8dfca; --shadow: #9a8a68;
+    --title-start: #806030; --title-end: #c8a870; --selection: #806030;
+  }
+
+  /* ---- Night: the Classic look's night colors, with the title gradient and a dark teal desk.
+     (These must be restated: the schemes above would otherwise win over chart.css.) */
+  &[data-theme="night"] {
+    --desk: #0b2e2e; --surface: #33373a; --surface-light: #42474b; --highlight: #5c6267; --shadow: #1c1e20;
+    --dark-shadow: #000000; --title-start: #1b2d5c; --title-end: #2c5b8f; --selection: #2c5b8f;
+  }
+  @media (prefers-color-scheme: dark) {
+    &[data-theme="auto"] {
+      --desk: #0b2e2e; --surface: #33373a; --surface-light: #42474b; --highlight: #5c6267; --shadow: #1c1e20;
+      --dark-shadow: #000000; --title-start: #1b2d5c; --title-end: #2c5b8f; --selection: #2c5b8f;
+    }
+  }
+
+  & body { background: var(--desk); }
+  .title-bar { font-family: var(--font); letter-spacing: 0.01em; }
+
+  /* ---- Flat toolbar buttons (Internet Explorer 4 style): no edge until the pointer is over
+     them, a thin raised edge on hover, a thin sunken edge when pressed. Used for the Record
+     grid and the small Edit / Error buttons in lists. */
+
+  .quick-grid button, .timeline-item .who button.compact, table.grid button.compact {
+    background: transparent;
+    box-shadow: none;
+  }
+  .quick-grid button:hover:not(:disabled),
+  .timeline-item .who button.compact:hover:not(:disabled),
+  table.grid button.compact:hover:not(:disabled) {
+    box-shadow: inset -1px -1px var(--shadow), inset 1px 1px var(--highlight);
+  }
+  .quick-grid button:active:not(:disabled),
+  .timeline-item .who button.compact:active:not(:disabled),
+  table.grid button.compact:active:not(:disabled) {
+    box-shadow: inset 1px 1px var(--shadow), inset -1px -1px var(--highlight);
+  }
+  .quick-grid { gap: 2px; }
+  .quick-grid button .type-badge { transform: scale(1.15); }
+
+  /* Toolbars get the thin "rebar" groove of Windows 98. */
+  .toolbar { box-shadow: inset 0 -1px var(--shadow), inset 0 -2px var(--highlight); padding-bottom: 8px; }
+}

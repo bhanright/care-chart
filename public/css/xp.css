@@ -1,0 +1,340 @@
+/* Care Chart, "Windows XP" look: the Luna theme. Rounded blue title bars with the
+   orange-red close button, Explorer task-pane boxes for the sections, soft beige XP
+   buttons with an orange hover glow, tabs with an orange top edge, green progress blocks
+   and yellow balloon tips, over a Bliss-style sky drawn in CSS (not the photograph).
+   XP's own three schemes are offered: Blue, Olive Green and Silver.
+
+   Chosen per device in Settings → This device → Look; app.js sets data-skin="xp" and
+   data-scheme on <html>. Everything sits inside one :root[data-skin="xp"] block (CSS
+   nesting), so this file changes nothing in the classic Windows 95 look. */
+
+:root[data-skin="xp"] {
+  /* ---- Luna Blue (the default scheme) */
+  --xp-frame: #0831d9;
+  --xp-title: linear-gradient(180deg, #0997ff 0%, #0053ee 8%, #0050ee 40%, #0066ff 88%, #0066ff 93%, #005bff 95%, #003dd7 96%, #003dd7 100%);
+  --xp-title-text: #ffffff;
+  --xp-title-shadow: 1px 1px #0f1089;
+  --xp-panel: linear-gradient(180deg, #7ba2e7 0%, #6375d6 100%);
+  --xp-pane-header: linear-gradient(90deg, #ffffff 0%, #c6d3f7 100%);
+  --xp-pane-header-text: #215dc6;
+  --xp-pane-body: #d6dff7;
+  --xp-pane-border: #ffffff;
+  --xp-help-button: radial-gradient(circle at 90% 90%, #0054e9 0%, #2263d5 55%, #4479e4 70%, #a3bbec 90%, #ffffff 100%);
+  --xp-sky: linear-gradient(180deg, #1c5fd4 0%, #4d8ff0 38%, #9cc7f6 62%, #c9e2fb 70%);
+  --xp-hill-near: #3b8f27;
+  --xp-hill-far: #5cae3a;
+
+  /* ---- The classic tokens, re-pointed */
+  --desk: #5a7edc;
+  --surface: #ece9d8;
+  --surface-light: #f4f3ea;
+  --highlight: #ffffff;
+  --shadow: #aca899;
+  --dark-shadow: #716f64;
+  --field: #ffffff;
+  --field-alternate: #f3f6fd;
+  --text: #000000;
+  --text-muted: #4d4d4d;
+  --selection: #316ac5;
+  --selection-text: #ffffff;
+  --link: #0033cc;
+  --raised: none;
+  --sunken: inset 0 0 0 1px #7f9db9;
+  --etched: none;
+  --font: Tahoma, "Segoe UI", Verdana, sans-serif;
+  --title-font: bold 13px/1.2 "Trebuchet MS", Tahoma, sans-serif;
+  --progress: #2ed330;
+  color-scheme: light;
+
+  /* ---- Olive Green */
+  &[data-scheme="olive"] {
+    --xp-frame: #8ba169;
+    --xp-title: linear-gradient(180deg, #cdd8ab 0%, #a8b97c 9%, #94a865 45%, #8ba169 88%, #7a8e56 95%, #677a45 100%);
+    --xp-title-shadow: 1px 1px #4e5a33;
+    --xp-panel: linear-gradient(180deg, #ccd59f 0%, #a5b66e 100%);
+    --xp-pane-header: linear-gradient(90deg, #ffffff 0%, #e0e6c0 100%);
+    --xp-pane-header-text: #56662b;
+    --xp-pane-body: #f2f4e3;
+    --xp-help-button: radial-gradient(circle at 90% 90%, #5c7a2c 0%, #7f9a4c 55%, #9fb46f 70%, #d9e2bf 90%, #ffffff 100%);
+    --selection: #93a070;
+    --desk: #8a9c62;
+  }
+
+  /* ---- Silver */
+  &[data-scheme="silver"] {
+    --xp-frame: #b5b4c7;
+    --xp-title: linear-gradient(180deg, #fdfdfe 0%, #e5e5ee 10%, #c8c8d8 45%, #b5b4c7 88%, #a2a1b7 95%, #8e8da7 100%);
+    --xp-title-text: #1b1b2f;
+    --xp-title-shadow: 1px 1px #ffffff;
+    --xp-panel: linear-gradient(180deg, #e3e3ec 0%, #c4c3d3 100%);
+    --xp-pane-header: linear-gradient(90deg, #ffffff 0%, #d7d7e5 100%);
+    --xp-pane-header-text: #3f3d56;
+    --xp-pane-body: #f2f2f6;
+    --xp-help-button: radial-gradient(circle at 90% 90%, #8e8da7 0%, #a9a8be 55%, #c4c3d3 70%, #ebebf2 90%, #ffffff 100%);
+    --selection: #b2b4bf;
+    --selection-text: #000000;
+    --desk: #9e9db3;
+  }
+
+  /* ---- Night: in the spirit of the dark "Royale Noir" theme, under a night sky */
+  &[data-theme="night"] {
+    --xp-frame: #2a2a2e;
+    --xp-title: linear-gradient(180deg, #5a5a62 0%, #2f2f35 10%, #26262b 50%, #1e1e22 100%);
+    --xp-title-text: #f2f2f2;
+    --xp-title-shadow: 1px 1px #000000;
+    --xp-panel: linear-gradient(180deg, #2a3348 0%, #1d2333 100%);
+    --xp-pane-header: linear-gradient(90deg, #3a3f4c 0%, #2b2f3a 100%);
+    --xp-pane-header-text: #b9cdf7;
+    --xp-pane-body: #252a36;
+    --xp-pane-border: #3c4252;
+    --xp-sky: linear-gradient(180deg, #050b1f 0%, #0e1d45 50%, #1a2f63 70%);
+    --xp-hill-near: #14361b;
+    --xp-hill-far: #1d4a25;
+    --desk: #0e1d45;
+    --surface: #2b2b30; --surface-light: #34343a; --highlight: #4a4a52; --shadow: #1a1a1d; --dark-shadow: #000000;
+    --field: #1c1c20; --field-alternate: #22232a; --text: #e8e8ea; --text-muted: #a9a9b0;
+    --selection: #3e64b8; --link: #8fb4ff; --sunken: inset 0 0 0 1px #4a5470;
+    --overdue: #ff9a9a; --overdue-fill: #4a1d1d; --due: #ffd36b; --due-fill: #45391a;
+    --given: #93e093; --given-fill: #1d3a1f; --held: #cdb5f2; --held-fill: #33284a;
+    --upcoming: #c9cdd1; --upcoming-fill: #2c3033; --allergy: #ff8a8a; --notable: #ff8a8a;
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    &[data-theme="auto"] {
+      --xp-frame: #2a2a2e;
+      --xp-title: linear-gradient(180deg, #5a5a62 0%, #2f2f35 10%, #26262b 50%, #1e1e22 100%);
+      --xp-title-text: #f2f2f2;
+      --xp-title-shadow: 1px 1px #000000;
+      --xp-panel: linear-gradient(180deg, #2a3348 0%, #1d2333 100%);
+      --xp-pane-header: linear-gradient(90deg, #3a3f4c 0%, #2b2f3a 100%);
+      --xp-pane-header-text: #b9cdf7;
+      --xp-pane-body: #252a36;
+      --xp-pane-border: #3c4252;
+      --xp-sky: linear-gradient(180deg, #050b1f 0%, #0e1d45 50%, #1a2f63 70%);
+      --xp-hill-near: #14361b;
+      --xp-hill-far: #1d4a25;
+      --desk: #0e1d45;
+      --surface: #2b2b30; --surface-light: #34343a; --highlight: #4a4a52; --shadow: #1a1a1d; --dark-shadow: #000000;
+      --field: #1c1c20; --field-alternate: #22232a; --text: #e8e8ea; --text-muted: #a9a9b0;
+      --selection: #3e64b8; --link: #8fb4ff; --sunken: inset 0 0 0 1px #4a5470;
+      --overdue: #ff9a9a; --overdue-fill: #4a1d1d; --due: #ffd36b; --due-fill: #45391a;
+      --given: #93e093; --given-fill: #1d3a1f; --held: #cdb5f2; --held-fill: #33284a;
+      --upcoming: #c9cdd1; --upcoming-fill: #2c3033; --allergy: #ff8a8a; --notable: #ff8a8a;
+      color-scheme: dark;
+    }
+  }
+
+  /* ---- The desktop: sky, soft clouds and two rolling green hills */
+
+  & body {
+    background:
+      radial-gradient(ellipse 85% 42% at 22% 104%, var(--xp-hill-near) 0 58%, transparent 61%),
+      radial-gradient(ellipse 110% 46% at 88% 112%, var(--xp-hill-far) 0 58%, transparent 61%),
+      radial-gradient(ellipse 18% 6% at 70% 22%, rgba(255, 255, 255, 0.55), transparent 70%),
+      radial-gradient(ellipse 24% 7% at 30% 30%, rgba(255, 255, 255, 0.45), transparent 70%),
+      radial-gradient(ellipse 14% 5% at 85% 40%, rgba(255, 255, 255, 0.4), transparent 70%),
+      var(--xp-sky), var(--desk);
+    background-attachment: fixed;
+  }
+
+  /* ---- Buttons: rounded, soft gradient, orange glow on hover, blue ring for the default */
+
+  button, .button {
+    border: 1px solid #003c74;
+    border-radius: 3px;
+    background: linear-gradient(180deg, #ffffff 0%, #ecebe6 86%, #d6d0c5 100%);
+    box-shadow: none;
+    color: #000000;
+    padding: 4px 14px;
+  }
+  button:hover:not(:disabled), .button:hover {
+    box-shadow: inset -1px 1px #fff0cf, inset 1px 2px #fdd889, inset -2px 2px #fbc761, inset 2px -2px #e5a01a;
+  }
+  button.default, button:focus-visible {
+    outline: none;
+    box-shadow: inset -1px 1px #cee7ff, inset 1px 2px #98b8ea, inset -2px 2px #bcd4f6, inset 1px -1px #89ade4, inset 2px -2px #89ade4;
+  }
+  button:active:not(:disabled), button.pressed, button[aria-pressed="true"] {
+    background: linear-gradient(180deg, #cdcac3 0%, #e3e3db 8%, #e5e5de 94%, #f2f2f1 100%);
+    box-shadow: none;
+    padding: 5px 13px 3px 15px;
+  }
+  button[aria-pressed="true"] { padding: 4px 14px; font-weight: bold; box-shadow: inset 0 0 0 1px #6f8fc8; }
+  button:disabled { color: #a19f94; border-color: #c9c7ba; background: #f4f3ee; text-shadow: none; }
+  button.compact, button.compact:active:not(:disabled) { padding: 2px 9px; }
+  .choices button, .choices button:active:not(:disabled), .choices button[aria-pressed="true"] { padding: 3px 10px; }
+  button.link-button, button.link-button:hover { border: none; background: none; box-shadow: none; }
+
+  input, select, textarea {
+    border: 1px solid #7f9db9;
+    border-radius: 0;
+    box-shadow: none;
+    background: var(--field);
+  }
+  input:focus, select:focus, textarea:focus { border-color: #316ac5; }
+  input[type="checkbox"], input[type="radio"] { border: none; accent-color: #316ac5; }
+  fieldset { box-shadow: none; border: 1px solid #d0d0bf; border-radius: 4px; }
+  legend { color: #0046d5; }
+
+  /* ---- Luna windows: the app, dialogs and sign-in */
+
+  .window.app-window, .dialog, .window.login {
+    border: 3px solid var(--xp-frame);
+    border-top: none;
+    border-radius: 8px 8px 0 0;
+    padding: 0;
+    background: var(--surface);
+    box-shadow: 2px 4px 14px rgba(0, 0, 0, 0.4);
+    & > .title-bar {
+      background: var(--xp-title);
+      color: var(--xp-title-text);
+      text-shadow: var(--xp-title-shadow);
+      font: var(--title-font);
+      border-radius: 7px 7px 0 0;
+      margin: 0 -3px;
+      padding: 4px 5px 4px 8px;
+      min-height: 30px;
+      & .title-icon { filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.35)); }
+    }
+  }
+  .window.app-window > .window-body { padding: 6px !important; }
+
+  /* Title bar buttons: blue squircles, and the famous orange-red close button. */
+  .title-button, .title-button:active:not(:disabled) {
+    width: 21px; height: 21px; min-height: 0; min-width: 0; padding: 0;
+    border: 1px solid #ffffff; border-radius: 3px;
+    background: var(--xp-help-button);
+    color: #ffffff; font: bold 12px/1 Tahoma, sans-serif; text-shadow: none;
+    box-shadow: none;
+  }
+  .title-button[aria-label="Close"] {
+    background: radial-gradient(circle at 90% 90%, #cc4600 0%, #dc6527 55%, #cd7546 70%, #ffccb2 90%, #ffffff 100%);
+  }
+  .title-button:hover:not(:disabled) { filter: brightness(1.15); box-shadow: none; }
+
+  /* ---- Tabs: XP tab control, with an orange top edge on the selected tab */
+
+  .tabs { padding: 4px 6px 0; }
+  .tab, .tab:active:not(:disabled) {
+    background: linear-gradient(180deg, #ffffff 0%, #f4f3ee 70%, #e8e6dc 100%);
+    border: 1px solid #919b9c; border-bottom: none; border-radius: 3px 3px 0 0;
+    box-shadow: none; padding: 4px 12px; top: 2px; margin-right: 1px;
+  }
+  .tab:hover:not(:disabled) { box-shadow: inset 0 2px 0 #ffc73c, inset 0 1px 0 #e68b2c; }
+  .tab[aria-selected="true"], .tab[aria-selected="true"]:hover:not(:disabled) {
+    background: #fcfcfe; top: 1px; padding: 5px 14px; font-weight: bold;
+    box-shadow: inset 0 3px 0 #ffc73c, inset 0 1px 0 #e68b2c;
+  }
+  .tab-panel {
+    background: var(--xp-panel);
+    border: 1px solid #919b9c;
+    box-shadow: none;
+    margin: 0 6px 6px;
+  }
+
+  /* ---- Sections: Explorer task-pane boxes */
+
+  .window:not(.app-window):not(.dialog):not(.login) {
+    background: var(--xp-pane-body);
+    border: 1px solid var(--xp-pane-border);
+    border-radius: 6px 6px 0 0;
+    box-shadow: none;
+    padding: 0;
+    & > .title-bar {
+      background: var(--xp-pane-header);
+      color: var(--xp-pane-header-text);
+      font: bold 13px/1.2 Tahoma, sans-serif;
+      border-radius: 5px 5px 0 0;
+      min-height: 25px;
+      padding: 4px 10px;
+      & .title-extra { color: var(--xp-pane-header-text); opacity: 0.8; }
+    }
+  }
+
+  .status-bar { padding: 4px 0 0; }
+  .status-bar > * { box-shadow: none; border-right: 1px solid #c5c2b2; padding: 2px 10px; }
+  .status-bar > *:last-child { border-right: none; }
+  .status-light { border-radius: 50%; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3); }
+
+  /* ---- Patient banner, tiles and cards */
+
+  .patient-banner { border: 1px solid #7f9db9; box-shadow: none; border-radius: 3px; }
+  .tile {
+    background: var(--field); border: 1px solid #7f9db9; border-radius: 4px; box-shadow: none;
+    & .tile-label { color: var(--xp-pane-header-text); font-weight: bold; text-transform: none; letter-spacing: 0; }
+  }
+  .tile.alert { background: var(--overdue-fill); border-color: #c45a5a; }
+  .tile.warn { background: var(--due-fill); border-color: #d6a943; }
+
+  .dose-row, .prn-card { border-radius: 3px; }
+
+  /* Chips that are buttons keep their status colors (the XP button style would cover them). */
+  button.status-chip, button.status-chip:active:not(:disabled) {
+    border: 1px solid currentColor; border-radius: 2px; padding: 1px 6px; box-shadow: none;
+    background: var(--upcoming-fill); color: var(--upcoming);
+  }
+  button.status-chip.given { background: var(--given-fill); color: var(--given); }
+  button.status-chip.due { background: var(--due-fill); color: var(--due); }
+  button.status-chip.overdue, button.status-chip.missed { background: var(--overdue-fill); color: var(--overdue); }
+  button.status-chip.refused, button.status-chip.held { background: var(--held-fill); color: var(--held); }
+  .quick-grid button { border-radius: 4px; }
+  .type-badge { border-radius: 3px; }
+
+  /* XP progress bar: green blocks in a rounded white track. */
+  .progress {
+    height: 16px; padding: 1px; border: 1px solid #686868; border-radius: 3px; box-shadow: none; background: var(--field);
+    & > div, &.over > div {
+      background:
+        repeating-linear-gradient(90deg, var(--field) 0 2px, transparent 2px 10px),
+        linear-gradient(180deg, #acedad 0%, #7be47d 14%, #4cda50 28%, #2ed330 42%, #42d845 57%, #76e275 71%, #8fe791 85%, #ffffff 100%);
+      border-radius: 2px;
+    }
+  }
+
+  /* ---- Tables: list-view column headers */
+
+  .well { box-shadow: inset 0 0 0 1px #7f9db9; }
+  table.grid th {
+    background: linear-gradient(180deg, #ffffff 0%, #f1efe2 85%, #e2decd 100%);
+    box-shadow: inset -1px 0 #d6d2c2, inset 0 -2px #d6d2c2;
+    color: #000000;
+  }
+  table.grid tr:nth-child(even) td { background: var(--field-alternate); }
+  .day-heading {
+    background: var(--xp-pane-header); color: var(--xp-pane-header-text); box-shadow: inset 0 -1px #c6d3f7;
+  }
+
+  /* ---- Dialogs, balloons and suggestions */
+
+  .dialog-layer { background: rgba(0, 0, 0, 0.2); }
+  .dialog-buttons { background: var(--surface); }
+  .toast {
+    background: #ffffe1; color: #000000; border: 1px solid #000000; border-radius: 8px;
+    box-shadow: 2px 3px 8px rgba(0, 0, 0, 0.3);
+  }
+  .toast button { border-radius: 3px; }
+  .suggestions { box-shadow: inset 0 0 0 1px #7f9db9, 2px 3px 8px rgba(0, 0, 0, 0.25); }
+  .suggestions li[aria-selected="true"] { background: var(--selection); color: var(--selection-text); }
+  .who-badge, .otc-badge { border-radius: 3px; box-shadow: none; }
+
+  /* ---- Sign-in: the blue Welcome screen, with its dark bands and orange rule */
+
+  .login-wrap {
+    background:
+      linear-gradient(180deg, #00309c 0 72px, #f99736 72px 74px, transparent 74px),
+      linear-gradient(0deg, #00309c 0 72px, #5a7edc 72px 74px, transparent 74px),
+      radial-gradient(ellipse 60% 50% at 20% 30%, #7ea2ec, transparent 70%),
+      #5a7edc;
+  }
+  &[data-theme="night"] .login-wrap { background: #0e1d45; }
+
+  .report { box-shadow: inset 0 0 0 1px #7f9db9; }
+
+  /* ---- Phones */
+
+  @media (max-width: 600px) {
+    .tab, .tab:active:not(:disabled), .tab[aria-selected="true"] { top: 0; padding: 4px 6px; }
+    .window.app-window > .window-body { padding: 4px !important; }
+    .tab-panel { margin: 0 2px 2px; }
+  }
+}

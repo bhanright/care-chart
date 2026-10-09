@@ -1,0 +1,5 @@
+# Copy to .dev.vars for local development.
+SETUP_CODE=choose-a-long-random-phrase
+# From `npm run vapid` (optional locally; needed for reminders with the app closed).
+VAPID_PUBLIC_KEY=
+VAPID_PRIVATE_KEY=
