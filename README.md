@@ -147,8 +147,11 @@ about problems. Keep the keys: making new ones means every phone must turn
 reminders on again. On iPhone (iOS 16.4 or later), reminders work only from the
 home-screen app, not from a Safari tab.
 
-To publish a later change, run `npm run deploy` again. It applies any new database
-migrations first.
+To publish a later change, push it to `main` on GitHub: Cloudflare Workers Builds is
+connected to the repository and runs `npm run deploy`, which applies any new database
+migrations first and then deploys. (Running `npm run deploy` yourself does the same.) Only
+`main` builds; other branches do not, since a preview would share the real chart's
+database.
 
 ### Optional: a second lock with Cloudflare Access
 
