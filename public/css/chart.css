@@ -235,7 +235,8 @@ legend { padding: 0 4px; background: var(--surface); }
 /* Looks whose group boxes have no inner line keep the heading clear, since their boxes
    often sit on other colors (XP's blue panels, white cards). */
 :root:is([data-skin="xp"], [data-skin="vista"], [data-skin="win7"], [data-skin="aqua"],
-  [data-skin="ubuntu"], [data-skin="yaru"], [data-skin="kde"], [data-skin="neon"]) legend { background: transparent; }
+  [data-skin="ubuntu"], [data-skin="yaru"], [data-skin="kde"], [data-skin="neon"],
+  [data-skin="studio"], [data-skin="honey"]) legend { background: transparent; }
 
 /* Segmented choices (scales, chips): Win95 toggle buttons. */
 .choices { display: flex; flex-wrap: wrap; gap: 4px; }

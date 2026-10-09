@@ -80,6 +80,25 @@ export const LOOKS = [
       { value: "synthwave", label: "Synthwave" }, { value: "ice", label: "Ice" },
     ],
   },
+  {
+    key: "studio",
+    label: "Studio",
+    // A 2024 studio-website style: cream paper, serif headings, one accent color.
+    schemes: [
+      { value: "lime", label: "Acid lime" }, { value: "sage", label: "Sage" },
+      { value: "terracotta", label: "Terracotta" }, { value: "lavender", label: "Lavender" },
+      { value: "cobalt", label: "Cobalt" },
+    ],
+  },
+  {
+    key: "honey",
+    label: "Honey",
+    // Warm and friendly: butter, amber and brown, rounded type and a faint honeycomb.
+    schemes: [
+      { value: "wildflower", label: "Wildflower" }, { value: "clover", label: "Clover" },
+      { value: "buckwheat", label: "Buckwheat" },
+    ],
+  },
 ];
 
 export const DEFAULT_LOOK = "classic";

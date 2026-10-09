@@ -53,9 +53,9 @@ are far above what one household uses.
   each phone's, so both phones agree on which dose is which even if one is traveling.
 - Phone-friendly, installable to the home screen, a Night theme and a Large text option
   (per device), and keyboard shortcuts on computers (press `?`).
-- **Eleven looks**, chosen per device in Settings → This device → Look (or with `?look=<key>`
+- **Thirteen looks**, chosen per device in Settings → This device → Look (or with `?look=<key>`
   in the address: `classic`, `win98`, `xp`, `vista`, `win7`, `mac`, `aqua`, `ubuntu`, `yaru`,
-  `kde`, `neon`):
+  `kde`, `neon`, `studio`, `honey`):
   - **Classic** (Windows 95), the default;
   - **Windows 98** (the teal desktop, flat Internet Explorer 4 style toolbar buttons, and
     Windows 98 color schemes: Windows Standard, Rainy Day, Eggplant, Marine, Plum, Spruce,
@@ -83,11 +83,20 @@ are far above what one household uses.
     (elevation, an app bar, uppercase buttons with a ripple, underlined fields, sliding tab
     indicator, snackbar) and half cyberpunk (neon glow, cut corners, scanlines, a city grid,
     monospaced readouts, a glitching title), in Neon City, Toxic, Synthwave or Ice. Night is
-    its native mode.
+    its native mode;
+  - **Studio**, a 2024 studio-website style fitted to the chart's layout: cream paper with a
+    little grain, every section a rounded card with a header strip, Instrument Serif headings
+    over Inter, small monospace labels, an underlined tab row and one accent color (Acid
+    lime, Sage, Terracotta, Lavender or Cobalt);
+  - **Honey**, warm and friendly: butter-colored paper with a faint honeycomb, cream cards
+    under amber header strips, dark brown ink, the rounded Nunito typeface and jar-like
+    tabs, in Wildflower, Clover or Buckwheat.
 
   The looks are listed in `public/js/looks.js`; each one other than Classic is one stylesheet
   in `public/css/` whose rules all sit inside `:root[data-skin="<key>"]`, so looks never
-  affect each other. Backgrounds are drawn in CSS, not copied from the originals.
+  affect each other. Backgrounds are drawn in CSS, not copied from the originals. Studio's
+  and Honey's fonts are in `public/fonts/` under the SIL Open Font License (license texts
+  alongside); a device downloads them only while that look is in use.
 
 ## Put it online (about 10 minutes)
 
@@ -246,7 +255,8 @@ Copy `.dev.vars.example` to `.dev.vars` for local development. The demo password
 | `public/js/time.js` | Household-time-zone dates and clock times; shared with the reminder job |
 | `public/js/push.js` | Turning reminders on and off on a device |
 | `public/js/looks.js` | The looks and their color schemes |
-| `public/css/win98.css`, `xp.css`, `vista.css`, `win7.css`, `mac.css`, `ubuntu.css`, `yaru.css`, `kde.css`, `aqua.css`, `neon.css` | The other ten looks |
+| `public/css/win98.css`, `xp.css`, `vista.css`, `win7.css`, `mac.css`, `ubuntu.css`, `yaru.css`, `kde.css`, `aqua.css`, `neon.css`, `studio.css`, `honey.css` | The other twelve looks |
+| `public/fonts/` | Fonts for Studio and Honey, with their licenses |
 | `public/js/medication-search.js` | Medication name suggestions from `public/data/medications.json` |
 | `scripts/build-medication-list.mjs` | Builds that list from CMS, WHO and RxNorm data |
 | `public/js/entry-types.js` | The observation types and their fields; add a field here and the forms, log and report pick it up |

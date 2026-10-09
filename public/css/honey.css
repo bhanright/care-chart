@@ -1,0 +1,311 @@
+/* Care Chart, "Honey" look: warm and friendly. Butter-colored paper with a faint honeycomb,
+   cream cards with rounded corners whose header strips glow amber like honey held up to
+   the light, dark brown ink, a rounded typeface (Nunito) and rounded, jar-like tabs.
+   Schemes are honey varieties: Wildflower (golden amber), Clover (pale gold) and
+   Buckwheat (dark, molasses-brown).
+
+   Chosen per device in Settings → This device → Look; app.js sets data-skin="honey" and
+   data-scheme on <html>. Everything sits inside one :root[data-skin="honey"] block (CSS
+   nesting), so this file changes nothing in the other looks.
+   Font: public/fonts/nunito-variable.woff2, SIL Open Font License (OFL-nunito.txt). */
+
+@font-face { font-family: "Nunito"; src: url("/fonts/nunito-variable.woff2") format("woff2"); font-style: normal; font-weight: 200 1000; font-display: swap; }
+
+:root[data-skin="honey"] {
+  /* ---- Honey palette, Wildflower (the default scheme) */
+  --butter: #fbf0d3;
+ 
+  --card: #fffaf0;
+  --ink: #3a2a12;
+  --ink-soft: #7a6038;
+  --edge: rgba(122, 78, 10, 0.22);
+  --edge-soft: rgba(122, 78, 10, 0.12);
+  --honey-light: #ffd774;
+  --honey: #f2b134;
+  --honey-deep: #c97d0e;
+  --on-honey: #3a2a12;
+  --honey-glow: rgba(242, 177, 52, 0.35);
+  --header-strip: linear-gradient(180deg, var(--honey-light), var(--honey));
+  --round: "Nunito", "Varela Round", "Segoe UI", system-ui, sans-serif;
+  --card-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset, 0 2px 0 rgba(122, 78, 10, 0.08), 0 10px 24px -16px rgba(122, 78, 10, 0.45);
+
+  &[data-scheme="clover"] {
+    --butter: #fcf6df; --honey-light: #fff0a8; --honey: #f5d65c; --honey-deep: #b48f12;
+    --honey-glow: rgba(245, 214, 92, 0.45);
+  }
+  &[data-scheme="buckwheat"] {
+    --butter: #f3e6d4; --honey-light: #b46a32; --honey: #8a4a1c; --honey-deep: #6a3412;
+    --on-honey: #fff4e0; --honey-glow: rgba(138, 74, 28, 0.3);
+  }
+
+  /* A honeycomb tile: two hexagon outlines, offset, so the pattern repeats seamlessly. */
+  --comb: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cg fill='none' stroke='%23a8680a' stroke-opacity='0.12' stroke-width='1.5'%3E%3Cpath d='M28 66L0 50V16L28 0l28 16v34L28 66v34'/%3E%3Cpath d='M28 0v34L0 50v34l28 16 28-16V50L28 34'/%3E%3C/g%3E%3C/svg%3E");
+
+  /* ---- The classic tokens, re-pointed */
+  --desk: var(--butter);
+  --surface: var(--card);
+  --surface-light: #f6e8c6;
+  --highlight: transparent;
+  --shadow: var(--edge);
+  --dark-shadow: var(--edge);
+  --field: #ffffff;
+  --field-alternate: #fdf5e2;
+  --text: var(--ink);
+  --text-muted: var(--ink-soft);
+  --selection: var(--honey-deep);
+  --selection-text: #ffffff;
+  --link: var(--honey-deep);
+  --raised: none;
+  --sunken: inset 0 0 0 1px var(--edge-soft);
+  --etched: none;
+  --font: var(--round);
+  --mono: var(--round);
+  --base-size: 15px;
+  --overdue: #b3261e; --overdue-fill: #fde2da; --due: #8a5300; --due-fill: #ffeab0;
+  --given: #3d6b22; --given-fill: #e4f1d2; --held: #6a4a9c; --held-fill: #ede2f8;
+  --upcoming: #6e5a3a; --upcoming-fill: #f4e8cc; --allergy: #b3261e; --notable: #b3261e;
+  --progress: var(--honey-deep);
+  color-scheme: light;
+
+  /* ---- Night: dark wood and amber */
+  &[data-theme="night"] {
+    --butter: #1c140a; --card: #271c0f; --ink: #f7e7c6; --ink-soft: #c9ad7f;
+    --edge: rgba(242, 177, 52, 0.22); --edge-soft: rgba(242, 177, 52, 0.12);
+    --surface-light: #33250f; --field: #1f160b; --field-alternate: #2a1e10; --link: var(--honey-light);
+    --card-shadow: 0 10px 26px -16px rgba(0, 0, 0, 0.8);
+    --overdue: #ff9c8a; --overdue-fill: #45170f; --due: #ffcf6b; --due-fill: #3d2a08;
+    --given: #a7d98a; --given-fill: #1d2e12; --held: #cfb5f2; --held-fill: #2d2240;
+    --upcoming: #d9c39c; --upcoming-fill: #33250f; --allergy: #ff9c8a; --notable: #ff9c8a;
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    &[data-theme="auto"] {
+      --butter: #1c140a; --card: #271c0f; --ink: #f7e7c6; --ink-soft: #c9ad7f;
+      --edge: rgba(242, 177, 52, 0.22); --edge-soft: rgba(242, 177, 52, 0.12);
+      --surface-light: #33250f; --field: #1f160b; --field-alternate: #2a1e10; --link: var(--honey-light);
+      --card-shadow: 0 10px 26px -16px rgba(0, 0, 0, 0.8);
+      --overdue: #ff9c8a; --overdue-fill: #45170f; --due: #ffcf6b; --due-fill: #3d2a08;
+      --given: #a7d98a; --given-fill: #1d2e12; --held: #cfb5f2; --held-fill: #2d2240;
+      --upcoming: #d9c39c; --upcoming-fill: #33250f; --allergy: #ff9c8a; --notable: #ff9c8a;
+      color-scheme: dark;
+    }
+  }
+
+  & body {
+    background: var(--comb), radial-gradient(120vmax 80vmax at 50% -20%, var(--honey-glow), transparent 60%), var(--butter);
+    background-attachment: fixed;
+  }
+  &[data-theme="night"] body { background: radial-gradient(120vmax 80vmax at 50% -20%, rgba(242, 177, 52, 0.12), transparent 60%), var(--butter); }
+  @media (prefers-color-scheme: dark) {
+    &[data-theme="auto"] body { background: radial-gradient(120vmax 80vmax at 50% -20%, rgba(242, 177, 52, 0.12), transparent 60%), var(--butter); }
+  }
+  & body, & button, & input, & select, & textarea { font-family: var(--round); }
+
+  /* ---- Controls: soft and round; the main action is a drop of honey */
+
+  button, .button {
+    border: 1px solid var(--edge); border-radius: 12px; background: var(--field); color: var(--ink);
+    box-shadow: 0 2px 0 var(--edge-soft); padding: 6px 15px; font-weight: 700;
+  }
+  button:hover:not(:disabled), .button:hover { background: color-mix(in srgb, var(--honey) 14%, var(--field)); border-color: var(--honey-deep); }
+  button:active:not(:disabled), button.pressed { box-shadow: none; transform: translateY(2px); padding: 6px 15px; }
+  button.default {
+    outline: none; color: var(--on-honey); border-color: var(--honey-deep);
+    background: linear-gradient(180deg, var(--honey-light), var(--honey));
+    box-shadow: 0 2px 0 var(--honey-deep), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
+  button.default:hover:not(:disabled) { background: linear-gradient(180deg, var(--honey-light), var(--honey)); filter: brightness(1.04); }
+  button[aria-pressed="true"], button[aria-pressed="true"]:active:not(:disabled) {
+    background: linear-gradient(180deg, var(--honey-light), var(--honey)); color: var(--on-honey);
+    border-color: var(--honey-deep); box-shadow: inset 0 2px 3px rgba(122, 78, 10, 0.25); padding: 6px 15px; transform: none;
+  }
+  button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible {
+    outline: none; box-shadow: 0 0 0 3px var(--honey-glow), 0 0 0 1px var(--honey-deep);
+  }
+  button:disabled { opacity: 0.5; text-shadow: none; }
+  button.compact, button.compact:active:not(:disabled) { padding: 3px 11px; border-radius: 10px; }
+  .choices button, .choices button:active:not(:disabled), .choices button[aria-pressed="true"] { padding: 4px 13px; border-radius: 999px; }
+  button.danger { color: var(--overdue); }
+  button.link-button, button.link-button:hover { border: none; background: none; box-shadow: none; color: var(--link); text-decoration: underline; }
+
+  input, select, textarea { border: 1px solid var(--edge); border-radius: 10px; background: var(--field); box-shadow: inset 0 1px 2px var(--edge-soft); color: var(--ink); }
+  input:focus, select:focus, textarea:focus { border-color: var(--honey-deep); box-shadow: 0 0 0 3px var(--honey-glow); }
+  input[type="checkbox"], input[type="radio"] { border-radius: 5px; accent-color: var(--honey-deep); box-shadow: none; }
+  .field > span:first-child, .field > label:first-child { font-weight: 700; color: var(--ink-soft); }
+  fieldset { box-shadow: none; border: 1.5px dashed var(--edge); border-radius: 14px; }
+  legend { font-weight: 800; color: var(--ink-soft); padding: 0 6px; }
+
+  /* ---- The app: an amber title band, then rounded tabs */
+
+  .window.app-window { background: transparent; border: none; box-shadow: none; padding: 0; }
+  .app-window > .title-bar {
+    background: linear-gradient(180deg, var(--honey), var(--honey-deep)); color: #ffffff;
+    border-radius: 18px; padding: 8px 10px 8px 14px; min-height: 0; margin-bottom: 12px;
+    font: 900 1.25em/1.2 var(--round); letter-spacing: 0.01em; text-shadow: 0 1px 0 rgba(90, 50, 0, 0.35);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 3px 0 color-mix(in srgb, var(--honey-deep) 70%, #000000), 0 12px 24px -14px rgba(122, 78, 10, 0.6);
+    & .title-button {
+      width: 30px; height: 30px; min-height: 0; padding: 0; border-radius: 50%;
+      background: rgba(255, 255, 255, 0.92); color: var(--honey-deep); border: none; box-shadow: 0 2px 0 rgba(90, 50, 0, 0.3);
+      font: 900 14px/1 var(--round); text-shadow: none;
+    }
+  }
+  .app-window > .window-body { padding: 0 !important; }
+
+  .tabs { padding: 0 6px; gap: 6px; border-bottom: 3px solid var(--honey); margin-bottom: 14px; }
+  .tab, .tab:active:not(:disabled) {
+    background: color-mix(in srgb, var(--card) 70%, var(--butter)); border: 1px solid var(--edge); border-bottom: none;
+    border-radius: 16px 16px 0 0; box-shadow: none; top: 0; margin: 0; transform: none;
+    padding: 8px 16px 7px; color: var(--ink-soft); font-weight: 800;
+  }
+  .tab:hover:not(:disabled) { color: var(--ink); background: var(--card); }
+  .tab[aria-selected="true"], .tab[aria-selected="true"]:hover:not(:disabled) {
+    background: linear-gradient(180deg, var(--honey-light), var(--honey)); color: var(--on-honey);
+    border-color: var(--honey-deep); padding: 8px 16px 7px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5); font-weight: 900;
+  }
+  .tab .badge { margin-left: 6px; border-radius: 999px; }
+  .tab-panel { background: transparent; border: none; box-shadow: none; margin: 0; padding: 0; min-height: 0; }
+
+  /* ---- Sections: cream cards under an amber header strip */
+
+  .window:not(.app-window):not(.dialog):not(.login) {
+    background: var(--card); border: 1px solid var(--edge); border-radius: 18px;
+    box-shadow: var(--card-shadow); padding: 0; overflow: clip;
+    & > .title-bar {
+      background: var(--header-strip); color: var(--on-honey); text-shadow: none;
+      border-bottom: 1px solid var(--honey-deep); padding: 8px 14px; min-height: 0;
+      font: 900 1.02em/1.25 var(--round); letter-spacing: 0.01em;
+      & .title-icon { display: none; }
+      & .title { white-space: normal; }
+      & .title-extra { font-weight: 900; font-size: 0.82em; background: rgba(255, 255, 255, 0.7); color: #3a2a12; border-radius: 999px; padding: 1px 9px; opacity: 1; }
+    }
+    & > .window-body { padding: 12px 14px; }
+    & > .window-body.flush { padding: 0; }
+  }
+
+  .status-bar { padding: 16px 4px 0; gap: 14px; color: var(--ink-soft); font-size: 0.86em; font-weight: 600; }
+  .status-bar > * { box-shadow: none; padding: 0; }
+  .status-light { border-radius: 50%; box-shadow: none; }
+
+  /* ---- Patient card and tiles */
+
+  .patient-banner {
+    background: var(--card); border: 1px solid var(--edge); border-radius: 18px; box-shadow: var(--card-shadow);
+    padding: 12px 16px; margin-bottom: 14px;
+    & .patient-name { font: 900 1.45em/1.15 var(--round); }
+    & .patient-facts { gap: 6px; }
+    & .patient-facts > span { background: var(--surface-light); border-radius: 999px; padding: 2px 10px; }
+    & .patient-facts > .allergies { background: var(--overdue-fill); color: var(--overdue); font-weight: 800; }
+    & .patient-facts > .allergies.none { background: var(--surface-light); color: var(--ink-soft); font-weight: 600; }
+    & .clock { font: 800 1.1em/1.2 var(--round); color: var(--honey-deep); }
+  }
+
+  .tiles { gap: 10px; margin-bottom: 14px; }
+  .tile {
+    background: var(--card); border: 1px solid var(--edge); border-radius: 18px; box-shadow: var(--card-shadow); padding: 10px 14px;
+    border-top: 5px solid var(--honey);
+    & .tile-label { font-weight: 800; letter-spacing: 0.04em; color: var(--ink-soft); }
+    & .tile-value { font: 900 1.6em/1.1 var(--round); font-variant-numeric: tabular-nums; }
+    & .tile-detail { color: var(--ink-soft); }
+  }
+  .tile.alert { background: var(--overdue-fill); border-top-color: var(--overdue); }
+  .tile.alert .tile-value { color: var(--overdue); }
+  .tile.warn { background: var(--due-fill); border-top-color: var(--due); }
+
+  .progress { height: 10px; padding: 0; border-radius: 999px; box-shadow: inset 0 1px 2px var(--edge); background: var(--surface-light); overflow: hidden; }
+  .progress > div, .progress.over > div { background: linear-gradient(180deg, var(--honey), var(--honey-deep)); border-radius: 999px; }
+
+  /* ---- Lists inside cards */
+
+  .dose-list { gap: 8px; }
+  .dose-row { box-shadow: none; border: 1px solid var(--edge-soft); border-left-width: 5px; border-radius: 14px; background: var(--field); }
+  .dose-row .dose-time { font: 900 1.2em/1 var(--round); font-variant-numeric: tabular-nums; }
+  .dose-row.overdue { background: var(--overdue-fill); }
+  .dose-row.due { background: var(--due-fill); }
+  .prn-card, .visit-row { box-shadow: none; border: 1px solid var(--edge-soft); border-radius: 14px; background: var(--field); }
+  .prn-card .prn-name { font-weight: 900; }
+  .prn-card .follow-up { background: var(--due-fill); border-radius: 10px; }
+  .visit-when { font-family: var(--round); font-weight: 900; }
+  .quick-grid { gap: 8px; }
+  .quick-grid button { border-radius: 16px; background: var(--field); }
+  .type-badge { border-radius: 8px; box-shadow: none; font-weight: 900; }
+  .warning-box { box-shadow: none; border-radius: 14px; }
+  .well { box-shadow: none; background: transparent; }
+
+  .status-chip { border: none; border-radius: 999px; padding: 1px 9px; font-weight: 800; font-family: var(--round); }
+  button.status-chip, button.status-chip:active:not(:disabled) {
+    border: none; border-radius: 999px; padding: 1px 9px; box-shadow: none; transform: none;
+    background: var(--upcoming-fill); color: var(--upcoming);
+  }
+  button.status-chip.given { background: var(--given-fill); color: var(--given); }
+  button.status-chip.due { background: var(--due-fill); color: var(--due); }
+  button.status-chip.overdue, button.status-chip.missed { background: var(--overdue-fill); color: var(--overdue); }
+  button.status-chip.refused, button.status-chip.held { background: var(--held-fill); color: var(--held); }
+
+  table.grid th { background: var(--surface-light); box-shadow: inset 0 -2px var(--honey); font-weight: 900; color: var(--ink); }
+  table.grid td { border-bottom: 1px solid var(--edge-soft); }
+  table.grid tr:nth-child(even) td { background: var(--field-alternate); }
+  .timeline-item { border-bottom: 1px solid var(--edge-soft); }
+  .timeline-item:nth-child(even) { background: var(--field-alternate); }
+  .timeline-item .when { font-family: var(--round); font-weight: 800; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+  .day-heading { background: var(--surface-light); box-shadow: inset 0 -2px var(--honey); font-weight: 900; }
+
+  /* ---- Calendar */
+
+  .calendar { background: transparent; box-shadow: none; gap: 5px; padding: 8px; }
+  .calendar-weekday { background: transparent; font-weight: 900; color: var(--ink-soft); }
+  .calendar-day { border-radius: 12px; box-shadow: inset 0 0 0 1px var(--edge-soft); }
+  .calendar-day.selected { box-shadow: inset 0 0 0 2px var(--honey-deep); background: color-mix(in srgb, var(--honey) 10%, var(--field)); }
+  .calendar-day.today .calendar-date { border-radius: 999px; background: var(--honey); color: var(--on-honey); }
+  button.status-chip.calendar-visit, button.status-chip.calendar-visit:active:not(:disabled) { border-radius: 8px; padding: 1px 6px; }
+
+  /* ---- Dialogs, toasts and suggestions */
+
+  .dialog-layer { background: rgba(58, 42, 18, 0.35); }
+  .dialog {
+    background: var(--card); border: 1px solid var(--honey-deep); border-radius: 20px; padding: 0; overflow: clip;
+    box-shadow: 0 24px 60px -24px rgba(58, 42, 18, 0.6);
+    & > .title-bar {
+      background: var(--header-strip); color: var(--on-honey); text-shadow: none;
+      border-bottom: 1px solid var(--honey-deep); padding: 10px 12px 10px 16px; font: 900 1.1em/1.2 var(--round);
+      & .title-icon { display: none; }
+      & .title-button {
+        width: 30px; height: 30px; min-height: 0; padding: 0; border-radius: 50%; border: none;
+        background: rgba(255, 255, 255, 0.85); color: var(--ink); box-shadow: none; font: 900 13px/1 var(--round);
+      }
+    }
+    & .window-body { padding: 14px 16px; }
+  }
+  .dialog-buttons { border-top: 1px dashed var(--edge); padding: 12px 16px; }
+  .toasts { left: 0; right: 0; bottom: 18px; max-width: none; align-items: center; }
+  .toast {
+    background: var(--ink); color: #fff4e0; border: none; border-radius: 999px; padding: 7px 8px 7px 18px;
+    box-shadow: 0 0 0 3px var(--honey), 0 14px 30px -12px rgba(0, 0, 0, 0.5);
+    & button { background: var(--honey); color: var(--on-honey); border: none; box-shadow: none; border-radius: 999px; }
+  }
+  .toast.error { background: var(--overdue); color: #ffffff; box-shadow: 0 14px 30px -12px rgba(0, 0, 0, 0.5); }
+  .suggestions { border-radius: 14px; border: 1px solid var(--edge); padding: 4px; box-shadow: 0 16px 36px -16px rgba(58, 42, 18, 0.45); }
+  .suggestions li { border-radius: 10px; border-bottom: none; }
+  .suggestions li[aria-selected="true"] { background: var(--honey); color: var(--on-honey); }
+  .suggestions li[aria-selected="true"] .muted { color: var(--on-honey); opacity: 0.8; }
+  .who-badge, .otc-badge { border-radius: 999px; box-shadow: none; font-weight: 800; }
+
+  .login-wrap { background: var(--comb), radial-gradient(80vmax 60vmax at 50% 0%, var(--honey-glow), transparent 70%), var(--butter); }
+  .window.login {
+    background: var(--card); border: 1px solid var(--honey-deep); border-radius: 22px; padding: 0; overflow: clip;
+    box-shadow: 0 24px 60px -24px rgba(58, 42, 18, 0.6);
+    & > .title-bar { background: var(--header-strip); color: var(--on-honey); text-shadow: none; border-bottom: 1px solid var(--honey-deep); padding: 10px 16px; font: 900 1.05em/1.2 var(--round); & .title-icon { display: none; } }
+    & .login-art b { font: 900 1.4em/1.15 var(--round); }
+  }
+  .report { border-radius: 18px; box-shadow: 0 0 0 1px var(--edge); }
+
+  /* ---- Phones */
+
+  @media (max-width: 600px) {
+    .app-window > .title-bar { border-radius: 14px; }
+    .tabs { flex-wrap: wrap; overflow: visible; border-bottom: none; gap: 5px; }
+    .tab, .tab[aria-selected="true"] { flex: 1 0 30%; padding: 8px 6px; border-radius: 14px; border-bottom: 1px solid var(--edge); }
+    .patient-banner .clock { display: none; }
+    .dialog-layer { align-items: flex-end; padding: 0; }
+    .dialog { border-radius: 20px 20px 0 0; }
+  }
+}
