@@ -70,7 +70,7 @@ export function renderSettings(context) {
   // This device
   const device = context.device;
   const themeSelect = h("select", { onchange: () => context.setDevice({ theme: themeSelect.value }) },
-    [["auto", "Match this device"], ["day", "Day (light)"], ["night", "Night (dark)"]].map(([value, label]) => h("option", { value, selected: device.theme === value }, label)));
+    [["day", "Day (light)"], ["night", "Night (dark)"], ["auto", "Match this device"]].map(([value, label]) => h("option", { value, selected: device.theme === value }, label)));
   const sizeSelect = h("select", { onchange: () => context.setDevice({ textSize: sizeSelect.value }) },
     [["normal", "Normal"], ["large", "Large"]].map(([value, label]) => h("option", { value, selected: device.textSize === value }, label)));
   const skinSelect = h("select", { onchange: () => { context.setDevice({ skin: skinSelect.value }); context.rerender(); } },

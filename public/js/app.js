@@ -44,7 +44,8 @@ const state = {
 // ---- Per-device preferences (theme, text size, look). Storage may be unavailable.
 
 /** skin is the look's key (public/js/looks.js); schemes holds each look's chosen color scheme. */
-const DEVICE_DEFAULTS = { theme: "auto", textSize: "normal", skin: DEFAULT_LOOK, schemes: {} };
+/** Light ("day") colors unless the device's own Settings choose otherwise. */
+const DEVICE_DEFAULTS = { theme: "day", textSize: "normal", skin: DEFAULT_LOOK, schemes: {}, themeDefaultVersion: 2 };
 
 function readDevice() {
   let saved = {};
@@ -62,6 +63,13 @@ function readDevice() {
   if (typeof device.scheme === "string") device.schemes = { ...device.schemes, xp: device.scheme };
   delete device.scheme;
   delete device.accent;
+  // Devices saved before light became the default (version 2) had "Match this device"
+  // only because it was the default then; move them to light once. A later choice sticks.
+  if ((saved.themeDefaultVersion ?? 1) < 2) {
+    if (device.theme === "auto") device.theme = "day";
+    device.themeDefaultVersion = 2;
+    try { localStorage.setItem(DEVICE_STORAGE_KEY, JSON.stringify(device)); } catch { /* per-device nicety only */ }
+  }
   if (LOOKS.some((look) => look.key === lookFromAddress)) {
     device.skin = lookFromAddress;
     try { localStorage.setItem(DEVICE_STORAGE_KEY, JSON.stringify(device)); } catch { /* per-device nicety only */ }
