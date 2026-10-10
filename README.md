@@ -331,7 +331,7 @@ prescriber's instructions or a pharmacist's advice; check doses against the labe
 Care Chart is released under the [MIT License](LICENSE), except for parts that keep their
 own licenses: the fonts in `public/fonts/` (SIL Open Font License 1.1) and the WHO
 Essential Medicines data in the medication list (CC BY-NC-SA 3.0 IGO, non-commercial);
-see `LICENSE` and "The medication list" above.
+see `NOTICE` and "The medication list" above.
 
 Care Chart is provided as is, without warranty of any kind. It is a record-keeping aid
 for family caregivers at home, not a medical device, and not a substitute for

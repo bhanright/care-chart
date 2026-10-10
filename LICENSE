@@ -19,22 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
--------------------------------------------------------------------------------
-
-Parts of this repository are not covered by the MIT License above and keep their
-own licenses:
-
-- public/fonts/: Instrument Serif, Inter, Nunito, Lilita One and Rubik, each under
-  the SIL Open Font License 1.1 (the OFL-*.txt file beside each font).
-- public/data/medications.json and scripts/data/who-essential-medicines.csv contain
-  data from the WHO Model List of Essential Medicines, (c) World Health
-  Organization, licensed CC BY-NC-SA 3.0 IGO (non-commercial use, with
-  attribution, under the same license). The medication list also draws on the
-  U.S. Centers for Medicare & Medicaid Services Part D Prescribers data (a U.S.
-  Government work in the public domain) and on RxNorm from the U.S. National
-  Library of Medicine, which is not responsible for this product. See "The
-  medication list" in README.md.
-
-Care Chart is not medical software. It is meant for families caring for someone at
-home, and is not intended to be used by, or in place of, medical professionals.
