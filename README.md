@@ -1,6 +1,13 @@
 # Care Chart
 
-A shared medical chart for caring for a family member at home. It records medications
+> **Not medical software.** Care Chart is for families caring for someone at home. It
+> helps family caregivers keep track together, and is not intended to be used by, or in
+> place of, doctors, nurses, hospice teams or other medical professionals. It does not
+> give medical advice, and its reminders, limits and warnings can be wrong or missed:
+> always follow the instructions of the person's care team, and call them (or emergency
+> services) about anything urgent.
+
+A shared care chart for looking after a family member at home. It records medications
 (scheduled and as-needed), when each dose was given and by whom, mood and behavior,
 fluids, meals, bowel movements, urination, sleep, pain, vital signs and personal care.
 Two or more caregivers sign in from their own phones or computers and see the same
@@ -304,7 +311,7 @@ Copy `.dev.vars.example` to `.dev.vars` for local development. The demo password
 | `design/logo-concepts/` | The logo concepts not used (kept for later), not served |
 | `public/images/logo.png`, `public/icons/` | The logo (a gradient cross with a heart, generated with GPT-5.4 Image 2) and the app icons, notification badge and Apple touch icon made from it |
 | `public/images/og-card.png` | The link preview shown when the address is pasted into a chat (Open Graph tags in `index.html`) |
-| `public/fonts/` | Fonts for Studio, Honey and Lavender, with their licenses |
+| `public/fonts/` | Fonts for Studio, Honey, Lavender and Playroom, with their licenses |
 | `public/js/medication-search.js` | Medication name suggestions from `public/data/medications.json` |
 | `scripts/build-medication-list.mjs` | Builds that list from CMS, WHO and RxNorm data |
 | `public/js/entry-types.js` | The observation types and their fields; add a field here and the forms, log and report pick it up |
@@ -318,3 +325,14 @@ from Settings, so a phone set to another zone still shows and records household 
 
 This is a family record-keeping tool, not a medical device. It does not replace the
 prescriber's instructions or a pharmacist's advice; check doses against the label.
+
+## License
+
+Care Chart is released under the [MIT License](LICENSE), except for parts that keep their
+own licenses: the fonts in `public/fonts/` (SIL Open Font License 1.1) and the WHO
+Essential Medicines data in the medication list (CC BY-NC-SA 3.0 IGO, non-commercial);
+see `LICENSE` and "The medication list" above.
+
+Care Chart is provided as is, without warranty of any kind. It is a record-keeping aid
+for family caregivers at home, not a medical device, and not a substitute for
+professional medical care.

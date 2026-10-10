@@ -1,19 +1,47 @@
-"""Draws the PNG app icons (public/icon-192.png, icon-512.png) to match public/icon.svg."""
+"""Builds the app icons from the logo (public/images/logo.png, a transparent PNG):
+
+    public/icons/care-chart-192.png and -512.png  the installed app's icons, the logo on
+                                                  white with room for Android's round and
+                                                  squircle masks ("maskable")
+    public/icons/apple-touch-icon.png             the iPhone and iPad home-screen icon
+    public/icons/badge-96.png                     the notification badge; Android draws only
+                                                  its shape, as a white silhouette
+
+When the icons change, give them new file names (and update manifest.webmanifest,
+index.html, app.js and sw.js), so installed copies notice the change.
+Needs Pillow:  python scripts/make_icons.py
+"""
 from pathlib import Path
-from PIL import Image, ImageDraw
+
+from PIL import Image
 
 PUBLIC = Path(__file__).resolve().parent.parent / "public"
+ICONS = PUBLIC / "icons"
 
-def draw(size: int) -> Image.Image:
-    unit = size / 64  # the SVG is drawn on a 64-unit grid
-    image = Image.new("RGB", (size, size), "#2b6f73")
-    pen = ImageDraw.Draw(image)
-    scaled = lambda *points: [round(value * unit) for value in points]
-    pen.rectangle(scaled(12, 8, 52, 58), fill="white", outline="black", width=max(1, round(2 * unit)))
-    pen.rectangle(scaled(22, 4, 42, 14), fill="#c0c0c0", outline="black", width=max(1, round(2 * unit)))
-    trace = [(17, 36), (25, 36), (29, 24), (36, 46), (40, 36), (47, 36)]
-    pen.line([(x * unit, y * unit) for x, y in trace], fill="#c00000", width=max(2, round(4 * unit)), joint="curve")
-    return image
 
-for size in (192, 512):
-    draw(size).save(PUBLIC / f"icon-{size}.png")
+def logo_on_white(logo: Image.Image, size: int, logo_share: float) -> Image.Image:
+    canvas = Image.new("RGBA", (size, size), (255, 255, 255, 255))
+    mark = logo.resize((round(size * logo_share),) * 2, Image.LANCZOS)
+    canvas.alpha_composite(mark, ((size - mark.width) // 2, (size - mark.height) // 2))
+    return canvas.convert("RGB")
+
+
+def main() -> None:
+    logo = Image.open(PUBLIC / "images" / "logo.png").convert("RGBA")
+    ICONS.mkdir(exist_ok=True)
+    # 62% keeps the whole cross inside the maskable safe zone (a circle of 80%).
+    logo_on_white(logo, 192, 0.62).save(ICONS / "care-chart-192.png", optimize=True)
+    logo_on_white(logo, 512, 0.62).save(ICONS / "care-chart-512.png", optimize=True)
+    # iOS rounds the corners itself and crops nothing, so the logo can be larger.
+    logo_on_white(logo, 180, 0.70).save(ICONS / "apple-touch-icon.png", optimize=True)
+
+    badge = Image.new("RGBA", (96, 96), (0, 0, 0, 0))
+    silhouette = Image.new("RGBA", (88, 88), (255, 255, 255, 255))
+    silhouette.putalpha(logo.resize((88, 88), Image.LANCZOS).getchannel("A"))
+    badge.alpha_composite(silhouette, (4, 4))
+    badge.save(ICONS / "badge-96.png", optimize=True)
+    print("Wrote", ", ".join(path.name for path in sorted(ICONS.glob("*.png"))))
+
+
+if __name__ == "__main__":
+    main()

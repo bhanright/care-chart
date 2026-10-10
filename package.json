@@ -1,5 +1,8 @@
 {
   "name": "care-chart",
+  "version": "1.0.0",
+  "description": "A shared home care chart for family caregivers: medications, doses, visits and daily care. Not medical software.",
+  "license": "MIT",
   "private": true,
   "type": "module",
   "scripts": {
