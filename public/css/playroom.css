@@ -1,20 +1,19 @@
-/* Care Chart, "Cardclops" look: the style of Cardclops, the author's card-collection app.
-   Flat neon and heavy ink: thick black outlines, hard offset shadows, lumpy "blob"
-   corners, Lilita One headings over Rubik, and squiggle art on a deep ground. Every
-   section is a panel, the tabs are chunky blob buttons and the main action is lime.
-   Schemes are Cardclops's own themes, with their colors copied from its stylesheet:
-   Neon (the default), Dark, Light, Lollipop, Astronaut and Necronomicon. In Night,
-   the two light themes switch to Cardclops's Dark.
+/* Care Chart, "Playroom" look: flat neon and heavy ink. Thick black outlines, hard offset
+   shadows, lumpy "blob" corners, Lilita One headings over Rubik, and squiggle art on a
+   deep ground. Every section is a panel, the tabs are chunky blob buttons and the main
+   action is lime. It follows the style of the author's card-collection app, whose themes
+   are its schemes: Neon (the default), Dark, Light, Lollipop, Astronaut and Necronomicon.
+   In Night, the two light themes switch to Dark.
 
-   Chosen per device in Settings → This device → Look; app.js sets data-skin="cardclops"
-   and data-scheme on <html>. Everything sits inside one :root[data-skin="cardclops"] block
+   Chosen per device in Settings → This device → Look; app.js sets data-skin="playroom"
+   and data-scheme on <html>. Everything sits inside one :root[data-skin="playroom"] block
    (CSS nesting), so this file changes nothing in the other looks.
    Fonts: public/fonts/, SIL Open Font License (OFL-lilita-one.txt, OFL-rubik.txt). */
 
 @font-face { font-family: "Lilita One"; src: url("/fonts/lilita-one.woff2") format("woff2"); font-style: normal; font-weight: 400; font-display: swap; }
 @font-face { font-family: "Rubik"; src: url("/fonts/rubik-variable.woff2") format("woff2"); font-style: normal; font-weight: 300 900; font-display: swap; }
 
-:root[data-skin="cardclops"] {
+:root[data-skin="playroom"] {
   /* ---- Neon (the default scheme) */
   --bg: #140a24;
   --bg-deep: #0b0515;
@@ -43,7 +42,7 @@
   --yellow: #ffe03d;
   --mint: #4dffc3;
 
-  /* ---- The other Cardclops themes */
+  /* ---- The other themes */
   &[data-scheme="dark"] {
     --bg: #131317;
     --bg-deep: #0b0b0e;
@@ -185,7 +184,7 @@
     --bg-art: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260' viewBox='0 0 260 260'%3E%3Cg fill='none' stroke='%23241410' stroke-width='5' stroke-linecap='round'%3E%3Ccircle cx='70' cy='70' r='42'/%3E%3Ccircle cx='70' cy='70' r='32'/%3E%3Cpath d='M70 40L98 86H42Z'/%3E%3Cpath d='M160 190q30-26 60 0q-30 26-60 0Z'/%3E%3Ccircle cx='190' cy='190' r='7'/%3E%3Cpath d='M190 40v36M178 52h24M40 190l18 30M58 190l-18 30'/%3E%3C/g%3E%3C/svg%3E");
   }
 
-  /* ---- Night: the light themes take Cardclops's Dark */
+  /* ---- Night: the light themes take Dark */
   &[data-theme="night"]:is([data-scheme="light"], [data-scheme="lollipop"]) {
       --bg: #131317;
       --bg-deep: #0b0b0e;
@@ -273,7 +272,7 @@
   --font: "Rubik", "Segoe UI", system-ui, -apple-system, sans-serif;
   --mono: var(--font);
   --base-size: 15px;
-  /* Statuses: neon fills under black text, as Cardclops does its chips. */
+  /* Statuses: neon fills under black text. */
   --overdue: var(--pink-text); --overdue-fill: var(--tint-pink);
   --due: var(--yellow); --due-fill: color-mix(in srgb, var(--yellow) 20%, var(--panel));
   --given: var(--lime); --given-fill: var(--tint-green);
@@ -363,7 +362,7 @@
   .tab .badge { border-radius: 999px; background: var(--pink); color: #000000; border: 2px solid #000000; box-shadow: none; }
   .tab-panel { background: transparent; border: none; box-shadow: none; margin: 0; padding: 0; min-height: 0; }
 
-  /* ---- Sections: Cardclops panels */
+  /* ---- Sections: outlined panels */
 
   .window:not(.app-window):not(.dialog):not(.login) {
     background: var(--panel); border: var(--ink-line); border-radius: var(--blob); box-shadow: var(--ink-shadow);

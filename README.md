@@ -71,7 +71,7 @@ are far above what one household uses.
   (per device), and keyboard shortcuts on computers (press `?`).
 - **Eighteen looks**, chosen per device in Settings → This device → Look (or with `?look=<key>`
   in the address: `classic`, `win98`, `xp`, `vista`, `win7`, `win10`, `mac`, `aqua`, `tahoe`, `ubuntu`,
-  `yaru`, `kde`, `neon`, `studio`, `honey`, `lavender`, `gram`, `cardclops`). The menu lists them in two
+  `yaru`, `kde`, `neon`, `studio`, `honey`, `lavender`, `gram`, `playroom`). The menu lists them in two
   groups, **OS-Like** (Classic through KDE Plasma) and **Other** (the rest):
   - **Classic** (Windows 95);
   - **Windows 98** (the teal desktop, flat Internet Explorer 4 style toolbar buttons, and
@@ -106,7 +106,7 @@ are far above what one household uses.
   - **KDE Plasma** (Plasma 6 with Breeze: centered titles, blue focus rings, a red close on
     hover, white cards, accent-underlined tabs, notification cards and a floating panel) in
     six accent colors;
-  - **Neon Material**, a wildcard: an imagined operating system that is half Material Design
+  - **Neon Material**: an imagined operating system that is half Material Design
     (elevation, an app bar, uppercase buttons with a ripple, underlined fields, sliding tab
     indicator, snackbar) and half cyberpunk (neon glow, cut corners, scanlines, a city grid,
     monospaced readouts, a glitching title), in Neon City, Toxic, Synthwave or Ice. Night is
@@ -124,7 +124,7 @@ are far above what one household uses.
   - **The Gram**, in the style of a photo-sharing app's feed (no logos or brand art):
     sections as posts with story rings, the patient banner as a profile header, profile-style
     tabs, blue main buttons, the sunset gradient and a script wordmark; true black at night;
-  - **Cardclops**, the style of the author's card-collection app: flat neon and heavy
+  - **Playroom**, after the style of the author's card-collection app: flat neon and heavy
     black ink, hard offset shadows, lumpy blob corners, Lilita One over Rubik, in that
     app's own themes (Neon, Dark, Light, Lollipop, Astronaut, Necronomicon; the light
     ones switch to Dark at night).
@@ -137,7 +137,7 @@ are far above what one household uses.
   The looks and their groups are listed in `public/js/looks.js`; each one other than Classic is one stylesheet
   in `public/css/` whose rules all sit inside `:root[data-skin="<key>"]`, so looks never
   affect each other. Backgrounds are drawn in CSS, not copied from the originals. Studio's,
-  Honey's, Lavender's and Cardclops's fonts are in `public/fonts/` under the SIL Open Font License (license texts
+  Honey's, Lavender's and Playroom's fonts are in `public/fonts/` under the SIL Open Font License (license texts
   alongside); a device downloads them only while that look is in use.
 
 ## Put it online (about 10 minutes)
@@ -299,7 +299,7 @@ Copy `.dev.vars.example` to `.dev.vars` for local development. The demo password
 | `public/js/time.js` | Household-time-zone dates and clock times; shared with the reminder job |
 | `public/js/push.js` | Turning reminders on and off on a device |
 | `public/js/looks.js` | The looks, their groups and their color schemes |
-| `public/css/win98.css`, `xp.css`, `vista.css`, `win7.css`, `win10.css`, `mac.css`, `ubuntu.css`, `yaru.css`, `kde.css`, `aqua.css`, `tahoe.css`, `neon.css`, `studio.css`, `honey.css`, `lavender.css`, `gram.css`, `cardclops.css` | The other seventeen looks |
+| `public/css/win98.css`, `xp.css`, `vista.css`, `win7.css`, `win10.css`, `mac.css`, `ubuntu.css`, `yaru.css`, `kde.css`, `aqua.css`, `tahoe.css`, `neon.css`, `studio.css`, `honey.css`, `lavender.css`, `gram.css`, `playroom.css` | The other seventeen looks |
 | `public/images/win10-wallpaper.svg`, `tahoe-wallpaper.svg` | Wallpapers for the Windows 10 and macOS Tahoe looks (drawn for Care Chart) |
 | `design/logo-concepts/` | The logo concepts not used (kept for later), not served |
 | `public/images/logo.png`, `public/icons/` | The logo (a gradient cross with a heart, generated with GPT-5.4 Image 2) and the app icons, notification badge and Apple touch icon made from it |

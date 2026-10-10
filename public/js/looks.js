@@ -112,7 +112,7 @@ export const LOOKS = [
   },
   {
     key: "neon",
-    label: "Neon Material (wildcard)",
+    label: "Neon Material",
     group: "other",
     preview: ["#05010f", "#140a26", "#ff2bd6"],
     // An imagined operating system: Material Design crossed with cyberpunk.
@@ -164,11 +164,11 @@ export const LOOKS = [
     schemes: [],
   },
   {
-    key: "cardclops",
-    label: "Cardclops",
+    key: "playroom",
+    label: "Playroom",
     group: "other",
     preview: ["#140a24", "#2a1650", "#b8ff3c"],
-    // The style of Cardclops, the author's card-collection app; its schemes are that app's themes.
+    // Flat neon and heavy ink, after the author's card-collection app; its schemes are that app's themes.
     schemes: [
       { value: "neon", label: "Neon" }, { value: "dark", label: "Dark" }, { value: "light", label: "Light" },
       { value: "lollipop", label: "Lollipop" }, { value: "astronaut", label: "Astronaut" }, { value: "necronomicon", label: "Necronomicon" },

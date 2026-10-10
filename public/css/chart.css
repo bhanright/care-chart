@@ -240,7 +240,7 @@ legend { padding: 0 4px; background: var(--surface); }
 :root:is([data-skin="xp"], [data-skin="vista"], [data-skin="win7"], [data-skin="win10"], [data-skin="aqua"], [data-skin="tahoe"],
   [data-skin="ubuntu"], [data-skin="yaru"], [data-skin="kde"], [data-skin="neon"],
   [data-skin="studio"], [data-skin="honey"], [data-skin="lavender"],
-  [data-skin="gram"], [data-skin="cardclops"]) legend { background: transparent; }
+  [data-skin="gram"], [data-skin="playroom"]) legend { background: transparent; }
 
 /* Segmented choices (scales, chips): Win95 toggle buttons. */
 .choices { display: flex; flex-wrap: wrap; gap: 4px; }

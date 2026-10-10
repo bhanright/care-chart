@@ -61,9 +61,12 @@ function readDevice() {
   // ?look=<key> in the address (for example ?look=xp; keys are in looks.js) switches the look on this device.
   const lookFromAddress = new URLSearchParams(location.search).get("look");
   const device = { ...DEVICE_DEFAULTS, ...saved };
+  // Playroom's first key, from before it was renamed.
+  if (device.skin === "cardclops") device.skin = "playroom";
+  if (device.schemes?.cardclops) device.schemes = { ...device.schemes, playroom: device.schemes.cardclops };
   // A saved look this version does not have falls back to the default.
   device.skin = lookByKey(device.skin).key;
-  // Settings from earlier versions: one scheme for XP, an accent for a retired look.
+  // Settings from earlier versions: one scheme for XP, and an accent for a retired look.
   if (typeof device.scheme === "string") device.schemes = { ...device.schemes, xp: device.scheme };
   delete device.scheme;
   delete device.accent;
